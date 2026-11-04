@@ -1,0 +1,46 @@
+我考虑考虑|I'll think about it|Usually a polite no, especially to sales pitches or invitations. Don't wait for a follow-up.|A：这个套餐很划算，今天就办吧？//B：嗯…我再考虑考虑。|A: This plan is a great deal – sign up today? // B: Hmm… let me think about it.|refusal
+改天吧|Another day, then|Soft refusal. Unless a date is proposed, it often means "not really".|A：今晚一起吃饭？//B：今天有点累，改天吧。|A: Dinner tonight? // B: I'm a bit tired today – another time.|refusal
+不太方便|It's not very convenient|A polite, final "no". It's rude to ask why.|A：能借你的车用一下吗？//B：最近不太方便，不好意思啊。|A: Could I borrow your car? // B: It's not really convenient right now, sorry.|refusal
+我尽量|I'll try my best|Low commitment. Often means "don't count on it".|A：周五前能交吗？//B：我尽量吧。|A: Can you hand it in before Friday? // B: I'll try.|refusal
+到时候再说|We'll see when the time comes|Postpones a decision; often a gentle no.|A：下个月去旅行吗？//B：到时候再说吧。|A: Going on a trip next month? // B: Let's see nearer the time.|refusal
+我手头有点紧|I'm a bit short on money|A face-saving way to decline lending money or buying something.|A：一起买个新相机？//B：最近手头有点紧，下次吧。|A: Want to go in on a new camera together? // B: Money's a bit tight lately – next time.|refusal
+心意我领了|I appreciate the thought|Declines a gift or offer while honoring the kindness.|A：这是给你的红包。//B：心意我领了，钱真的不能收。|A: This red envelope is for you. // B: I appreciate the thought, but I really can't accept the money.|refusal
+不用麻烦了|Don't go to the trouble|Polite decline. Hosts may insist once or twice – that's part of the ritual.|A：我送你回去吧。//B：不用麻烦了，我打车就行。|A: Let me drive you home. // B: Don't trouble yourself – I'll get a taxi.|refusal
+能不能麻烦你…|Could I trouble you to…|Standard polite request; softer than 请你.|能不能麻烦你帮我看一下这份报告？|Could I trouble you to look over this report for me?|request
+方便的话…|If it's convenient…|Opens a request and leaves the listener room to say no.|方便的话，明天能早点来吗？|If it's convenient, could you come a bit earlier tomorrow?|request
+你看…怎么样？|What do you think of…?|A suggestion framed as a question; common with superiors.|你看我们把会议改到周四怎么样？|What do you think about moving the meeting to Thursday?|request
+有空的时候…|When you have a moment…|Makes a request sound low-pressure, even when it's important.|有空的时候帮我看看这个合同吧。|When you have a moment, take a look at this contract for me.|request
+这边有点冷啊|It's a bit cold in here|Indirect request: often means "please close the window or turn on the heat".|A：这边有点冷啊。//B：哦，我把窗户关上。|A: It's a bit chilly here. // B: Oh, I'll close the window.|implied
+时间不早了|It's getting late|Polite signal to end a visit or conversation.|A：时间不早了，我就不打扰了。//B：好，路上小心。|A: It's getting late – I won't keep you. // B: OK, get home safe.|implied
+你先忙|You go ahead (with your work)|Polite way to end a call or chat with someone busy.|好的，那你先忙，有事再联系。|OK, I'll let you get on – let's be in touch.|implied
+还行吧|It's okay, I guess|Often lukewarm or mildly negative, not enthusiastic.|A：新工作怎么样？//B：还行吧，就是有点累。|A: How's the new job? // B: It's alright… just a bit tiring.|implied
+有点儿意思|That's kind of interesting|Can be genuine interest or sly irony. Tone decides.|A：他居然主动请客了。//B：有点儿意思。|A: He actually offered to treat everyone. // B: Interesting…|implied
+你辛苦了|You've worked hard (thanks)|Acknowledges effort; said to colleagues, delivery workers, hosts.|A：报告做完了。//B：辛苦了，早点回去休息吧。|A: The report's done. // B: Thanks for all your work – go home and rest.|softener
+不好意思|Sorry; excuse me|An all-purpose softener: to get attention, make a request, or apologize lightly.|不好意思，请问洗手间在哪儿？|Excuse me, where's the restroom?|softener
+没事儿|It's nothing; no worries|Brushes off thanks, apologies or concern. It can also hide real feelings.|A：你没事吧？//B：没事儿，就是有点累。|A: You okay? // B: I'm fine, just a bit tired.|softener
+哪里哪里|Oh, not at all|A modest reply to a compliment. Sounds a bit old-fashioned; 过奖了 is also common.|A：你中文说得真好！//B：哪里哪里，还差得远呢。|A: Your Chinese is great! // B: Oh, not at all – still a long way to go.|softener
+过奖了|You flatter me|A modest reply to praise; fine in professional settings.|A：这个方案做得太棒了。//B：您过奖了，大家一起做的。|A: This proposal is excellent. // B: You're too kind – it was a team effort.|softener
+慢走|Take care (seeing someone off)|Said by a host to departing guests; literally "walk slowly".|A：那我先走了。//B：好，慢走啊！|A: I'll head off then. // B: OK, take care!|softener
+请多关照|Please look after me|Said when joining a team or meeting new colleagues.|我是新来的小李，以后请多关照。|I'm Xiao Li, new here – I look forward to working with you.|softener
+哪儿的话|Don't mention it|A warm rejection of thanks or apology.|A：太麻烦你了。//B：哪儿的话，应该的。|A: Sorry for all the trouble. // B: Don't mention it – it's nothing.|softener
+说实话|To be honest|Introduces a frank opinion; signals the speaker is stepping out of politeness.|说实话，我觉得这个计划不太现实。|Honestly, I don't think this plan is very realistic.|softener
+你说得也有道理，不过…|You have a point, but…|Polite disagreement: acknowledge first, then the real view follows 不过.|你说得也有道理，不过成本可能太高了。|You've got a point, but the cost might be too high.|softener
+看情况吧|Depends on the situation|Non-committal; avoids promising.|A：周末加班吗？//B：看情况吧。|A: Working this weekend? // B: Depends.|implied
+随便|Whatever; up to you|Can sound easygoing, or indifferent and slightly annoyed. Couples joke about "随便" being the hardest dish to order.|A：晚饭吃什么？//B：随便。|A: What do you want for dinner? // B: Whatever.|implied
+算了|Forget it; never mind|Gives up on something; can sound resigned or hurt.|算了，我自己来吧。|Never mind, I'll do it myself.|implied
+你懂的|You know what I mean|Implies something that shouldn't be said directly.|这事儿为什么没办成？你懂的。|Why didn't it work out? You know why.|implied
+走一步看一步|Take it one step at a time|Expresses uncertainty about plans.|以后的事谁知道呢，走一步看一步吧。|Who knows what'll happen – let's take it one step at a time.|idiom
+半斤八两|Six of one, half a dozen of the other|Both are equally (usually equally bad).|他们俩的中文水平半斤八两。|Their Chinese levels are about the same.|idiom
+马马虎虎|So-so; careless|Can mean "just okay" or "sloppy".|A：考得怎么样？//B：马马虎虎吧。|A: How'd the test go? // B: So-so.|idiom
+入乡随俗|When in Rome, do as the Romans do|Adapt to local customs.|到了中国就入乡随俗，学着用筷子吧。|You're in China now – when in Rome, learn to use chopsticks.|idiom
+一举两得|Kill two birds with one stone|One action, two benefits.|骑车上班既省钱又锻炼身体，一举两得。|Cycling to work saves money and gets you exercise – two birds, one stone.|idiom
+三心二意|Half-hearted; can't make up one's mind|Lacking focus or commitment.|做事别三心二意的，专心点。|Don't do things half-heartedly – focus.|idiom
+来不及|Not enough time; too late|Very common in daily speech.|快点，来不及了！|Hurry up, we're out of time!|idiom
+说来话长|It's a long story|Used before or instead of explaining.|A：你们怎么认识的？//B：说来话长。|A: How did you two meet? // B: It's a long story.|idiom
+一言难尽|Hard to explain in a word|Implies the situation is complicated or bittersweet.|A：最近怎么样？//B：唉，一言难尽。|A: How are things? // B: Sigh, it's complicated.|idiom
+不见不散|See you there (don't leave till we meet)|Confirms a meet-up firmly.|那就明天七点电影院门口，不见不散！|Then 7 tomorrow outside the cinema – see you there!|idiom
+吃不消|Can't take it; too much|Too tiring, expensive or demanding.|每天加班到十点，我真吃不消了。|Working till 10 every night – I really can't take it anymore.|idiom
+靠谱|Reliable; makes sense|Hugely common slang; 不靠谱 = unreliable.|这个人很靠谱，你放心吧。|He's dependable – don't worry.|idiom
+凑合|To make do|Accept something less than ideal.|房间小了点，先凑合住吧。|The room's a bit small, but let's make do for now.|idiom
+没想到|I didn't expect…|Surprise, positive or negative.|没想到你也来了！|Didn't expect to see you here!|implied
+那倒也是|Well, that's true|Concedes a point after reflection.|A：现在买房太贵了。//B：那倒也是。|A: Buying property is so expensive now. // B: Well, that's true.|softener

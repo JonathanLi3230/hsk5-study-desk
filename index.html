@@ -1,0 +1,1278 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>HSK 5 Study Desk</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=Noto+Sans+SC:wght@400;500&family=Noto+Serif+SC:wght@400;600&display=swap">
+<style>/* Layout: study desk — fixed rail of sections on desktop, bottom tabs on phones; one focused column of work. */
+:root{
+  --bg:#f4f6f4; --surface:#ffffff; --sunk:#eaeeeb; --ink:#16201c; --muted:#5a6762; --line:#d9e0dc;
+  --accent:#0d6b55; --accent-ink:#ffffff; --accent-soft:#dff0ea;
+  --again:#b3261e; --hard:#a5590a; --good:#0d6b55; --easy:#1f5fa6;
+  --grid:#d99a8f; --hl:#fff1c2;
+  --f-han:"Noto Serif SC","Songti SC","STSong",serif;
+  --f-ui:"IBM Plex Sans","Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  --f-sans-han:"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;
+  --r:10px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f1412; --surface:#161d1a; --sunk:#1d2522; --ink:#e7ece9; --muted:#9aa6a1; --line:#2b3531;
+  --accent:#4fc3a1; --accent-ink:#06231b; --accent-soft:#173329;
+  --again:#f07a6e; --hard:#e7a45c; --good:#4fc3a1; --easy:#7fb2ec; --grid:#7a453d; --hl:#4a3f17; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1412; --surface:#161d1a; --sunk:#1d2522; --ink:#e7ece9; --muted:#9aa6a1; --line:#2b3531;
+  --accent:#4fc3a1; --accent-ink:#06231b; --accent-soft:#173329;
+  --again:#f07a6e; --hard:#e7a45c; --good:#4fc3a1; --easy:#7fb2ec; --grid:#7a453d; --hl:#4a3f17; color-scheme:dark}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-ui);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.han{font-family:var(--f-han);font-weight:400}
+.zh{font-family:var(--f-sans-han)}
+a{color:var(--accent)}
+h1,h2,h3{text-wrap:balance;margin:0;line-height:1.25}
+h1{font-size:1.55rem;font-weight:600;letter-spacing:-.01em}
+h2{font-size:1.15rem;font-weight:600}
+h3{font-size:.95rem;font-weight:600}
+.label{font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.muted{color:var(--muted)}
+.small{font-size:.85rem}
+.tabnum{font-variant-numeric:tabular-nums}
+
+/* shell */
+.shell{display:grid;grid-template-columns:220px minmax(0,1fr);min-height:100%}
+.rail{position:sticky;top:env(safe-area-inset-top,0px);height:100vh;padding:20px 12px;border-right:1px solid var(--line);display:flex;flex-direction:column;gap:2px;background:var(--surface)}
+.brand{display:flex;align-items:baseline;gap:8px;padding:4px 10px 18px}
+.brand .han{font-size:1.7rem;font-weight:600;color:var(--accent);white-space:nowrap}
+.brand span:last-child{font-weight:600;font-size:.95rem}
+.nav a{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;text-decoration:none;color:var(--ink);font-weight:500}
+.nav a .k{margin-left:auto;font-size:.7rem;color:var(--muted);font-family:var(--f-ui)}
+.nav a .han{width:20px;text-align:center;color:var(--muted);font-size:1.05rem}
+.nav a:hover{background:var(--sunk)}
+.nav a[aria-current="page"]{background:var(--accent-soft);color:var(--accent)}
+.nav a[aria-current="page"] .han{color:var(--accent)}
+.rail .foot{margin-top:auto;padding:10px;font-size:.78rem;color:var(--muted)}
+main{min-width:0;padding-block:24px 96px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.col{max-width:780px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
+.tabs{display:none}
+@media (max-width:880px){
+  .shell{grid-template-columns:minmax(0,1fr)}
+  .rail{display:none}
+  main{padding-block:16px 110px}
+  .tabs{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--surface);border-top:1px solid var(--line);
+    padding:6px max(8px,env(safe-area-inset-right,0px)) calc(6px + env(safe-area-inset-bottom,0px)) max(8px,env(safe-area-inset-left,0px))}
+  .tabs a{flex:1;display:flex;flex-direction:column;align-items:center;gap:1px;text-decoration:none;color:var(--muted);font-size:.68rem;padding:4px 0;border-radius:8px}
+  .tabs a .han{font-size:1.15rem}
+  .tabs a[aria-current="page"]{color:var(--accent)}
+  .k,.kbd-hint{display:none!important}
+}
+.topbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.topbar h1{margin-right:auto}
+
+/* surfaces */
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px}
+.panel.tight{padding:12px 14px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.stack{display:flex;flex-direction:column;gap:10px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+hr.sep{border:0;border-top:1px solid var(--line);margin:4px 0}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:8px 14px;cursor:pointer;font-weight:500;min-height:38px;text-decoration:none;color:var(--ink)}
+.btn:hover{border-color:var(--muted)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.primary:hover{filter:brightness(1.06)}
+.btn.ghost{border-color:transparent;background:transparent}
+.btn.ghost:hover{background:var(--sunk)}
+.btn.sm{padding:4px 10px;min-height:30px;font-size:.85rem}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.btn .k{font-size:.7rem;opacity:.7;border:1px solid currentColor;border-radius:4px;padding:0 4px;line-height:1.3}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:.75rem;padding:2px 9px;border-radius:999px;background:var(--sunk);color:var(--muted);font-weight:500;white-space:nowrap}
+.chip.acc{background:var(--accent-soft);color:var(--accent)}
+.chip.warn{background:color-mix(in srgb,var(--hard) 16%,transparent);color:var(--hard)}
+.chip.bad{background:color-mix(in srgb,var(--again) 14%,transparent);color:var(--again)}
+.chip.blue{background:color-mix(in srgb,var(--easy) 15%,transparent);color:var(--easy)}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--surface)}
+.seg button{border:0;background:transparent;padding:6px 12px;cursor:pointer;font-size:.86rem;font-weight:500;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--accent-soft);color:var(--accent)}
+.seg button+button{border-left:1px solid var(--line)}
+input[type=text],input[type=search],input[type=number],select,textarea{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 10px;min-height:38px;width:100%}
+textarea{min-height:96px;resize:vertical;font-family:var(--f-sans-han);font-size:1.05rem;line-height:1.6}
+select{width:auto}
+input.zhin{font-family:var(--f-sans-han);font-size:1.1rem}
+
+/* audio */
+.aud{display:inline-flex;gap:4px;align-items:center}
+.aud button{border:1px solid var(--line);background:var(--surface);border-radius:999px;height:30px;min-width:30px;padding:0 10px;cursor:pointer;display:inline-flex;align-items:center;gap:5px;font-size:.78rem;color:var(--muted)}
+.aud button:hover{color:var(--accent);border-color:var(--accent)}
+.aud svg{width:14px;height:14px}
+.banner{border:1px solid color-mix(in srgb,var(--hard) 40%,var(--line));background:color-mix(in srgb,var(--hard) 9%,var(--surface));border-radius:var(--r);padding:12px 14px;font-size:.88rem}
+.note{border-left:3px solid var(--accent);padding:6px 12px;background:var(--accent-soft);border-radius:0 8px 8px 0;font-size:.9rem}
+.note.tw{border-left-color:var(--easy);background:color-mix(in srgb,var(--easy) 10%,var(--surface))}
+
+/* pinyin reveal */
+.py{font-size:.92rem;color:var(--muted);letter-spacing:.01em}
+.py.hid{cursor:pointer;color:transparent;background:repeating-linear-gradient(90deg,var(--sunk) 0 6px,transparent 6px 9px);border-radius:4px;user-select:none;min-width:5ch;display:inline-block}
+.py.hid:hover{background:repeating-linear-gradient(90deg,var(--line) 0 6px,transparent 6px 9px)}
+.py.hid::after{content:"";}
+.showpy .py.hid{color:var(--muted);background:none;cursor:default}
+
+/* today */
+.hero{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:18px;align-items:center}
+@media (max-width:560px){.hero{grid-template-columns:1fr}}
+.counts{display:flex;gap:22px;flex-wrap:wrap}
+.count b{display:block;font-size:2rem;font-weight:600;line-height:1.1;font-variant-numeric:tabular-nums}
+.count span{font-size:.8rem;color:var(--muted)}
+.count.due b{color:var(--easy)} .count.new b{color:var(--accent)} .count.wr b{color:var(--hard)}
+.stepper{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.stepper button{border:0;background:var(--surface);width:34px;height:34px;cursor:pointer;font-size:1.1rem}
+.stepper span{min-width:40px;text-align:center;font-weight:600;font-variant-numeric:tabular-nums}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
+.tile{display:flex;flex-direction:column;gap:4px;text-align:left;cursor:pointer;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px;color:var(--ink)}
+.tile:hover{border-color:var(--accent)}
+.tile .han{font-size:1.4rem;color:var(--accent)}
+.tile b{font-weight:600}
+
+/* flashcard */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:26px 22px;display:flex;flex-direction:column;gap:16px;min-height:320px}
+.card .head{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.card .head .sp{margin-left:auto}
+.bigword{font-family:var(--f-han);font-size:clamp(3rem,11vw,4.6rem);line-height:1.1;text-align:center;letter-spacing:.04em;padding:8px 0}
+.mean{font-size:1.15rem;text-align:center}
+.cent{text-align:center}
+.ex{border-top:1px solid var(--line);padding-top:14px;display:flex;flex-direction:column;gap:4px}
+.ex .zhl{font-family:var(--f-sans-han);font-size:1.22rem;line-height:1.65}
+.ex mark{background:var(--hl);color:inherit;border-radius:3px;padding:0 1px}
+.ex .en{color:var(--muted)}
+.colls{display:flex;flex-wrap:wrap;gap:8px}
+.coll{border:1px solid var(--line);border-radius:8px;padding:5px 10px;display:flex;flex-direction:column;gap:0;background:var(--bg)}
+.coll .zh{font-size:1rem}
+.coll .py{font-size:.78rem}
+.rate{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.rate button{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:10px 4px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;font-weight:600}
+.rate button small{font-weight:400;font-size:.74rem;color:var(--muted)}
+.rate .a{color:var(--again)} .rate .h{color:var(--hard)} .rate .g{color:var(--good)} .rate .e{color:var(--easy)}
+.rate button:hover{background:var(--sunk)}
+.progressline{height:4px;background:var(--sunk);border-radius:4px;overflow:hidden}
+.progressline i{display:block;height:100%;background:var(--accent);transition:width .25s}
+.kbd-hint{font-size:.75rem;color:var(--muted);text-align:center}
+kbd{font-family:var(--f-ui);font-size:.72rem;border:1px solid var(--line);border-bottom-width:2px;border-radius:4px;padding:0 5px;background:var(--surface)}
+
+/* list */
+.list{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.li{display:grid;grid-template-columns:110px minmax(0,1fr) auto;gap:12px;align-items:center;padding:10px 14px;border-bottom:1px solid var(--line);cursor:pointer;text-align:left;background:none;border-left:0;border-right:0;border-top:0;width:100%}
+.li:last-child{border-bottom:0}
+.li:hover{background:var(--sunk)}
+.li .han{font-size:1.35rem}
+.li .m{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block;background:var(--line)}
+.dot.learning{background:var(--hard)} .dot.review{background:var(--easy)} .dot.mastered{background:var(--good)} .dot.due{background:var(--again)}
+.filters{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
+.filters select{width:100%}
+
+/* sheet */
+.overlay{position:fixed;inset:0;background:rgba(10,15,13,.45);z-index:40;display:flex;align-items:flex-end;justify-content:center;padding:max(16px,env(safe-area-inset-top,0px)) max(12px,env(safe-area-inset-right,0px)) 0 max(12px,env(safe-area-inset-left,0px))}
+@media (min-width:700px){.overlay{align-items:center;padding-bottom:16px}}
+.sheet{background:var(--bg);width:100%;max-width:720px;max-height:92vh;overflow:auto;border-radius:16px 16px 0 0;padding:16px 16px calc(16px + env(safe-area-inset-bottom,0px))}
+@media (min-width:700px){.sheet{border-radius:16px}}
+
+/* quiz */
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (max-width:560px){.opts{grid-template-columns:1fr}}
+.opt{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:12px 14px;cursor:pointer;text-align:left;display:flex;gap:10px;align-items:baseline}
+.opt .n{font-size:.72rem;color:var(--muted);border:1px solid var(--line);border-radius:4px;padding:0 5px}
+.opt:hover:not([disabled]){border-color:var(--accent)}
+.opt.right{border-color:var(--good);background:color-mix(in srgb,var(--good) 10%,var(--surface))}
+.opt.wrong{border-color:var(--again);background:color-mix(in srgb,var(--again) 9%,var(--surface))}
+.opt[disabled]{cursor:default}
+.opt .han{font-size:1.3rem}
+.q-zh{font-family:var(--f-sans-han);font-size:1.35rem;line-height:1.7}
+.blank{display:inline-block;min-width:3.2em;border-bottom:2px solid var(--accent);text-align:center;color:var(--accent)}
+.expl{display:flex;flex-direction:column;gap:8px;font-size:.92rem}
+.expl .why{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 12px}
+.verdict{font-weight:600}
+.verdict.ok{color:var(--good)} .verdict.no{color:var(--again)} .verdict.mid{color:var(--hard)}
+
+/* writing */
+.tokens{display:flex;flex-wrap:wrap;gap:8px}
+.tok{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:6px 12px;cursor:pointer;font-family:var(--f-sans-han);font-size:1.1rem}
+.tok.used{opacity:.3;pointer-events:none}
+.build{min-height:52px;border:1px dashed var(--line);border-radius:10px;padding:8px;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.build .tok{background:var(--accent-soft);border-color:transparent}
+.fb{display:grid;grid-template-columns:120px minmax(0,1fr);gap:8px 14px;font-size:.92rem}
+@media (max-width:560px){.fb{grid-template-columns:1fr}}
+.fb dt{color:var(--muted);font-weight:600;font-size:.8rem;padding-top:2px}
+.fb dd{margin:0}
+.levels{display:flex;gap:6px;align-items:center}
+.lvl{width:26px;height:6px;border-radius:3px;background:var(--line)}
+.lvl.on{background:var(--accent)}
+.zhbig{font-family:var(--f-sans-han);font-size:1.15rem;line-height:1.7}
+
+/* handwriting */
+.hw-chars{display:flex;gap:14px;flex-wrap:wrap}
+.tzg{position:relative;width:130px;height:130px;border:1.5px solid var(--grid);background:var(--surface);border-radius:2px}
+.tzg::before,.tzg::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(var(--grid),var(--grid)) center/100% 1px no-repeat,linear-gradient(var(--grid),var(--grid)) center/1px 100% no-repeat;opacity:.55}
+.tzg::after{background:linear-gradient(45deg,transparent calc(50% - .5px),var(--grid) 50%,transparent calc(50% + .5px)),linear-gradient(-45deg,transparent calc(50% - .5px),var(--grid) 50%,transparent calc(50% + .5px));opacity:.3}
+.tzg .w{position:absolute;inset:0}
+.tzg canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none;z-index:2}
+.tzg.sm{width:96px;height:96px}
+.practice{display:flex;flex-wrap:wrap;gap:8px}
+.cellwrap{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:.7rem;color:var(--muted)}
+
+/* charts */
+.bars{display:flex;align-items:flex-end;gap:4px;height:110px}
+.bars div{flex:1;background:var(--accent);border-radius:3px 3px 0 0;min-height:1px;position:relative}
+.bars div.zero{background:var(--line)}
+.barlabels{display:flex;gap:4px;font-size:.68rem;color:var(--muted)}
+.barlabels span{flex:1;text-align:center}
+.meter{height:8px;border-radius:4px;background:var(--sunk);overflow:hidden;display:flex}
+.meter i{display:block;height:100%}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:.8rem;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+table.t{width:100%;border-collapse:collapse;font-size:.88rem}
+table.t td,table.t th{padding:6px 4px;border-bottom:1px solid var(--line);text-align:left}
+table.t th{font-weight:600;color:var(--muted);font-size:.75rem;text-transform:uppercase;letter-spacing:.06em}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:8px 16px;border-radius:999px;font-size:.88rem;z-index:60;opacity:0;transition:opacity .2s;pointer-events:none}
+.toast.on{opacity:1}
+.help td:first-child{white-space:nowrap}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head><body>
+<div style="padding:40px 16px;text-align:center;font-family:system-ui;color:#5a6762">Loading HSK 5 Study Desk…</div>
+<script src="data.js"></script>
+<script>/* ===== HSK 5 Study Desk — core: data, storage, SRS, audio, helpers ===== */
+const D = window.HSK || { words: [], earlier: [], prag: [], combine: [], prompts: [], TOPICS: {}, REG: {} };
+const W = D.words;
+const byWord = {}; W.forEach(w => byWord[w.w] = w);
+const $ = (s, el = document) => el.querySelector(s);
+const $$ = (s, el = document) => [...el.querySelectorAll(s)];
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const shuffle = a => { a = [...a]; for (let i = a.length - 1; i > 0; i--) { const j = Math.random() * (i + 1) | 0;[a[i], a[j]] = [a[j], a[i]]; } return a; };
+const pick = a => a[Math.random() * a.length | 0];
+const MIN = 60e3, DAY = 864e5;
+const todayKey = (t = Date.now()) => { const d = new Date(t); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); };
+const endOfDay = () => { const d = new Date(); d.setHours(23, 59, 59, 999); return +d; };
+const TIER = { 1: 'Core', 2: 'Common', 3: 'Less common' };
+const REGLONG = { N: 'Neutral — fine in speech and writing', F: 'Formal — notices, work, news', W: 'Mainly written — essays, news, exams', I: 'Informal — casual speech, chat' };
+const TONEMAP = { 'ā': 'a', 'á': 'a', 'ǎ': 'a', 'à': 'a', 'ē': 'e', 'é': 'e', 'ě': 'e', 'è': 'e', 'ī': 'i', 'í': 'i', 'ǐ': 'i', 'ì': 'i', 'ō': 'o', 'ó': 'o', 'ǒ': 'o', 'ò': 'o', 'ū': 'u', 'ú': 'u', 'ǔ': 'u', 'ù': 'u', 'ǖ': 'v', 'ǘ': 'v', 'ǚ': 'v', 'ǜ': 'v', 'ü': 'v' };
+const plainPy = s => [...String(s).toLowerCase()].map(c => TONEMAP[c] || c).join('').replace(/[^a-z]/g, '');
+function numToMarks(s) { // "an1wei4" -> "ānwèi" for tone-sensitive compare
+  const marks = { a: 'āáǎà', e: 'ēéěè', i: 'īíǐì', o: 'ōóǒò', u: 'ūúǔù', v: 'ǖǘǚǜ' };
+  return String(s).toLowerCase().replace(/u:/g, 'v').replace(/([a-zv]+)([1-5])/g, (m, syl, t) => {
+    if (t === '5') return syl.replace(/v/g, 'ü');
+    let i = syl.search(/[ae]/); if (i < 0) i = syl.indexOf('ou'); if (i < 0) { const v = [...syl].map((c, k) => /[aeiouv]/.test(c) ? k : -1).filter(k => k >= 0); i = v[v.length - 1]; }
+    if (i == null || i < 0) return syl;
+    return (syl.slice(0, i) + marks[syl[i]][+t - 1] + syl.slice(i + 1)).replace(/v/g, 'ü');
+  });
+}
+const tonedPy = s => numToMarks(String(s).toLowerCase()).normalize('NFC').replace(/[^a-zāáǎàēéěèīíǐìōóǒòūúǔùǖǘǚǜü]/g, '');
+const zhOnly = s => String(s).replace(/[\s，。！？、；：,.!?;:“”"'（）()…—~～·]/g, '');
+const lastLine = w => w.ex[w.ex.length - 1].replace(/^[AB]：/, '');
+const lastEn = w => w.exE[w.exE.length - 1].replace(/^[AB]: /, '');
+const isTW = n => /台湾/.test(n);
+
+/* ---------- state ---------- */
+const LS = 'hsk5-study-desk-v1';
+function fresh() {
+  return { v: 1, upd: 0, srs: {}, ws: {}, bm: {}, weak: {}, hand: {}, hist: {}, wlog: [], wlevel: { translate: 1, scramble: 1, combine: 1, colloc: 1, complete: 1, prompt: 1 }, wstreak: {},
+    day: { date: todayKey(), new: 0, rev: 0 },
+    set: { newPerDay: 15, order: 'core', topic: '', pinyin: 'hidden', rateN: 0.9, rateS: 0.55, voice: '', reps: 5, ai: true, theme: '' } };
+}
+let S = (() => { try { const s = JSON.parse(localStorage.getItem(LS)); if (s && s.v === 1) return Object.assign(fresh(), s, { set: Object.assign(fresh().set, s.set) }); } catch (e) { } return fresh(); })();
+function rollDay() { const k = todayKey(); if (S.day.date !== k) S.day = { date: k, new: 0, rev: 0 }; }
+rollDay();
+let syncTimer = null, dbRef = null, syncState = 'local';
+function save() {
+  S.upd = Date.now();
+  try { localStorage.setItem(LS, JSON.stringify(S)); } catch (e) { }
+  clearTimeout(syncTimer); syncTimer = setTimeout(pushDb, 2500);
+}
+function packForDb() {
+  const copy = Object.assign({}, S); let log = S.wlog.slice(-150);
+  let json = JSON.stringify(Object.assign(copy, { wlog: log }));
+  while (json.length > 240000 && log.length > 10) { log = log.slice(Math.floor(log.length / 3)); json = JSON.stringify(Object.assign(copy, { wlog: log })); }
+  return { json, upd: S.upd };
+}
+let pushing = false;
+async function pushDb() {
+  if (!dbRef || pushing) return; pushing = true;
+  try { const p = packForDb(); await dbRef.set({ upd: p.upd, state: p.json }); setSync('synced'); }
+  catch (e) { setSync('local'); }
+  pushing = false;
+}
+function setSync(s) { syncState = s; const el = $('#syncstate'); if (el) el.textContent = s === 'synced' ? 'Progress saved to your account' : s === 'loading' ? 'Connecting…' : 'Progress saved in this browser'; }
+(async () => { // account-backed storage when the viewer can provide it
+  try {
+    if (!window.claude || !window.claude.use) return;
+    setSync('loading');
+    const timer = setTimeout(() => setSync('local'), 10000);
+    const [db, user] = await Promise.all([window.claude.use('db'), window.claude.use('user')]);
+    if (!db || !user) { clearTimeout(timer); setSync('local'); return; }
+    const id = await user.id(); if (!id) { clearTimeout(timer); setSync('local'); return; }
+    dbRef = db.collection('data/users/' + id).doc('state');
+    const snap = await dbRef.get(); clearTimeout(timer);
+    if (snap.exists) {
+      const d = snap.data();
+      if (d && d.upd > (S.upd || 0)) { try { const s = JSON.parse(d.state); S = Object.assign(fresh(), s, { set: Object.assign(fresh().set, s.set) }); rollDay(); localStorage.setItem(LS, JSON.stringify(S)); route(); } catch (e) { } }
+      else if (S.upd > (d?.upd || 0)) pushDb();
+    } else if (S.upd) pushDb();
+    setSync('synced');
+  } catch (e) { setSync('local'); }
+})();
+
+/* ---------- spaced repetition ---------- */
+const STEPS = [1 * MIN, 10 * MIN];
+function cardStatus(c, now = Date.now()) {
+  if (!c) return 'new';
+  if (c.st === 'l') return c.due <= now ? 'due' : 'learning';
+  if (c.due <= endOfDay()) return 'due';
+  return c.ivl >= 21 ? 'mastered' : 'review';
+}
+function statusOf(id) { return cardStatus(S.srs[id]); }
+function schedule(c, r, now = Date.now()) {
+  // r: 1 again, 2 hard, 3 good, 4 easy. Returns a new card object.
+  c = c ? { ...c } : { st: 'n', step: 0, ivl: 0, ease: 2.5, reps: 0, lapses: 0, first: now };
+  const fuzz = d => d < 3 ? d : Math.round(d * (0.95 + Math.random() * 0.1));
+  c.reps++; c.last = now;
+  if (c.st === 'n' || c.st === 'l') {
+    const relearn = c.st === 'l' && c.ivl > 0;
+    if (r === 1) { c.st = 'l'; c.step = 0; c.due = now + STEPS[0]; }
+    else if (r === 2) { c.st = 'l'; c.due = now + (c.step === 0 ? 6 * MIN : STEPS[1]); }
+    else if (r === 3) {
+      if (c.st === 'n' || c.step === 0) { c.st = 'l'; c.step = 1; c.due = now + STEPS[1]; }
+      else { c.st = 'r'; c.ivl = relearn ? Math.max(1, c.ivl) : 1; c.due = now + c.ivl * DAY; }
+    } else { c.st = 'r'; c.ivl = relearn ? Math.max(2, Math.round(c.ivl * 1.5)) : 4; c.due = now + c.ivl * DAY; }
+  } else {
+    if (r === 1) { c.lapses++; c.ease = Math.max(1.3, c.ease - 0.2); c.ivl = Math.max(1, Math.round(c.ivl * 0.3)); c.st = 'l'; c.step = 0; c.due = now + STEPS[1]; }
+    else if (r === 2) { c.ease = Math.max(1.3, c.ease - 0.15); c.ivl = Math.max(c.ivl + 1, fuzz(Math.round(c.ivl * 1.2))); c.due = now + c.ivl * DAY; }
+    else if (r === 3) { c.ivl = Math.max(c.ivl + 1, fuzz(Math.round(c.ivl * c.ease))); c.due = now + c.ivl * DAY; }
+    else { c.ease = Math.min(3.2, c.ease + 0.15); c.ivl = Math.max(c.ivl + 2, fuzz(Math.round(c.ivl * c.ease * 1.3))); c.due = now + c.ivl * DAY; }
+  }
+  return c;
+}
+function fmtIvl(ms) {
+  if (ms < 60 * MIN) return Math.max(1, Math.round(ms / MIN)) + 'm';
+  if (ms < DAY) return Math.round(ms / (60 * MIN)) + 'h';
+  const d = Math.round(ms / DAY); if (d < 30) return d + 'd'; if (d < 365) return (d / 30).toFixed(d < 60 ? 1 : 0) + 'mo'; return (d / 365).toFixed(1) + 'y';
+}
+function preview(c) { const now = Date.now(); return [1, 2, 3, 4].map(r => fmtIvl(schedule(c, r, now).due - now)); }
+function counts() {
+  const now = Date.now(), eod = endOfDay(); let nw = 0, learning = 0, due = 0, mastered = 0, review = 0;
+  for (const w of W) {
+    const c = S.srs[w.id];
+    if (!c) { nw++; continue; }
+    if (c.st === 'l') { learning++; if (c.due <= now) due++; }
+    else { if (c.due <= eod) due++; if (c.ivl >= 21) mastered++; else review++; }
+  }
+  return { nw, learning, due, mastered, review, seen: W.length - nw };
+}
+function newOrder() {
+  let pool = W.filter(w => !S.srs[w.id]);
+  if (S.set.topic) { const t = pool.filter(w => w.t === S.set.topic); if (t.length) pool = t; }
+  if (S.set.order === 'core') pool.sort((a, b) => (a.d - b.d) || ((a.f || 1e9) - (b.f || 1e9)));
+  else if (S.set.order === 'random') pool = shuffle(pool);
+  return pool;
+}
+function newLeft() { return Math.max(0, S.set.newPerDay - S.day.new); }
+function todayQueue() {
+  const now = Date.now(), eod = endOfDay();
+  const learning = [], reviews = [];
+  for (const w of W) { const c = S.srs[w.id]; if (!c) continue; if (c.st === 'l' && c.due <= now) learning.push(w.id); else if (c.st === 'r' && c.due <= eod) reviews.push(w.id); }
+  reviews.sort((a, b) => S.srs[a].due - S.srs[b].due);
+  const news = newOrder().slice(0, newLeft()).map(w => w.id);
+  // interleave new cards among reviews so sessions don't end on a wall of new words
+  const out = [...learning]; const rv = shuffle(reviews); let ni = 0;
+  rv.forEach((id, i) => { out.push(id); if (ni < news.length && i % 3 === 2) out.push(news[ni++]); });
+  while (ni < news.length) out.push(news[ni++]);
+  return out;
+}
+function logHist(kind) { const k = todayKey(); const h = S.hist[k] || (S.hist[k] = { rev: 0, new: 0, again: 0, w: 0, q: 0, l: 0, hw: 0 }); h[kind] = (h[kind] || 0) + 1; }
+function streak() { let n = 0; const d = new Date(); for (; ;) { const h = S.hist[todayKey(+d)]; if (h && (h.rev || h.new || h.w || h.q || h.l)) { n++; d.setDate(d.getDate() - 1); } else break; } return n; }
+
+/* writing schedule (separate from flashcards) */
+function wsDue() { const eod = endOfDay(); return Object.keys(S.ws).filter(id => S.ws[id].due <= eod).map(Number); }
+function writingPool() {
+  const due = wsDue();
+  const now = Date.now();
+  const recent = W.filter(w => S.srs[w.id] && !S.ws[w.id] && now - (S.srs[w.id].first || 0) < 14 * DAY).map(w => w.id);
+  const weak = Object.keys(S.weak).map(Number).filter(id => !due.includes(id)).sort((a, b) => S.weak[b] - S.weak[a]);
+  const lapsed = W.filter(w => S.srs[w.id]?.lapses).map(w => w.id);
+  const learned = W.filter(w => S.srs[w.id]).map(w => w.id);
+  const ordered = [...new Set([...due, ...weak, ...lapsed, ...recent, ...learned])];
+  return { ids: ordered.length ? ordered : W.filter(w => w.d === 1).slice(0, 120).map(w => w.id), due: due.length, fallback: !ordered.length };
+}
+
+/* ---------- audio (browser text-to-speech) ---------- */
+const TTS = { ok: 'speechSynthesis' in window, voices: [], zh: [], ready: false };
+function loadVoices() {
+  if (!TTS.ok) return;
+  TTS.voices = speechSynthesis.getVoices();
+  TTS.zh = TTS.voices.filter(v => /^zh([-_](CN|Hans)|$)/i.test(v.lang) || /^cmn/i.test(v.lang));
+  if (!TTS.zh.length) TTS.zh = TTS.voices.filter(v => /^zh/i.test(v.lang) && !/HK|yue/i.test(v.lang));
+  TTS.ready = true;
+  const b = $('#voicebanner'); if (b) b.outerHTML = voiceBanner();
+}
+if (TTS.ok) { loadVoices(); speechSynthesis.onvoiceschanged = loadVoices; setTimeout(loadVoices, 800); }
+function chosenVoice() { return TTS.zh.find(v => v.voiceURI === S.set.voice) || TTS.zh.find(v => /CN/i.test(v.lang)) || TTS.zh[0]; }
+function voiceBanner() {
+  if (!TTS.ok) return `<div id="voicebanner" class="banner"><b>Audio isn't available in this browser.</b> Audio here uses your device's text-to-speech, and this browser doesn't offer it. Try Chrome, Edge or Safari.</div>`;
+  if (TTS.ready && !TTS.zh.length) return `<div id="voicebanner" class="banner"><b>No Mandarin voice found on this device.</b> Audio uses your device's text-to-speech. To hear Chinese: on Windows add the <i>Chinese (Simplified, China)</i> speech pack under Settings › Time &amp; language › Speech; on macOS or iOS download a Chinese voice under Spoken Content; on Android install or enable Google Speech Services with Chinese. Then reload this page. Until then, the audio buttons are disabled and listening exercises show the transcript.</div>`;
+  return '<div id="voicebanner" hidden></div>';
+}
+const canSpeak = () => TTS.ok && TTS.zh.length > 0;
+function speak(text, slow, onend) {
+  if (!canSpeak()) { toast('No Mandarin voice available on this device'); return; }
+  speechSynthesis.cancel();
+  const lines = String(text).split('//').map(s => s.trim()).filter(Boolean);
+  const v = chosenVoice();
+  lines.forEach((ln, i) => {
+    const speaker = (ln.match(/^([AB])：/) || [])[1];
+    const u = new SpeechSynthesisUtterance(ln.replace(/^[AB]：/, ''));
+    u.lang = v?.lang || 'zh-CN'; if (v) u.voice = v;
+    u.rate = slow ? S.set.rateS : S.set.rateN; u.pitch = speaker === 'B' ? 1.18 : 1;
+    if (i === lines.length - 1 && onend) u.onend = onend;
+    speechSynthesis.speak(u);
+  });
+}
+const ICON_PLAY = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 5.5h2.5L9 2.5v11L5.5 10.5H3z" fill="currentColor"/><path d="M11 5.2a3.5 3.5 0 0 1 0 5.6M12.6 3.4a6 6 0 0 1 0 9.2" stroke="currentColor" fill="none" stroke-width="1.3" stroke-linecap="round"/></svg>';
+function audioBtns(text, label = '') {
+  const t = esc(text); const dis = canSpeak() ? '' : ' disabled title="No Mandarin voice on this device"';
+  return `<span class="aud"><button type="button" data-say="${t}"${dis} aria-label="Play ${esc(label || 'audio')}">${ICON_PLAY}${label ? esc(label) : ''}</button><button type="button" data-say="${t}" data-slow="1"${dis} aria-label="Play slowly">Slow</button></span>`;
+}
+
+/* ---------- rendering helpers ---------- */
+function pyHTML(py, cls = '') { const hid = S.set.pinyin === 'hidden'; return `<span class="py ${hid ? 'hid' : ''} ${cls}" ${hid ? 'role="button" tabindex="0" title="Show pinyin (P)"' : ''}>${esc(py)}</span>`; }
+function hlSentence(s, w) { const e = esc(s); const k = esc(w); return e.split(k).join(`<mark>${k}</mark>`); }
+function badgeRow(w) {
+  return `<span class="chip acc" title="HSK 3.0 (2025 exam syllabus), new at Level 5">HSK 5 · new</span><span class="chip" title="${esc(REGLONG[w.reg])}">${esc(D.REG[w.reg])}</span><span class="chip">${esc(D.TOPICS[w.t])}</span><span class="chip" title="Learning difficulty from word frequency">${TIER[w.d]}</span>`;
+}
+function wordDetail(w, { forCard = false } = {}) {
+  const notes = w.note ? w.note.split(/(?=台湾：)/).map(n => `<div class="note ${isTW(n) ? 'tw' : ''}">${isTW(n) ? '<b>Taiwan usage · </b>' + esc(n.replace('台湾：', '')) : esc(n)}</div>`).join('') : '';
+  const exs = w.ex.map((s, i) => `<div class="zhl">${hlSentence(s, w.w)}</div><div>${pyHTML(w.exP[i])}</div><div class="en">${esc(w.exE[i] || '')}</div>`).join('');
+  return `
+  <div class="cent stack" style="gap:6px">
+    <div class="bigword">${esc(w.w)}</div>
+    <div class="row" style="justify-content:center">${pyHTML(w.py, 'big')} ${audioBtns(w.w, 'Word')}</div>
+    <div class="mean">${esc(w.m)}</div>
+    <div class="row" style="justify-content:center;gap:6px">${badgeRow(w)}</div>
+  </div>
+  <div class="ex"><div class="row" style="justify-content:space-between"><span class="label">${w.ex.length > 1 ? 'Dialogue' : 'Example'}</span>${audioBtns(w.ex.join('//'), 'Sentence')}</div>${exs}</div>
+  <div class="stack" style="gap:6px"><span class="label">Common combinations</span><div class="colls">${w.col.map(c => `<div class="coll"><span class="zh">${esc(c.z)}</span>${pyHTML(c.p)}</div>`).join('')}</div></div>
+  <div class="stack" style="gap:6px"><span class="label">When to use it</span><div class="small">${esc(REGLONG[w.reg])}.</div>${notes}</div>`;
+}
+let toastT; function toast(msg) { const t = $('#toast'); t.textContent = msg; t.classList.add('on'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('on'), 2200); }
+function bmToggle(id) { if (S.bm[id]) delete S.bm[id]; else S.bm[id] = Date.now(); save(); toast(S.bm[id] ? 'Bookmarked' : 'Bookmark removed'); }
+function statusLabel(st) { return { new: 'New', learning: 'Learning', due: 'Due', review: 'Learned', mastered: 'Mastered' }[st]; }
+function distractors(w, n, { sameChar = false, field = 'w' } = {}) {
+  const pos0 = (w.pos || [])[0];
+  let pool = W.filter(x => x.id !== w.id && x.w !== w.w && x.m !== w.m);
+  const score = x => (sameChar && [...x.w].some(c => w.w.includes(c)) ? 6 : 0) + (x.t === w.t ? 2 : 0) + (pos0 && (x.pos || [])[0] === pos0 ? 3 : 0) + (x.w.length === w.w.length ? 1 : 0) + Math.random() * 2.5;
+  pool = pool.map(x => [score(x), x]).sort((a, b) => b[0] - a[0]).slice(0, 30).map(a => a[1]);
+  const out = []; for (const x of shuffle(pool.slice(0, 12))) { if (out.length >= n) break; if (!out.some(o => o[field] === x[field])) out.push(x); }
+  return out;
+}
+
+/* ===== views: shell, today, study, cards ===== */
+const NAV = [
+  ['today', '今', 'Review today', 't'], ['cards', '词', 'Word list', 'c'], ['listen', '听', 'Listening', 'l'], ['quiz', '考', 'Quizzes', 'q'],
+  ['write', '写', 'Writing', 'w'], ['hand', '笔', 'Handwriting', 'h'], ['talk', '说', 'Conversation', 'e'], ['progress', '进', 'Progress', 'p'], ['settings', '设', 'Settings', 's']];
+const TABS = ['today', 'cards', 'listen', 'quiz', 'write', 'more'];
+let view = 'today';
+function shell() {
+  document.body.innerHTML = `
+  <div class="shell">
+    <aside class="rail"><div class="brand"><span class="han">五级</span><span>HSK 5 Study Desk</span></div>
+      <nav class="nav" aria-label="Sections">${NAV.map(([k, h, l, key]) => `<a href="#${k}" data-nav="${k}"><span class="han">${h}</span>${l}<span class="k">g ${key}</span></a>`).join('')}</nav>
+      <div class="foot"><div id="syncstate">Progress saved in this browser</div><div>Press <kbd>?</kbd> for shortcuts</div></div></aside>
+    <main id="main" tabindex="-1"></main>
+  </div>
+  <nav class="tabs" aria-label="Sections">${TABS.map(k => { if (k === 'more') return `<a href="#more" data-nav="more"><span class="han">更</span>More</a>`; const n = NAV.find(x => x[0] === k); return `<a href="#${k}" data-nav="${k}"><span class="han">${n[1]}</span>${n[2].split(' ')[0]}</a>`; }).join('')}</nav>
+  <div id="toast" class="toast" role="status"></div><div id="layer"></div>`;
+  setSync(syncState);
+}
+function setNav() { $$('[data-nav]').forEach(a => a.setAttribute('aria-current', a.dataset.nav === view || (a.dataset.nav === 'more' && ['hand', 'talk', 'progress', 'settings', 'more'].includes(view)) ? 'page' : 'false')); }
+const VIEWS = {};
+function route() {
+  rollDay();
+  const h = (location.hash || '#today').slice(1);
+  view = VIEWS[h] ? h : 'today';
+  if (view !== 'study') session = null;
+  setNav(); closeSheet();
+  const m = $('#main'); m.innerHTML = '<div class="col" id="col"></div>';
+  VIEWS[view]($('#col'));
+  if (S.set.pinyin === 'shown') m.classList.add('showpy'); else m.classList.remove('showpy');
+  window.scrollTo(0, 0);
+}
+function go(v) { if (location.hash === '#' + v) route(); else location.hash = v; }
+
+/* ---------- Today ---------- */
+VIEWS.today = col => {
+  const c = counts(); const q = todayQueue(); const nl = Math.min(newLeft(), c.nw);
+  const wdue = wsDue().length; const bm = Object.keys(S.bm).length; const st = streak();
+  const reviewsNow = q.length - Math.min(nl, q.length);
+  col.innerHTML = `
+  ${voiceBanner()}
+  <div class="topbar"><h1>Review today</h1><span class="chip">${new Date().toLocaleDateString(undefined, { weekday: 'long', month: 'short', day: 'numeric' })}</span>${st ? `<span class="chip acc">${st}-day streak</span>` : ''}</div>
+  <section class="panel hero">
+    <div class="stack" style="gap:14px">
+      <div class="counts">
+        <div class="count due"><b>${reviewsNow}</b><span>reviews due</span></div>
+        <div class="count new"><b>${nl}</b><span>new words left today</span></div>
+        <div class="count wr"><b>${wdue}</b><span>writing reviews due</span></div>
+      </div>
+      <div class="row small"><span class="muted">New words per day</span>
+        <span class="stepper"><button type="button" id="nminus" aria-label="Fewer new words">−</button><span id="nper">${S.set.newPerDay}</span><button type="button" id="nplus" aria-label="More new words">+</button></span>
+        <span class="muted">· ${S.day.new} introduced today</span></div>
+    </div>
+    <div class="stack" style="align-items:stretch">
+      <button class="btn primary" id="start" ${q.length ? '' : 'disabled'} style="min-height:48px;padding:10px 22px;font-size:1rem">${q.length ? 'Start review' : 'All done for today'} <span class="k kbd-hint">Enter</span></button>
+      ${!q.length && c.nw ? `<button class="btn sm" id="more5">Learn 5 more new words</button>` : ''}
+    </div>
+  </section>
+  <section class="tiles">
+    <button class="tile" data-go="write"><span class="han">写</span><b>Writing practice</b><span class="small muted">${wdue ? wdue + ' due · ' : ''}translate, reorder, compose</span></button>
+    <button class="tile" data-go="listen"><span class="han">听</span><b>Listening drill</b><span class="small muted">Words, sentences and dialogues</span></button>
+    <button class="tile" data-go="quiz"><span class="han">考</span><b>Quick quiz</b><span class="small muted">10 questions with explanations</span></button>
+    <button class="tile" id="bmstudy" ${bm ? '' : 'disabled'}><span class="han">签</span><b>Bookmarked words</b><span class="small muted">${bm ? bm + ' saved for extra practice' : 'Bookmark hard words with B'}</span></button>
+  </section>
+  <section class="panel stack">
+    <div class="row" style="justify-content:space-between"><h2>Your HSK 5 list</h2><a href="#progress" class="small">Full progress</a></div>
+    <div class="meter" aria-label="Progress through the list">${['mastered', 'review', 'learning'].map(k => `<i style="width:${(k === 'mastered' ? c.mastered : k === 'review' ? c.review : c.learning) / W.length * 100}%;background:var(${k === 'mastered' ? '--good' : k === 'review' ? '--easy' : '--hard'})"></i>`).join('')}</div>
+    <div class="legend"><span><i class="dot mastered"></i>${c.mastered} mastered</span><span><i class="dot review"></i>${c.review} learned</span><span><i class="dot learning"></i>${c.learning} learning</span><span><i class="dot"></i>${c.nw} not started</span><span>of ${W.length} new Level 5 words</span></div>
+    <div class="small muted">New words come ${S.set.order === 'core' ? 'most frequent first' : S.set.order === 'random' ? 'in random order' : 'in syllabus order'}${S.set.topic ? ', from ' + esc(D.TOPICS[S.set.topic]) : ''}. <a href="#settings">Change</a></div>
+  </section>`;
+  $('#nminus').onclick = () => { S.set.newPerDay = Math.max(0, S.set.newPerDay - 5); save(); route(); };
+  $('#nplus').onclick = () => { S.set.newPerDay = Math.min(100, S.set.newPerDay + 5); save(); route(); };
+  $('#start').onclick = () => startSession(todayQueue(), 'Today’s review');
+  const m5 = $('#more5'); if (m5) m5.onclick = () => startSession(newOrder().slice(0, 5).map(w => w.id), 'Extra new words', { extraNew: true });
+  $('#bmstudy').onclick = () => startSession(shuffle(Object.keys(S.bm).map(Number)), 'Bookmarked words');
+  $$('[data-go]', col).forEach(b => b.onclick = () => go(b.dataset.go));
+};
+
+/* ---------- Study session ---------- */
+let session = null;
+function startSession(ids, title, opts = {}) {
+  if (!ids.length) { toast('Nothing to study right now'); return; }
+  session = { ids: [...ids], title, i: 0, done: 0, total: ids.length, shown: false, opts, again: 0, started: Date.now() };
+  if (location.hash === '#study') renderStudy(); else location.hash = 'study';
+}
+VIEWS.study = col => { if (!session) { go('today'); return; } renderStudy(); };
+function affectsSchedule(id) { const c = S.srs[id]; const st = cardStatus(c); return !c || st === 'due' || session.opts.extraNew; }
+function renderStudy() {
+  const col = $('#col'); if (!col) return;
+  if (!session.ids.length) {
+    const c = counts();
+    col.innerHTML = `<div class="topbar"><h1>${esc(session.title)} · done</h1></div>
+      <section class="panel stack"><p>You went through <b>${session.done}</b> cards${session.again ? `, and pressed Again on ${session.again}` : ''}. Learning cards come back after their short delay; reviews are scheduled for later days.</p>
+      <div class="row"><span class="chip">${c.due} still due today</span><span class="chip">${Math.min(newLeft(), c.nw)} new left</span></div>
+      <div class="row"><button class="btn primary" id="tw">Practise writing with today’s words</button><a class="btn" href="#hand">Handwriting</a><a class="btn" href="#today">Back to today</a></div></section>`;
+    $('#tw').onclick = () => { writeCtx = { fromSession: true }; go('write'); };
+    return;
+  }
+  const id = session.ids[0]; const w = W[id]; const c = S.srs[id]; const sched = affectsSchedule(id); const pv = preview(c);
+  const pct = session.done / (session.done + session.ids.length) * 100;
+  col.innerHTML = `
+  <div class="topbar"><h1>${esc(session.title)}</h1><span class="chip tabnum">${session.ids.length} left</span><button class="btn ghost sm" id="endsess">End session</button></div>
+  <div class="progressline"><i style="width:${pct}%"></i></div>
+  <article class="card" id="card">
+    <div class="head"><span class="chip ${c ? '' : 'acc'}">${c ? statusLabel(cardStatus(c)) : 'New word'}</span>${sched ? '' : '<span class="chip warn" title="This card isn’t due, so your rating won’t change its schedule">Practice only</span>'}
+      <span class="sp"></span><button class="btn ghost sm" id="bm" aria-pressed="${!!S.bm[id]}">${S.bm[id] ? '★ Bookmarked' : '☆ Bookmark'} <span class="k kbd-hint">B</span></button></div>
+    ${session.shown ? wordDetail(w) : `<div class="bigword" style="padding:30px 0 10px">${esc(w.w)}</div><div class="row" style="justify-content:center">${audioBtns(w.w, 'Word')}</div><div class="cent muted small">Recall the meaning and pronunciation, then check.</div>`}
+  </article>
+  ${session.shown ? `<div class="rate" role="group" aria-label="How well did you know it?">
+      <button class="a" data-r="1">Again<small>${pv[0]} · 1</small></button><button class="h" data-r="2">Difficult<small>${pv[1]} · 2</small></button>
+      <button class="g" data-r="3">Good<small>${pv[2]} · 3</small></button><button class="e" data-r="4">Easy<small>${pv[3]} · 4</small></button></div>
+      <div class="kbd-hint"><kbd>P</kbd> pinyin · <kbd>A</kbd> word audio · <kbd>S</kbd> sentence · <kbd>Shift</kbd>+<kbd>S</kbd> slow</div>`
+      : `<button class="btn primary" id="show" style="min-height:50px">Show answer <span class="k kbd-hint">Space</span></button>`}`;
+  $('#endsess').onclick = () => { session = null; go('today'); };
+  $('#bm').onclick = () => { bmToggle(id); renderStudy(); };
+  const sh = $('#show'); if (sh) sh.onclick = () => { session.shown = true; renderStudy(); };
+  $$('[data-r]').forEach(b => b.onclick = () => rate(+b.dataset.r));
+}
+function rate(r) {
+  if (!session || !session.shown) return;
+  const id = session.ids.shift(); const old = S.srs[id];
+  if (affectsSchedule(id)) {
+    const isNew = !old; const c = schedule(old, r); S.srs[id] = c;
+    if (isNew) { S.day.new++; logHist('new'); } else { S.day.rev++; logHist('rev'); }
+    if (r === 1) { logHist('again'); S.weak[id] = (S.weak[id] || 0) + 1; session.again++; }
+    if (c.st === 'l' && c.due - Date.now() <= 20 * MIN) session.ids.splice(Math.min(session.ids.length, r === 1 ? 3 : 6), 0, id);
+  } else if (r === 1) { session.ids.splice(Math.min(session.ids.length, 4), 0, id); session.again++; }
+  session.done++; session.shown = false; save(); renderStudy();
+}
+
+/* ---------- Word list / browse ---------- */
+let browse = { q: '', topic: '', diff: '', reg: '', st: '', earlier: false, limit: 120 };
+VIEWS.cards = col => {
+  col.innerHTML = `
+  <div class="topbar"><h1>Word list</h1><span class="chip">${W.length} new Level 5 words</span></div>
+  <div class="panel stack">
+    <input type="search" id="q" placeholder="Search by word, pinyin (with or without tones) or English" value="${esc(browse.q)}" aria-label="Search">
+    <div class="filters">
+      <select id="ft" aria-label="Topic"><option value="">All topics</option>${Object.entries(D.TOPICS).map(([k, v]) => `<option value="${k}" ${browse.topic === k ? 'selected' : ''}>${esc(v)}</option>`).join('')}</select>
+      <select id="fd" aria-label="Difficulty"><option value="">All difficulty</option>${[1, 2, 3].map(d => `<option value="${d}" ${browse.diff == d ? 'selected' : ''}>${TIER[d]}</option>`).join('')}</select>
+      <select id="fr" aria-label="Register"><option value="">All registers</option>${Object.entries(D.REG).map(([k, v]) => `<option value="${k}" ${browse.reg === k ? 'selected' : ''}>${esc(v)}</option>`).join('')}</select>
+      <select id="fs" aria-label="Learning status"><option value="">Any status</option>${['new', 'learning', 'due', 'review', 'mastered', 'bookmarked', 'weak'].map(s => `<option value="${s}" ${browse.st === s ? 'selected' : ''}>${s === 'bookmarked' ? 'Bookmarked' : s === 'weak' ? 'Struggled with' : statusLabel(s)}</option>`).join('')}</select>
+    </div>
+    <label class="row small"><input type="checkbox" id="fe" ${browse.earlier ? 'checked' : ''}> Show earlier levels (HSK 1–4 of the same syllabus) as a reference list</label>
+  </div>
+  <div class="row" id="resbar"></div>
+  <div id="res"></div>`;
+  const upd = () => { browse.limit = 120; renderBrowse(); };
+  $('#q').oninput = e => { browse.q = e.target.value; upd(); };
+  $('#ft').onchange = e => { browse.topic = e.target.value; upd(); };
+  $('#fd').onchange = e => { browse.diff = e.target.value; upd(); };
+  $('#fr').onchange = e => { browse.reg = e.target.value; upd(); };
+  $('#fs').onchange = e => { browse.st = e.target.value; upd(); };
+  $('#fe').onchange = e => { browse.earlier = e.target.checked; upd(); };
+  renderBrowse();
+};
+function matchQ(q, w, py, m) {
+  if (!q) return true; const ql = q.toLowerCase().trim();
+  if (/[一-鿿]/.test(ql)) return w.includes(ql);
+  const qp = plainPy(ql);
+  if (qp && plainPy(py).startsWith(qp)) return true;
+  if (/[1-5āáǎàēéěèīíǐìōóǒòūúǔù]/.test(ql) && tonedPy(py).startsWith(tonedPy(ql))) return true;
+  return m.toLowerCase().includes(ql);
+}
+function filtered() {
+  return W.filter(w => {
+    if (browse.topic && w.t !== browse.topic) return false;
+    if (browse.diff && w.d != browse.diff) return false;
+    if (browse.reg && w.reg !== browse.reg) return false;
+    if (browse.st) { if (browse.st === 'bookmarked') { if (!S.bm[w.id]) return false; } else if (browse.st === 'weak') { if (!S.weak[w.id]) return false; } else if (statusOf(w.id) !== browse.st) return false; }
+    return matchQ(browse.q, w.w, w.py, w.m);
+  });
+}
+function renderBrowse() {
+  const res = $('#res'), bar = $('#resbar'); if (!res) return;
+  if (browse.earlier) {
+    const list = D.earlier.filter(e => matchQ(browse.q, e[0], e[1], e[2]));
+    bar.innerHTML = `<span class="small muted">${list.length} words from Levels 1–4 · reference only, not scheduled</span>`;
+    res.innerHTML = `<div class="list">${list.slice(0, browse.limit).map(e => `<div class="li" style="cursor:default"><span class="han">${esc(e[0])}</span><span class="m">${pyHTML(e[1])} <span class="muted">· ${esc(e[2])}</span></span><span class="chip">Level ${e[3]}</span></div>`).join('')}</div>${list.length > browse.limit ? '<button class="btn" id="moreres" style="width:100%">Show more</button>' : ''}`;
+  } else {
+    const list = filtered();
+    const studyable = list.filter(w => statusOf(w.id) !== 'mastered').length;
+    bar.innerHTML = `<span class="small muted" style="margin-right:auto">${list.length} words</span>${list.length ? `<button class="btn sm" id="studythese">Study these (${Math.min(list.length, 50)})</button><button class="btn sm" id="writethese">Write with these</button>` : ''}`;
+    res.innerHTML = list.length ? `<div class="list">${list.slice(0, browse.limit).map(w => { const st = statusOf(w.id); return `<button class="li" data-w="${w.id}"><span class="han">${esc(w.w)}</span><span class="m">${pyHTML(w.py)} <span class="muted">· ${esc(w.m)}</span></span><span class="row" style="gap:6px">${S.bm[w.id] ? '<span title="Bookmarked">★</span>' : ''}<span class="dot ${st}" title="${statusLabel(st)}"></span></span></button>`; }).join('')}</div>${list.length > browse.limit ? '<button class="btn" id="moreres" style="width:100%">Show more</button>' : ''}` : '<div class="panel muted">No words match. Try fewer filters or search the English meaning.</div>';
+    const s = $('#studythese'); if (s) s.onclick = () => { const ids = list.slice(0, 50).map(w => w.id); startSession(ids, browse.topic ? D.TOPICS[browse.topic] : 'Selected words', { extraNew: false }); };
+    const wt = $('#writethese'); if (wt) wt.onclick = () => { writeCtx = { ids: list.slice(0, 60).map(w => w.id) }; go('write'); };
+    void studyable;
+  }
+  const mr = $('#moreres'); if (mr) mr.onclick = () => { browse.limit += 200; renderBrowse(); };
+}
+function openWord(id) {
+  const w = W[id]; const st = statusOf(id); const c = S.srs[id];
+  $('#layer').innerHTML = `<div class="overlay" id="ov"><div class="sheet ${S.set.pinyin === 'shown' ? 'showpy' : ''}" role="dialog" aria-modal="true" aria-label="${esc(w.w)}">
+    <div class="row" style="justify-content:space-between"><span class="chip">${statusLabel(st)}${c && c.st === 'r' ? ' · next in ' + fmtIvl(Math.max(0, c.due - Date.now())) : ''}</span><button class="btn ghost sm" id="closeov">Close <span class="k kbd-hint">Esc</span></button></div>
+    <div class="card" style="border:0;padding:12px 4px">${wordDetail(w)}</div>
+    <div class="row"><button class="btn" id="ovbm">${S.bm[id] ? '★ Bookmarked' : '☆ Bookmark'}</button><button class="btn" id="ovst">Study now</button><button class="btn" id="ovwr">Write with it</button><button class="btn" id="ovhw">Handwriting</button></div>
+  </div></div>`;
+  $('#ov').onclick = e => { if (e.target.id === 'ov') closeSheet(); };
+  $('#closeov').onclick = closeSheet;
+  $('#ovbm').onclick = () => { bmToggle(id); openWord(id); };
+  $('#ovst').onclick = () => { closeSheet(); startSession([id], w.w); };
+  $('#ovwr').onclick = () => { closeSheet(); writeCtx = { ids: [id] }; go('write'); };
+  $('#ovhw').onclick = () => { closeSheet(); handCtx = { id }; go('hand'); };
+}
+function closeSheet() { const l = $('#layer'); if (l) l.innerHTML = ''; }
+
+/* ===== Listening and quizzes ===== */
+function studiedPool(min = 40) {
+  const seen = W.filter(w => S.srs[w.id]).sort((a, b) => (S.srs[b.id].last || 0) - (S.srs[a.id].last || 0));
+  if (seen.length >= min) return seen;
+  return [...seen, ...W.filter(w => !S.srs[w.id] && w.d === 1).slice(0, min - seen.length + 40)];
+}
+function poolNote() { const n = W.filter(w => S.srs[w.id]).length; return n >= 40 ? `Drawn from the ${n} words you’ve studied, most recent first.` : `You’ve studied ${n} words so far, so this also includes core (high-frequency) words you haven’t met yet.`; }
+
+/* ---------- Listening ---------- */
+let LQ = null; let listenMode = 'word';
+VIEWS.listen = col => {
+  col.innerHTML = `${voiceBanner()}
+  <div class="topbar"><h1>Listening</h1><span class="chip" title="Audio is produced by your device">Browser text-to-speech</span></div>
+  <div class="row"><div class="seg" role="group" aria-label="Exercise type">
+    ${[['word', 'Words'], ['sent', 'Sentences & dialogues'], ['dict', 'Dictation (typing)']].map(([k, l]) => `<button type="button" data-lm="${k}" aria-pressed="${listenMode === k}">${l}</button>`).join('')}</div>
+    <span class="small muted">${poolNote()}</span></div>
+  <div id="lq"></div>
+  <p class="small muted">Audio comes from your device’s Mandarin text-to-speech voice. Tones are generally reliable, but synthetic voices can misread a few multi-reading characters. Transcripts stay hidden until you answer.</p>`;
+  $$('[data-lm]').forEach(b => b.onclick = () => { listenMode = b.dataset.lm; LQ = null; route(); });
+  if (!LQ || LQ.mode !== listenMode || LQ.i >= LQ.items.length && LQ.finished) newListen();
+  renderListen();
+};
+function newListen() {
+  const pool = shuffle(studiedPool().slice(0, 120)).slice(0, 10);
+  LQ = { mode: listenMode, i: 0, score: 0, items: pool.map(w => {
+    if (listenMode === 'word') { const ds = distractors(w, 3, { field: 'm' }); return { w, kind: 'word', opts: shuffle([w, ...ds]), ans: null }; }
+    if (listenMode === 'sent') {
+      const ask = w.ex.length > 1 || Math.random() < 0.5 ? 'trans' : 'which';
+      if (ask === 'which') { const ds = distractors(w, 3, { sameChar: true }); return { w, kind: 'which', opts: shuffle([w, ...ds]), ans: null }; }
+      const ds = distractors(w, 3).filter(x => x.exE.join(' ') !== w.exE.join(' ')); return { w, kind: 'trans', opts: shuffle([w, ...ds]), ans: null };
+    }
+    const sentence = Math.random() < 0.5; return { w, kind: 'dict', target: sentence ? lastLine(w) : w.w, sentence, typeBy: 'han', ans: null };
+  }) };
+}
+function renderListen() {
+  const box = $('#lq'); if (!box) return;
+  if (LQ.i >= LQ.items.length) {
+    LQ.finished = true;
+    box.innerHTML = `<section class="panel stack"><h2>Round complete · ${LQ.score}/${LQ.items.length}</h2><p class="muted small">Words you missed are added to your “struggled with” list and come up more in writing practice.</p><div class="row"><button class="btn primary" id="again">New round</button></div></section>`;
+    $('#again').onclick = () => { newListen(); renderListen(); }; return;
+  }
+  const it = LQ.items[LQ.i]; const w = it.w; const answered = it.ans !== null;
+  const audioText = it.kind === 'word' ? w.w : it.kind === 'dict' ? it.target : w.ex.join('//');
+  const prompt = { word: 'What does this word mean?', which: 'Which HSK 5 word did you hear in the sentence?', trans: w.ex.length > 1 ? 'Which translation matches the dialogue?' : 'Which translation matches what you heard?', dict: it.sentence ? 'Type the sentence you hear.' : 'Type the word you hear.' }[it.kind];
+  let body = '';
+  if (it.kind === 'dict') {
+    body = `<div class="row"><div class="seg" role="group" aria-label="Answer with"><button type="button" data-tb="han" aria-pressed="${it.typeBy === 'han'}">Characters</button><button type="button" data-tb="py" aria-pressed="${it.typeBy === 'py'}">Pinyin</button></div><span class="small muted">${it.typeBy === 'py' ? 'Tone marks or numbers (an1wei4) are optional, but are checked if you include them.' : 'Punctuation and spaces are ignored.'}</span></div>
+      <input type="text" id="dictin" class="${it.typeBy === 'han' ? 'zhin' : ''}" autocomplete="off" ${answered ? 'disabled' : ''} value="${esc(it.ans?.text || '')}" placeholder="${it.typeBy === 'han' ? '输入汉字' : 'type pinyin'}" aria-label="Your answer">
+      ${answered ? '' : '<div class="row"><button class="btn primary" id="dictgo">Check</button><button class="btn ghost" id="giveup">Show transcript</button></div>'}`;
+  } else {
+    const label = o => it.kind === 'word' ? esc(o.m) : it.kind === 'which' ? `<span class="han">${esc(o.w)}</span>` : esc(o.exE.join(' / '));
+    body = `<div class="opts">${it.opts.map((o, i) => `<button class="opt ${answered ? (o.id === w.id ? 'right' : it.ans === o.id ? 'wrong' : '') : ''}" data-o="${o.id}" ${answered ? 'disabled' : ''}><span class="n">${i + 1}</span><span>${label(o)}</span></button>`).join('')}</div>`;
+  }
+  let reveal = '';
+  if (answered) {
+    const ok = it.kind === 'dict' ? it.ans.ok : it.ok;
+    const trans = (it.kind === 'word' || (it.kind === 'dict' && !it.sentence))
+      ? `<div class="row"><span class="han" style="font-size:1.8rem">${esc(w.w)}</span>${pyHTML(w.py)}<span>${esc(w.m)}</span></div>`
+      : w.ex.map((s, i) => `<div class="zhl q-zh">${hlSentence(s, w.w)}</div><div>${pyHTML(w.exP[i])}</div><div class="muted">${esc(w.exE[i] || '')}</div>`).join('');
+    let extra = '';
+    if (it.kind === 'dict') extra = ok ? '' : `<div class="small">You typed: <span class="zh">${esc(it.ans.text || '—')}</span>${it.ans.near ? ' — the syllables are right; check the tones.' : ''}</div>`;
+    if (it.kind === 'which' && !ok) { const o = W[it.ans]; extra = `<div class="small"><span class="han">${esc(o.w)}</span> (${esc(o.py)}) means “${esc(o.m)}” and wasn’t in the sentence. The sentence uses <b>${esc(w.w)}</b>, ${esc(w.py)}.</div>`; }
+    if (it.kind === 'word' && !ok) { const o = W[it.ans]; extra = `<div class="small">“${esc(o.m)}” is <span class="han">${esc(o.w)}</span> (${esc(o.py)}).</div>`; }
+    reveal = `<div class="ex stack"><div class="verdict ${ok ? 'ok' : 'no'}">${ok ? 'Correct' : 'Not quite'}${it.kind === 'dict' ? ' <span class="chip">exact-match check</span>' : ''}</div>${extra}<span class="label">Transcript</span>${trans}</div>
+      <div class="row"><button class="btn primary" id="lnext">Next <span class="k kbd-hint">Enter</span></button><button class="btn ghost sm" id="lopen">Open word card</button></div>`;
+  }
+  box.innerHTML = `<section class="card">
+    <div class="head"><span class="chip tabnum">${LQ.i + 1} / ${LQ.items.length}</span><span class="sp"></span><span class="chip">${LQ.score} correct</span></div>
+    <div class="stack cent" style="align-items:center;gap:12px;padding:8px 0">
+      <div class="row" style="justify-content:center">${audioBtns(audioText, 'Play')}</div>
+      <div class="small muted">${canSpeak() ? 'Press <kbd>R</kbd> to replay, <kbd>Shift</kbd>+<kbd>R</kbd> slowly' : 'No Mandarin voice on this device — read the transcript after answering, or set up a voice (see the note above).'}</div>
+      <h2>${prompt}</h2></div>
+    ${body}${reveal}</section>`;
+  LQ.audio = audioText;
+  if (!answered && canSpeak() && !it.played) { it.played = true; setTimeout(() => speak(audioText, false), 250); }
+  $$('[data-o]', box).forEach(b => b.onclick = () => answerListen(+b.dataset.o));
+  $$('[data-tb]', box).forEach(b => b.onclick = () => { it.typeBy = b.dataset.tb; renderListen(); });
+  const dg = $('#dictgo'); if (dg) { dg.onclick = checkDict; $('#dictin').onkeydown = e => { if (e.key === 'Enter') { e.preventDefault(); checkDict(); } }; $('#dictin').focus(); }
+  const gu = $('#giveup'); if (gu) gu.onclick = () => { it.ans = { ok: false, text: '' }; S.weak[w.id] = (S.weak[w.id] || 0) + 1; save(); renderListen(); };
+  const ln = $('#lnext'); if (ln) ln.onclick = () => { LQ.i++; renderListen(); };
+  const lo = $('#lopen'); if (lo) lo.onclick = () => openWord(w.id);
+}
+function answerListen(oid) {
+  const it = LQ.items[LQ.i]; if (it.ans !== null) return;
+  it.ans = oid; it.ok = oid === it.w.id;
+  if (it.ok) LQ.score++; else S.weak[it.w.id] = (S.weak[it.w.id] || 0) + 1;
+  logHist('l'); save(); renderListen();
+}
+function checkDict() {
+  const it = LQ.items[LQ.i]; const v = $('#dictin').value.trim(); if (!v) return;
+  let ok = false, near = false;
+  if (it.typeBy === 'han') ok = zhOnly(v) === zhOnly(it.target);
+  else {
+    const tgt = it.sentence ? it.w.exP[it.w.exP.length - 1] : it.w.py;
+    const hasTones = /[1-5āáǎàēéěèīíǐìōóǒòūúǔùǖǘǚǜ]/.test(v);
+    const plainOk = plainPy(numToMarks(v)) === plainPy(tgt);
+    ok = hasTones ? tonedPy(v) === tonedPy(tgt) : plainOk; near = hasTones && !ok && plainOk;
+  }
+  it.ans = { ok, text: v, near }; if (ok) LQ.score++; else S.weak[it.w.id] = (S.weak[it.w.id] || 0) + 1;
+  logHist('l'); save(); renderListen();
+}
+
+/* ---------- Quizzes ---------- */
+let QZ = null; let quizType = 'mixed'; let quizTyping = false;
+const QTYPES = { mixed: 'Mixed', meaning: 'Meaning', reverse: 'English → Chinese', cloze: 'Sentence completion', context: 'Right word in context' };
+VIEWS.quiz = col => {
+  col.innerHTML = `<div class="topbar"><h1>Quizzes</h1></div>
+  <div class="row"><div class="seg" role="group" aria-label="Quiz type" style="flex-wrap:wrap">${Object.entries(QTYPES).map(([k, l]) => `<button type="button" data-qt="${k}" aria-pressed="${quizType === k}">${l}</button>`).join('')}</div>
+  <label class="row small"><input type="checkbox" id="qtyping" ${quizTyping ? 'checked' : ''}> Type answers for completion questions</label></div>
+  <div class="small muted">${poolNote()}</div><div id="qz"></div>`;
+  $$('[data-qt]').forEach(b => b.onclick = () => { quizType = b.dataset.qt; QZ = null; route(); });
+  $('#qtyping').onchange = e => { quizTyping = e.target.checked; QZ = null; route(); };
+  if (!QZ || QZ.done) newQuiz();
+  renderQuiz();
+};
+function newQuiz() {
+  const pool = shuffle(studiedPool().slice(0, 150)).slice(0, 10);
+  QZ = { i: 0, score: 0, done: false, items: pool.map((w, k) => {
+    const t = quizType === 'mixed' ? ['meaning', 'reverse', 'cloze', 'context'][k % 4] : quizType;
+    const typed = quizTyping && (t === 'cloze' || t === 'context');
+    const opts = t === 'meaning' ? shuffle([w, ...distractors(w, 3, { field: 'm' })]) : shuffle([w, ...distractors(w, 3, { sameChar: t === 'context' })]);
+    return { w, t, typed, opts, ans: null };
+  }) };
+}
+function clozeText(w) { const s = lastLine(w); return s.includes(w.w) ? esc(s).split(esc(w.w)).join('<span class="blank">？</span>') : esc(s) + ' <span class="blank">？</span>'; }
+function renderQuiz() {
+  const box = $('#qz'); if (!box) return;
+  if (QZ.i >= QZ.items.length) {
+    QZ.done = true; const miss = QZ.items.filter(x => !x.ok);
+    box.innerHTML = `<section class="panel stack"><h2>Score · ${QZ.score}/${QZ.items.length}</h2>${miss.length ? `<div class="small">Review these:</div><div class="row">${miss.map(x => `<button class="chip" data-w="${x.w.id}" style="cursor:pointer"><span class="han">${esc(x.w.w)}</span> ${esc(x.w.m.split(';')[0])}</button>`).join('')}</div>` : '<p>Full marks.</p>'}
+      <div class="row"><button class="btn primary" id="qagain">New quiz</button>${miss.length ? '<button class="btn" id="qstudy">Study missed words</button>' : ''}</div></section>`;
+    $('#qagain').onclick = () => { newQuiz(); renderQuiz(); };
+    const qs = $('#qstudy'); if (qs) qs.onclick = () => startSession(miss.map(x => x.w.id), 'Missed in quiz');
+    return;
+  }
+  const it = QZ.items[QZ.i]; const w = it.w; const answered = it.ans !== null;
+  let q = '';
+  if (it.t === 'meaning') q = `<div class="label">What does this mean?</div><div class="bigword" style="font-size:3rem">${esc(w.w)}</div>`;
+  if (it.t === 'reverse') q = `<div class="label">Which word means…</div><h2 style="font-size:1.3rem">“${esc(w.m)}”</h2>`;
+  if (it.t === 'cloze') q = `<div class="label">Complete the sentence</div><div class="q-zh">${clozeText(w)}</div><div class="muted small">${esc(lastEn(w))}</div>`;
+  if (it.t === 'context') q = `<div class="label">Choose the word that fits — the options look or mean alike</div><div class="q-zh">${clozeText(w)}</div>`;
+  let body;
+  if (it.typed) {
+    body = `<input type="text" id="qin" class="zhin" placeholder="Type the missing word in characters or pinyin" ${answered ? 'disabled' : ''} value="${esc(it.ans?.text || '')}" aria-label="Your answer" autocomplete="off">${answered ? '' : '<div class="row"><button class="btn primary" id="qgo">Check</button><button class="btn ghost" id="qskip">Show answer</button></div>'}`;
+  } else {
+    const lab = o => it.t === 'meaning' ? esc(o.m) : `<span class="han">${esc(o.w)}</span>${S.set.pinyin === 'shown' || answered ? ` <span class="py">${esc(o.py)}</span>` : ''}`;
+    body = `<div class="opts">${it.opts.map((o, i) => `<button class="opt ${answered ? (o.id === w.id ? 'right' : it.ans === o.id ? 'wrong' : '') : ''}" data-q="${o.id}" ${answered ? 'disabled' : ''}><span class="n">${i + 1}</span><span>${lab(o)}</span></button>`).join('')}</div>`;
+  }
+  box.innerHTML = `<section class="card"><div class="head"><span class="chip tabnum">${QZ.i + 1} / ${QZ.items.length}</span><span class="chip">${QTYPES[it.t]}</span><span class="sp"></span><span class="chip">${QZ.score} correct</span></div>
+    <div class="stack" style="gap:10px">${q}</div>${body}${answered ? explainQuiz(it) : ''}</section>`;
+  $$('[data-q]', box).forEach(b => b.onclick = () => answerQuiz(+b.dataset.q));
+  const qg = $('#qgo'); if (qg) { qg.onclick = checkTypedQuiz; $('#qin').onkeydown = e => { if (e.key === 'Enter') { e.preventDefault(); checkTypedQuiz(); } }; $('#qin').focus(); }
+  const qsk = $('#qskip'); if (qsk) qsk.onclick = () => { it.ans = { text: '' }; it.ok = false; S.weak[w.id] = (S.weak[w.id] || 0) + 1; save(); renderQuiz(); };
+  const qn = $('#qnext'); if (qn) qn.onclick = () => { QZ.i++; renderQuiz(); };
+  const ai = $('#qai'); if (ai) ai.onclick = () => aiExplainQuiz(it);
+  $$('[data-w]', box).forEach(b => b.onclick = () => openWord(+b.dataset.w));
+}
+function answerQuiz(oid) { const it = QZ.items[QZ.i]; if (it.ans !== null) return; it.ans = oid; it.ok = oid === it.w.id; if (it.ok) QZ.score++; else S.weak[it.w.id] = (S.weak[it.w.id] || 0) + 1; logHist('q'); save(); renderQuiz(); }
+function checkTypedQuiz() {
+  const it = QZ.items[QZ.i]; const v = $('#qin').value.trim(); if (!v) return;
+  const ok = /[一-鿿]/.test(v) ? zhOnly(v) === it.w.w : plainPy(numToMarks(v)) === plainPy(it.w.py) && (!/[1-5āáǎàēéěèīíǐìōóǒòūúǔù]/.test(v) || tonedPy(v) === tonedPy(it.w.py));
+  it.ans = { text: v }; it.ok = ok; if (ok) QZ.score++; else S.weak[it.w.id] = (S.weak[it.w.id] || 0) + 1; logHist('q'); save(); renderQuiz();
+}
+function explainQuiz(it) {
+  const w = it.w; const ok = it.ok;
+  const why = (it.typed ? [] : it.opts.filter(o => o.id !== w.id)).map(o => {
+    const reason = it.t === 'meaning' ? `belongs to <span class="han">${esc(o.w)}</span> (${esc(o.py)}), not ${esc(w.w)}.` :
+      `means “${esc(o.m)}”. ${o.note && [...o.w].some(c => w.w.includes(c)) ? esc(o.note.split(/(?=台湾：)/)[0]) : 'That meaning doesn’t match what this sentence needs.'}`;
+    return `<span>${it.t === 'meaning' ? '“' + esc(o.m.split(';')[0]) + '”' : `<span class="han">${esc(o.w)}</span>`}</span><span>${reason}</span>`;
+  }).join('');
+  const typedNote = it.typed && !ok && it.ans.text ? `<div class="small">You typed <span class="zh">${esc(it.ans.text)}</span>. This is an exact-match check: a synonym can be valid, but the sentence was written around <b>${esc(w.w)}</b>.</div>` : '';
+  return `<div class="ex expl">
+    <div class="verdict ${ok ? 'ok' : 'no'}">${ok ? 'Correct' : 'Not quite'} — <span class="han">${esc(w.w)}</span> <span class="py">${esc(w.py)}</span> · ${esc(w.m)}</div>
+    ${it.t === 'cloze' || it.t === 'context' ? `<div class="zhl q-zh" style="font-size:1.1rem">${hlSentence(lastLine(w), w.w)}</div>` : ''}
+    ${w.note ? `<div class="note">${esc(w.note.split(/(?=台湾：)/)[0])}</div>` : ''}
+    ${typedNote}
+    ${why ? `<div class="label">Why the others don’t fit</div><div class="why">${why}</div>` : ''}
+    <div id="qaiout"></div>
+    <div class="row"><button class="btn primary" id="qnext">Next <span class="k kbd-hint">Enter</span></button>${S.set.ai && !it.typed ? '<button class="btn ghost sm" id="qai">Explain in more depth (AI)</button>' : ''}<button class="btn ghost sm" data-w="${w.id}">Word card</button></div></div>`;
+}
+async function aiExplainQuiz(it) {
+  const out = $('#qaiout'); const sample = await getSample(); if (!sample) { out.innerHTML = `<div class="small muted">${aiUnavailableMsg()}</div>`; return; }
+  out.innerHTML = '<div class="small muted">Asking Claude…</div>';
+  const w = it.w; const opts = it.opts.map(o => `${o.w} (${o.py}): ${o.m}`).join('\n');
+  try {
+    const r = await sample(`You are a concise Mandarin tutor for an intermediate (HSK 5) learner. Explain in English, in at most 120 words, why "${w.w}" is the best answer and why each other option doesn't fit. Mention register or collocation differences where relevant. Use Chinese characters for any words you cite.\n\nQuestion type: ${QTYPES[it.t]}\nSentence: ${lastLine(w)}\nCorrect: ${w.w} — ${w.m}\nOptions:\n${opts}`, { modelTier: 'quick', onText: ({ text }) => { out.innerHTML = `<div class="note small">${esc(text)}</div>`; } });
+    out.innerHTML = `<div class="note small">${esc(r.text)}<div class="muted" style="margin-top:4px">AI explanation · check anything surprising with the word card</div></div>`;
+  } catch (e) { out.innerHTML = `<div class="small muted">${aiErr(e)}</div>`; }
+}
+
+/* ===== Writing practice ===== */
+let sampleP = null;
+async function getSample() {
+  if (!S.set.ai) return null;
+  if (!window.claude || !window.claude.use) return null;
+  if (!sampleP) sampleP = window.claude.use('sample');
+  try { return await sampleP; } catch (e) { return null; }
+}
+function aiUnavailableMsg() { return S.set.ai ? 'AI feedback isn’t available in this view (for example, the page was opened outside Claude, or access wasn’t allowed). Compare your answer with the suggested one below.' : 'AI feedback is turned off in Settings.'; }
+function aiErr(e) { const c = e && e.code; if (c === 'not_granted') { return 'AI access wasn’t allowed. You can allow it from this page’s Permissions menu, or keep using self-check.'; } if (c === 'rate_limited') return 'You’ve reached the AI usage limit for now. Self-check still works; try AI feedback again later.'; return 'AI feedback didn’t come through this time. Compare with the suggested answer, or try again.'; }
+
+const WTYPES = { mixed: 'Mixed', translate: 'Translate', scramble: 'Reorder', combine: 'Combine sentences', colloc: 'Use a combination', complete: 'Complete', prompt: 'Short writing' };
+const LEVELNAME = { 1: 'Guided', 2: 'Fewer hints', 3: 'No hints' };
+let writeType = 'mixed', writeCtx = null, EX = null, wTab = 'practice';
+VIEWS.write = col => {
+  col.innerHTML = `<div class="topbar"><h1>Writing</h1><div class="seg" role="group" aria-label="Writing view"><button type="button" data-wt="practice" aria-pressed="${wTab === 'practice'}">Practice</button><button type="button" data-wt="log" aria-pressed="${wTab === 'log'}">My answers (${S.wlog.length})</button></div></div>
+  <div id="wbody"></div>`;
+  $$('[data-wt]').forEach(b => b.onclick = () => { wTab = b.dataset.wt; route(); });
+  if (wTab === 'log') return renderWLog($('#wbody'));
+  const pool = writingPool();
+  $('#wbody').innerHTML = `
+  <div class="row"><div class="seg" role="group" aria-label="Exercise type" style="flex-wrap:wrap">${Object.entries(WTYPES).map(([k, l]) => `<button type="button" data-wx="${k}" aria-pressed="${writeType === k}">${l}</button>`).join('')}</div></div>
+  <div class="small muted">${writeCtx?.ids ? `Using ${writeCtx.ids.length} selected word${writeCtx.ids.length > 1 ? 's' : ''}. <a href="#write" id="clearctx">Use my usual queue</a>` : pool.fallback ? 'You haven’t studied any words yet, so these use core Level 5 words. Once you study cards, writing focuses on your recent and difficult words.' : `${pool.due ? pool.due + ' writing reviews are due. ' : ''}Words due for writing come first, then ones you’ve struggled with, then recently learned words.`}</div>
+  <div id="ex"></div>
+  <details class="panel tight small"><summary><b>How answers are checked</b></summary><div class="stack" style="margin-top:8px">
+    <p><b>Translate, combine, use a combination and short writing</b> are open-ended. When AI feedback is available, Claude reviews your sentence for vocabulary, grammar, word order and naturalness, and accepts any valid wording. You don’t need an API key or any setup. The first time, Claude asks whether this page may use it. If AI isn’t available, you compare your answer with a suggested one and mark it yourself, and the app says so.</p>
+    <p><b>Reorder and Complete</b> are first checked by exact match against the original sentence. If your answer is different but might still be valid, you can ask the AI to check it.</p>
+    <p>Hints fade as you improve. After three good answers in a row of one type, the next level removes more hints. A clearly wrong answer brings hints back. You can also pick the level yourself.</p></div></details>`;
+  $$('[data-wx]').forEach(b => b.onclick = () => { writeType = b.dataset.wx; EX = null; route(); });
+  const cc = $('#clearctx'); if (cc) cc.onclick = e => { e.preventDefault(); writeCtx = null; EX = null; route(); };
+  if (!EX || EX.type !== writeType && writeType !== 'mixed') EX = makeExercise();
+  renderEx();
+};
+function nextWordId(type) {
+  let ids = writeCtx?.ids?.length ? writeCtx.ids : writingPool().ids;
+  if (writeCtx?.fromSession) { const today = W.filter(w => S.srs[w.id] && todayKey(S.srs[w.id].last) === todayKey()).map(w => w.id); if (today.length) ids = today; }
+  if (type === 'colloc') ids = ids.filter(id => W[id].col.length);
+  const recent = S.wlog.slice(-8).map(x => x.w);
+  const cand = ids.filter(id => !recent.includes(id));
+  const list = cand.length ? cand : ids;
+  return list[Math.min(list.length - 1, Math.floor(Math.random() * Math.min(list.length, 6)))];
+}
+function makeExercise() {
+  let type = writeType === 'mixed' ? pick(['translate', 'translate', 'scramble', 'complete', 'colloc', 'combine', 'prompt']) : writeType;
+  const lv = S.wlevel[type] || 1;
+  if (type === 'combine') { const recent = S.wlog.filter(x => x.t === 'combine').slice(-10).map(x => x.k); const pool = D.combine.map((c, i) => i).filter(i => !recent.includes('c' + i)); const i = pick(pool.length ? pool : D.combine.map((c, i) => i)); return { type, lv, key: 'c' + i, item: D.combine[i], tries: [] }; }
+  if (type === 'prompt') { const recent = S.wlog.filter(x => x.t === 'prompt').slice(-12).map(x => x.k); const pool = D.prompts.filter(p => !recent.includes(p.id)); const p = pick(pool.length ? pool : D.prompts); return { type, lv, key: p.id, item: p, tries: [] }; }
+  const id = nextWordId(type); const w = W[id];
+  const ex = { type, lv, key: type + ':' + id, w, tries: [] };
+  if (type === 'scramble') { let toks = w.tok.filter(t => !/^[，。！？、；：,.!?]$/.test(t)); ex.punct = (lastLine(w).match(/[。！？]$/) || ['。'])[0]; ex.answerToks = toks; let sh = shuffle(toks.map((t, i) => ({ t, i }))); for (let k = 0; k < 4 && sh.every((x, j) => x.i === j); k++) sh = shuffle(sh); ex.shuffled = sh; ex.built = []; }
+  if (type === 'colloc') ex.coll = pick(w.col);
+  return ex;
+}
+function hintsFor(ex) {
+  const w = ex.w, lv = ex.lv; const h = [];
+  const wordHint = full => full ? `<span class="han" style="font-size:1.2rem">${esc(w.w)}</span> ${pyHTML(w.py)} <span class="muted">· ${esc(w.m)}</span>` : `<span class="han" style="font-size:1.2rem">${esc(w.w)}</span>`;
+  if (ex.type === 'translate') { if (lv === 1) { h.push('Use: ' + wordHint(true)); h.push('Useful combinations: ' + w.col.map(c => `<span class="zh">${esc(c.z)}</span>`).join(' · ')); } else if (lv === 2) h.push('Use: ' + wordHint(false)); else h.push('Use a Level 5 word that fits.'); }
+  if (ex.type === 'scramble') { if (lv <= 2) h.push('Meaning: ' + esc(lastEn(w))); if (lv === 1) h.push(`Starts with: <span class="zh">${esc(ex.answerToks[0])}</span>`); }
+  if (ex.type === 'complete') { if (lv <= 2) h.push('Meaning: ' + esc(lastEn(w))); if (lv === 1) h.push(`The missing word starts with <span class="han">${esc([...w.w][0])}</span> and is pronounced ${esc(w.py)}.`); }
+  if (ex.type === 'colloc') { if (lv === 1) { h.push(`Meaning: ${esc(w.w)} = ${esc(w.m)}`); h.push(`Model: <span class="zh">${esc(lastLine(w))}</span>`); } else if (lv === 2) h.push(`Meaning: ${esc(w.w)} = ${esc(w.m)}`); }
+  if (ex.type === 'combine') { if (lv <= 2) h.push(`Connector: <span class="zh">${esc(ex.item.conn)}</span>`); if (lv === 1) h.push('Meaning: ' + esc(ex.item.en)); }
+  if (ex.type === 'prompt') { if (lv <= 2) h.push('Try to use: ' + ex.item.targets.map(t => `<span class="zh">${esc(t)}</span>`).join(' · ')); if (lv === 1) h.push(`Opening idea: <span class="zh">${esc(ex.item.model.split(/[，。]/)[0])}…</span>`); }
+  return h;
+}
+function taskText(ex) {
+  const w = ex.w;
+  if (ex.type === 'translate') return { label: 'Translate into natural Chinese', body: `<div style="font-size:1.15rem">“${esc(lastEn(w))}”</div>` };
+  if (ex.type === 'scramble') return { label: 'Put the words in order', body: '' };
+  if (ex.type === 'complete') { const s = lastLine(w); return { label: 'Fill in the blank', body: `<div class="q-zh">${s.includes(w.w) ? esc(s).split(esc(w.w)).join('<span class="blank">？</span>') : esc(s)}</div>` }; }
+  if (ex.type === 'colloc') return { label: 'Write your own sentence using this combination', body: `<div class="row"><span class="zhbig" style="font-size:1.5rem">${esc(ex.coll.z)}</span>${pyHTML(ex.coll.p)}</div>` };
+  if (ex.type === 'combine') return { label: 'Combine into one natural sentence', body: `<ol class="zhbig" style="margin:0;padding-left:1.3em">${ex.item.parts.map(p => `<li>${esc(p)}</li>`).join('')}</ol>` };
+  return { label: { reply: 'Reply', opinion: 'Give your opinion', message: 'Write a short message', describe: 'Describe' }[ex.item.type] || 'Write', body: `<div style="font-size:1.05rem">${esc(ex.item.en)}</div><div class="zh muted">${esc(ex.item.zh)}</div>` };
+}
+function renderEx() {
+  const box = $('#ex'); if (!box) return; const ex = EX; const t = taskText(ex); const hints = hintsFor(ex); const last = ex.tries[ex.tries.length - 1];
+  const showModel = !!last;
+  let input;
+  if (ex.type === 'scramble') {
+    input = `<div class="build" id="build" aria-label="Your sentence">${ex.built.length ? ex.built.map((k, j) => `<button class="tok" data-un="${j}">${esc(ex.shuffled[k].t)}</button>`).join('') : '<span class="small muted">Tap the words below in order. Tap a word here to remove it.</span>'}<span class="zh">${ex.built.length === ex.shuffled.length ? esc(ex.punct) : ''}</span></div>
+    <div class="tokens">${ex.shuffled.map((x, k) => `<button class="tok ${ex.built.includes(k) ? 'used' : ''}" data-tk="${k}">${esc(x.t)}</button>`).join('')}</div>`;
+  } else if (ex.type === 'complete') input = `<input type="text" id="win" class="zhin" placeholder="Type the missing word" autocomplete="off" aria-label="Your answer">`;
+  else input = `<textarea id="win" placeholder="用中文写…" aria-label="Your answer"></textarea>`;
+  box.innerHTML = `<section class="card">
+    <div class="head"><span class="chip acc">${WTYPES[ex.type]}</span><span class="levels" title="Hint level">${[1, 2, 3].map(l => `<button type="button" class="lvl ${l <= ex.lv ? 'on' : ''}" data-lv="${l}" aria-label="${LEVELNAME[l]}" style="border:0;cursor:pointer"></button>`).join('')}</span><span class="small muted">${LEVELNAME[ex.lv]}</span>
+      <span class="sp"></span>${ex.w ? `<button class="btn ghost sm" data-w="${ex.w.id}">Word card</button>` : '<span class="chip" title="Exercise written for this app, beyond the word list">Extra exercise</span>'}</div>
+    <div class="stack" style="gap:8px"><span class="label">${t.label}</span>${t.body}</div>
+    ${hints.length ? `<div class="stack small" style="gap:4px">${hints.map(h => `<div>${h}</div>`).join('')}</div>` : ''}
+    ${input}
+    <div class="row"><button class="btn primary" id="wsubmit">${ex.tries.length ? 'Submit again' : 'Submit'} <span class="k kbd-hint">Ctrl+Enter</span></button><button class="btn ghost" id="wskip">${ex.tries.length ? 'Next exercise' : 'Skip'}</button></div>
+    <div id="wfb">${last ? feedbackHTML(ex, last) : ''}</div>
+    ${showModel ? `<div class="ex"><span class="label">Suggested answer</span><div class="zhbig">${esc(modelOf(ex))}</div><div>${pyHTML(modelPy(ex))}</div>${ex.w ? audioBtns(modelOf(ex), 'Listen') : ''}</div>` : ''}
+    ${ex.tries.length > 1 ? `<details class="small"><summary>Earlier tries on this exercise (${ex.tries.length - 1})</summary>${ex.tries.slice(0, -1).map(tr => `<div class="zh" style="margin-top:6px">${esc(tr.a)} <span class="chip ${verdictChip(tr.v)}">${verdictLabel(tr.v)}</span></div>`).join('')}</details>` : ''}
+  </section>`;
+  $$('[data-tk]', box).forEach(b => b.onclick = () => { ex.built.push(+b.dataset.tk); renderEx(); });
+  $$('[data-un]', box).forEach(b => b.onclick = () => { ex.built.splice(+b.dataset.un, 1); renderEx(); });
+  $$('[data-lv]', box).forEach(b => b.onclick = () => { ex.lv = +b.dataset.lv; S.wlevel[ex.type] = ex.lv; save(); renderEx(); });
+  $$('[data-w]', box).forEach(b => b.onclick = () => openWord(+b.dataset.w));
+  $('#wsubmit').onclick = submitWriting;
+  $('#wskip').onclick = () => { EX = makeExercise(); renderEx(); };
+  const inp = $('#win'); if (inp) { inp.onkeydown = e => { if (e.key === 'Enter' && (e.ctrlKey || e.metaKey || ex.type === 'complete')) { e.preventDefault(); submitWriting(); } }; if (!last) inp.focus(); }
+  const aic = $('#aicheck'); if (aic) aic.onclick = () => runAI(ex, last, true);
+}
+const modelOf = ex => ex.type === 'combine' || ex.type === 'prompt' ? ex.item.model : ex.type === 'colloc' ? lastLine(ex.w) : lastLine(ex.w);
+const modelPy = ex => ex.type === 'combine' || ex.type === 'prompt' ? ex.item.mp : ex.w.exP[ex.w.exP.length - 1];
+const verdictLabel = v => ({ correct: 'Correct', minor: 'Small issues', major: 'Needs work', self_good: 'Self-check: got it', self_part: 'Self-check: partly', self_miss: 'Self-check: missed', exact: 'Exact match', diff: 'Different from original' }[v] || v);
+const verdictChip = v => /correct|exact|self_good/.test(v) ? 'acc' : /minor|part|diff/.test(v) ? 'warn' : 'bad';
+function answerText(ex) { if (ex.type === 'scramble') return ex.built.map(k => ex.shuffled[k].t).join('') + (ex.built.length === ex.shuffled.length ? ex.punct : ''); return ($('#win')?.value || '').trim(); }
+async function submitWriting() {
+  const ex = EX; const a = answerText(ex); if (!a) { toast('Write an answer first'); return; }
+  if (ex.type === 'scramble' && ex.built.length < ex.shuffled.length) { toast('Use all the words'); return; }
+  const tr = { a, ts: Date.now() }; ex.tries.push(tr);
+  if (ex.type === 'scramble' || ex.type === 'complete') {
+    const ok = ex.type === 'scramble' ? zhOnly(a) === zhOnly(lastLine(ex.w)) : zhOnly(a) === ex.w.w;
+    tr.v = ok ? 'exact' : 'diff'; tr.method = 'exact';
+    finishTry(ex, tr); return;
+  }
+  tr.v = 'pending'; renderEx(); await runAI(ex, tr, false);
+}
+async function runAI(ex, tr, isRecheck) {
+  const fbBox = $('#wfb'); const sample = await getSample();
+  if (!sample) { tr.method = 'self'; tr.v = isRecheck ? tr.v : 'self_pending'; tr.aiMsg = aiUnavailableMsg(); renderEx(); return; }
+  fbBox.innerHTML = '<div class="small muted">Claude is reading your answer…</div>';
+  const task = { translate: `Translate into natural Chinese: "${lastEn(ex.w)}". The learner should try to use ${ex.w?.w} (${ex.w?.m}).`, scramble: `Reorder these words into a sentence: ${ex.answerToks?.join(' / ')}`, complete: `Fill the blank in: ${lastLine(ex.w).replace(ex.w.w, '＿＿')}`, colloc: `Write an original sentence using the combination "${ex.coll?.z}" (${ex.w?.w}: ${ex.w?.m}).`, combine: `Combine into one natural sentence, using a suitable connector: ${ex.item?.parts?.join(' ')}`, prompt: `Writing prompt: ${ex.item?.en}` }[ex.type];
+  const target = ex.type === 'combine' ? `connector such as ${ex.item.conn}` : ex.type === 'prompt' ? ex.item.targets.join('、') : ex.w.w;
+  const prompt = `You are a Mandarin writing tutor giving feedback to an intermediate learner (HSK 5, standard mainland Mandarin, simplified characters).
+Task: ${task}
+Target to use: ${target}
+Reference answer (one possible version, NOT required): ${modelOf(ex)}
+Learner's answer: ${tr.a}
+
+Judge the learner's answer on its own merits. Accept any natural, grammatical wording that fulfils the task, even if it differs from the reference. Keep the learner's intended meaning in corrections.
+Reply with JSON only, in this shape:
+{"verdict":"correct"|"minor"|"major","used_target":true|false,"vocabulary":"","grammar":"","word_order":"","naturalness":"","corrected":"","natural":"","summary":""}
+Rules: each feedback field is one short English sentence (max 25 words), quoting Chinese where useful; write "Fine." if there is nothing to fix. "corrected" is the learner's sentence with minimal edits (identical if already correct). "natural" is a more natural native-sounding alternative, or "" if the answer is already natural. "summary" is one encouraging sentence in English. "minor" = understandable with small slips; "major" = meaning unclear, wrong grammar, or task not done.`;
+  try {
+    const r = await sample.json(prompt, { modelTier: 'default' });
+    tr.fb = r; tr.v = ['correct', 'minor', 'major'].includes(r.verdict) ? r.verdict : 'minor'; tr.method = 'ai';
+    finishTry(ex, tr);
+  } catch (e) { tr.method = 'self'; tr.aiMsg = aiErr(e); if (!isRecheck) tr.v = 'self_pending'; renderEx(); }
+}
+function finishTry(ex, tr) {
+  const good = /correct|exact|self_good/.test(tr.v), bad = /major|self_miss/.test(tr.v) || (tr.v === 'diff' && ex.type === 'complete');
+  // hint level progression per type
+  const k = ex.type; S.wstreak[k] = good ? (S.wstreak[k] || 0) + 1 : 0;
+  if (good && S.wstreak[k] >= 3 && S.wlevel[k] < 3) { S.wlevel[k]++; S.wstreak[k] = 0; toast(`Hints reduced: ${LEVELNAME[S.wlevel[k]]}`); }
+  if (bad && S.wlevel[k] > 1 && ex.tries.length === 1) { S.wlevel[k]--; toast(`More hints next time: ${LEVELNAME[S.wlevel[k]]}`); }
+  // writing schedule for the word (first attempt counts)
+  if (ex.w && ex.tries.length === 1) { const r = good ? 3 : bad ? 1 : 2; let c = S.ws[ex.w.id]; c = schedule(c && c.st === 'n' ? null : c, r); if (c.st === 'l') { c.st = 'r'; c.ivl = r === 1 ? 1 : 2; c.due = Date.now() + c.ivl * DAY; } S.ws[ex.w.id] = c; if (bad) S.weak[ex.w.id] = (S.weak[ex.w.id] || 0) + 1; }
+  S.wlog.push({ k: ex.key, t: ex.type, w: ex.w ? ex.w.id : null, q: taskSummary(ex), a: tr.a, v: tr.v, m: tr.method, fb: tr.fb ? { c: tr.fb.corrected, n: tr.fb.natural, s: tr.fb.summary, vo: tr.fb.vocabulary, g: tr.fb.grammar, o: tr.fb.word_order, na: tr.fb.naturalness } : null, ts: tr.ts, tryN: ex.tries.length });
+  if (S.wlog.length > 600) S.wlog = S.wlog.slice(-600);
+  logHist('w'); save(); renderEx();
+}
+function taskSummary(ex) { if (ex.type === 'combine') return ex.item.parts.join(' '); if (ex.type === 'prompt') return ex.item.en; if (ex.type === 'colloc') return 'Use ' + ex.coll.z; if (ex.type === 'translate') return lastEn(ex.w); if (ex.type === 'complete') return lastLine(ex.w).replace(ex.w.w, '＿'); return ex.answerToks.join(' / '); }
+function feedbackHTML(ex, tr) {
+  if (tr.v === 'pending') return '<div class="small muted">Checking…</div>';
+  if (tr.method === 'exact') {
+    const ok = tr.v === 'exact';
+    return `<div class="ex stack"><div class="verdict ${ok ? 'ok' : 'mid'}">${ok ? 'Matches the original sentence' : ex.type === 'complete' ? 'Not the word this sentence was written with' : 'Your order is different from the original'} <span class="chip">exact-match check</span></div>
+      ${ok ? '' : `<div class="small">${ex.type === 'complete' ? `The missing word is <span class="han">${esc(ex.w.w)}</span>.` : 'Chinese sometimes allows other orders, such as moving a time phrase.'} An exact-match check can’t tell whether your version is also correct.</div>${S.set.ai ? '<button class="btn sm" id="aicheck">Ask AI whether mine also works</button>' : ''}`}</div>`;
+  }
+  if (tr.method === 'ai' && tr.fb) {
+    const f = tr.fb; const v = tr.v;
+    return `<div class="ex stack"><div class="verdict ${v === 'correct' ? 'ok' : v === 'minor' ? 'mid' : 'no'}">${verdictLabel(v)} <span class="chip">AI feedback</span>${ex.type !== 'combine' && f.used_target === false ? ' <span class="chip warn">target not used</span>' : ''}</div>
+      ${f.summary ? `<div>${esc(f.summary)}</div>` : ''}
+      <dl class="fb"><dt>Vocabulary</dt><dd>${esc(f.vocabulary)}</dd><dt>Grammar</dt><dd>${esc(f.grammar)}</dd><dt>Word order</dt><dd>${esc(f.word_order)}</dd><dt>Naturalness</dt><dd>${esc(f.naturalness)}</dd></dl>
+      ${f.corrected && zhOnly(f.corrected) !== zhOnly(tr.a) ? `<div><span class="label">Corrected (your meaning)</span><div class="zhbig">${esc(f.corrected)}</div></div>` : ''}
+      ${f.natural ? `<div><span class="label">More natural</span><div class="zhbig">${esc(f.natural)}</div></div>` : ''}
+      <div class="small muted">Edit your answer above and submit again, or move on.</div></div>`;
+  }
+  // self-check (no AI)
+  return `<div class="ex stack"><div class="verdict mid">Check it yourself <span class="chip">no AI assessment</span></div><div class="small">${esc(tr.aiMsg || aiUnavailableMsg())}</div>
+    <div class="small">Look at the suggested answer below. Does yours say the same thing, use the target word, and keep a natural order?</div>
+    <div class="row">${[['self_good', 'I got it'], ['self_part', 'Partly'], ['self_miss', 'Missed it']].map(([k, l]) => `<button class="btn sm ${tr.v === k ? 'primary' : ''}" data-self="${k}">${l}</button>`).join('')}</div></div>`;
+}
+document.addEventListener('click', e => { const b = e.target.closest('[data-self]'); if (!b || !EX) return; const tr = EX.tries[EX.tries.length - 1]; const first = tr.v === 'self_pending'; tr.v = b.dataset.self; if (first) finishTry(EX, tr); else { const L = S.wlog[S.wlog.length - 1]; if (L) L.v = tr.v; save(); renderEx(); } });
+function renderWLog(box) {
+  const byKey = {}; S.wlog.forEach(x => (byKey[x.k] = byKey[x.k] || []).push(x));
+  const improved = k => { const a = byKey[k]; return a.length > 1 && !/correct|exact|self_good/.test(a[0].v) && /correct|exact|self_good/.test(a[a.length - 1].v); };
+  const f = renderWLog.f || 'all';
+  let list = [...S.wlog].reverse();
+  if (f === 'work') list = list.filter(x => /major|minor|diff|self_miss|self_part/.test(x.v));
+  if (f === 'improved') list = list.filter(x => improved(x.k) && x === byKey[x.k][byKey[x.k].length - 1]);
+  box.innerHTML = `<div class="row"><div class="seg" role="group" aria-label="Filter">${[['all', 'All'], ['work', 'Needs work'], ['improved', 'Improved on retry']].map(([k, l]) => `<button type="button" data-lf="${k}" aria-pressed="${f === k}">${l}</button>`).join('')}</div></div>
+  ${list.length ? `<div class="stack">${list.slice(0, 150).map(x => `<div class="panel tight stack" style="gap:6px">
+    <div class="row small"><span class="chip">${WTYPES[x.t]}</span><span class="chip ${verdictChip(x.v)}">${verdictLabel(x.v)}</span>${x.tryN > 1 ? `<span class="chip">try ${x.tryN}</span>` : ''}<span class="muted" style="margin-left:auto">${new Date(x.ts).toLocaleDateString()}</span></div>
+    <div class="small muted">${esc(x.q)}</div><div class="zhbig">${esc(x.a)}</div>
+    ${x.fb ? `${x.fb.c && zhOnly(x.fb.c) !== zhOnly(x.a) ? `<div class="small"><b>Corrected:</b> <span class="zh">${esc(x.fb.c)}</span></div>` : ''}${x.fb.n ? `<div class="small"><b>More natural:</b> <span class="zh">${esc(x.fb.n)}</span></div>` : ''}${[x.fb.g, x.fb.vo, x.fb.o, x.fb.na].filter(t => t && !/^fine\.?$/i.test(t)).map(t => `<div class="small muted">· ${esc(t)}</div>`).join('')}` : ''}
+    <div><button class="btn sm" data-retry="${esc(x.k)}">Retry this</button></div></div>`).join('')}</div>` : '<div class="panel muted">Your answers and feedback are saved here, so you can look back at mistakes and see what improved.</div>'}`;
+  $$('[data-lf]', box).forEach(b => b.onclick = () => { renderWLog.f = b.dataset.lf; renderWLog(box); });
+  $$('[data-retry]', box).forEach(b => b.onclick = () => { EX = exFromKey(b.dataset.retry); wTab = 'practice'; if (EX) { writeType = EX.type; route(); } });
+}
+function exFromKey(k) {
+  if (/^c\d+$/.test(k)) { const i = +k.slice(1); return { type: 'combine', lv: S.wlevel.combine, key: k, item: D.combine[i], tries: [] }; }
+  if (/^p\d+$/.test(k)) { const p = D.prompts.find(x => x.id === k); return p ? { type: 'prompt', lv: S.wlevel.prompt, key: k, item: p, tries: [] } : null; }
+  const [type, id] = k.split(':'); const sv = writeCtx; writeCtx = { ids: [+id] }; const save1 = writeType; writeType = type; const ex = makeExercise(); writeType = save1; writeCtx = sv; return ex;
+}
+
+/* ===== Handwriting ===== */
+let handCtx = null; const strokeCache = {};
+function strokeLoader(ch, onLoad, onErr) {
+  const b = ch.codePointAt(0) % 16;
+  (strokeCache[b] = strokeCache[b] || fetch('strokes/s' + b + '.json').then(r => r.json())).then(d => d[ch] ? onLoad(d[ch]) : onErr && onErr('missing')).catch(onErr);
+}
+VIEWS.hand = col => {
+  const todayIds = W.filter(w => S.srs[w.id] && todayKey(S.srs[w.id].last) === todayKey()).map(w => w.id);
+  const src = handCtx?.src || (todayIds.length ? 'today' : Object.keys(S.bm).length ? 'bm' : 'core');
+  const lists = { today: todayIds, bm: Object.keys(S.bm).map(Number), due: W.filter(w => statusOf(w.id) === 'due').map(w => w.id), weak: Object.keys(S.weak).map(Number), core: W.filter(w => w.d === 1).map(w => w.id) };
+  let ids = lists[src] || []; if (!ids.length) ids = lists.core;
+  let id = handCtx?.id ?? ids[0]; if (!W[id]) id = ids[0];
+  handCtx = { src, id, ids };
+  const w = W[id]; const reps = S.set.reps; const chars = [...w.w];
+  col.innerHTML = `<div class="topbar"><h1>Handwriting</h1></div>
+  <div class="panel tight small stack" style="gap:6px"><div><b>Character formation.</b> Watch the stroke order, then write each character in the grid: trace the first two, then write the rest from memory. The app shows you what to write and how many times. It does not grade your handwriting.</div><div class="muted">Writing whole sentences is practised separately under <a href="#write">Writing</a>, by typing.</div></div>
+  <div class="row"><label class="small muted" for="hsrc">Words from</label><select id="hsrc">${[['today', 'Studied today'], ['due', 'Due today'], ['bm', 'Bookmarked'], ['weak', 'Struggled with'], ['core', 'Core Level 5 words']].map(([k, l]) => `<option value="${k}" ${src === k ? 'selected' : ''}>${l} (${lists[k].length})</option>`).join('')}</select>
+    <select id="hword" aria-label="Word">${ids.slice(0, 300).map(i => `<option value="${i}" ${i === id ? 'selected' : ''}>${esc(W[i].w)} · ${esc(W[i].m.split(';')[0].slice(0, 30))}</option>`).join('')}</select>
+    <label class="small muted">Times <select id="hreps">${[3, 5, 8, 10].map(n => `<option ${n === reps ? 'selected' : ''}>${n}</option>`).join('')}</select></label></div>
+  <section class="card">
+    <div class="head"><span class="han" style="font-size:2rem">${esc(w.w)}</span>${pyHTML(w.py)}<span class="muted">${esc(w.m)}</span><span class="sp"></span>${audioBtns(w.w)}</div>
+    <div class="small"><b>Write ${chars.map(c => `<span class="han">${esc(c)}</span>`).join(' ')} ${reps} times each.</b> ${S.hand[id] ? `<span class="muted">You’ve practised this word ${S.hand[id].n} time${S.hand[id].n > 1 ? 's' : ''}.</span>` : ''}</div>
+    ${chars.map((c, ci) => `<div class="stack" style="gap:8px">
+      <div class="row"><div class="tzg" id="anim${ci}"><div class="w"></div></div>
+        <div class="stack" style="gap:6px"><div class="han" style="font-size:1.3rem">${esc(c)}</div><div class="small muted" id="sc${ci}">Loading strokes…</div>
+        <div class="row"><button class="btn sm" data-anim="${ci}">Play stroke order</button><button class="btn sm ghost" data-step="${ci}">Next stroke</button></div></div></div>
+      <div class="practice">${Array.from({ length: reps }, (_, k) => `<div class="cellwrap"><div class="tzg sm" id="cell${ci}_${k}"><div class="w"></div><canvas aria-label="Practice square ${k + 1}"></canvas></div>${k < 2 ? 'trace' : k + 1}</div>`).join('')}</div>
+    </div>`).join('<hr class="sep">')}
+    <div class="row"><button class="btn primary" id="hdone">Done · next word</button><button class="btn ghost" id="hclear">Clear grids</button></div>
+  </section>`;
+  $('#hsrc').onchange = e => { handCtx = { src: e.target.value }; route(); };
+  $('#hword').onchange = e => { handCtx.id = +e.target.value; route(); };
+  $('#hreps').onchange = e => { S.set.reps = +e.target.value; save(); route(); };
+  $('#hclear').onclick = () => $$('canvas', col).forEach(cv => cv.getContext('2d').clearRect(0, 0, cv.width, cv.height));
+  $('#hdone').onclick = () => { S.hand[id] = { n: (S.hand[id]?.n || 0) + 1, last: Date.now() }; logHist('hw'); save(); const i = ids.indexOf(id); handCtx.id = ids[(i + 1) % ids.length]; toast('Practice logged'); route(); };
+  setupHand(chars);
+};
+let hwReady = null;
+function loadHW() { if (window.HanziWriter) return Promise.resolve(); return hwReady || (hwReady = new Promise((res, rej) => { const s = document.createElement('script'); s.src = 'https://cdn.jsdelivr.net/npm/hanzi-writer@3.7.3/dist/hanzi-writer.min.js'; s.onload = res; s.onerror = rej; document.head.appendChild(s); })); }
+function themeColor(v) { return getComputedStyle(document.documentElement).getPropertyValue(v).trim() || '#333'; }
+async function setupHand(chars) {
+  // drawing canvases first, so practice works even if stroke data fails
+  $$('.tzg.sm canvas').forEach(cv => {
+    const r = cv.getBoundingClientRect(); const dpr = window.devicePixelRatio || 1; cv.width = r.width * dpr; cv.height = r.height * dpr;
+    const ctx = cv.getContext('2d'); ctx.scale(dpr, dpr); ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.lineWidth = 4; ctx.strokeStyle = themeColor('--ink');
+    let down = false, lx, ly;
+    cv.onpointerdown = e => { down = true; cv.setPointerCapture(e.pointerId); const b = cv.getBoundingClientRect(); lx = e.clientX - b.left; ly = e.clientY - b.top; };
+    cv.onpointermove = e => { if (!down) return; const b = cv.getBoundingClientRect(); const x = e.clientX - b.left, y = e.clientY - b.top; ctx.beginPath(); ctx.moveTo(lx, ly); ctx.lineTo(x, y); ctx.stroke(); lx = x; ly = y; };
+    cv.onpointerup = cv.onpointercancel = () => { down = false; };
+  });
+  try { await loadHW(); } catch (e) { chars.forEach((c, ci) => { const el = $('#sc' + ci); if (el) el.textContent = 'Stroke animation couldn’t load. You can still practise in the grid.'; }); return; }
+  const ink = themeColor('--ink'), acc = themeColor('--accent'), faint = themeColor('--line');
+  chars.forEach((c, ci) => {
+    const host = $('#anim' + ci + ' .w'); if (!host) return;
+    const writer = HanziWriter.create(host, c, { width: 130, height: 130, padding: 8, strokeColor: ink, radicalColor: acc, outlineColor: faint, showOutline: true, delayBetweenStrokes: 220, strokeAnimationSpeed: 1.1, charDataLoader: strokeLoader,
+      onLoadCharDataSuccess: d => { const el = $('#sc' + ci); if (el) el.textContent = d.strokes.length + ' strokes'; },
+      onLoadCharDataError: () => { const el = $('#sc' + ci); if (el) el.textContent = 'No stroke data for this character.'; } });
+    let step = 0;
+    $(`[data-anim="${ci}"]`).onclick = () => { step = 0; writer.animateCharacter(); };
+    $(`[data-step="${ci}"]`).onclick = () => { strokeLoader(c, d => { if (step === 0) writer.hideCharacter(); if (step >= d.strokes.length) { step = 0; writer.hideCharacter(); return; } writer.animateStroke(step++); }); };
+    for (let k = 0; k < 2; k++) { const cell = $(`#cell${ci}_${k} .w`); if (cell) HanziWriter.create(cell, c, { width: 96, height: 96, padding: 6, showCharacter: false, showOutline: true, outlineColor: faint, charDataLoader: strokeLoader }); }
+  });
+}
+
+/* ===== Conversation (beyond the list) ===== */
+let talkCat = '';
+const CATS = { refusal: 'Polite refusals', request: 'Indirect requests', implied: 'What people really mean', softener: 'Softeners & set replies', idiom: 'Idioms & set phrases' };
+VIEWS.talk = col => {
+  const list = D.prag.filter(p => !talkCat || p.cat === talkCat);
+  col.innerHTML = `<div class="topbar"><h1>Conversation</h1><span class="chip warn">Beyond the HSK 5 list</span></div>
+  <p class="small muted">These everyday expressions aren’t on the official Level 5 word list. They help you read tone and intent: how people say no without saying no, ask without asking, and soften what they mean.</p>
+  <div class="row"><div class="seg" role="group" aria-label="Category" style="flex-wrap:wrap"><button type="button" data-tc="" aria-pressed="${!talkCat}">All</button>${Object.entries(CATS).map(([k, l]) => `<button type="button" data-tc="${k}" aria-pressed="${talkCat === k}">${l}</button>`).join('')}</div></div>
+  <div class="stack">${list.map(p => `<article class="panel stack" style="gap:8px">
+    <div class="row"><span class="zhbig" style="font-size:1.45rem">${esc(p.z)}</span>${pyHTML(p.p)}${audioBtns(p.z)}<span class="chip" style="margin-left:auto">${CATS[p.cat]}</span></div>
+    <div><b>${esc(p.m)}.</b> ${esc(p.real)}</div>
+    <div class="ex" style="gap:2px">${p.dz.map((d, i) => `<div class="zh" style="font-size:1.05rem">${esc(d)}</div><div>${pyHTML(p.dp[i])}</div><div class="muted small">${esc(p.de[i] || '')}</div>`).join('')}<div>${audioBtns(p.dz.join('//'), 'Dialogue')}</div></div>
+  </article>`).join('')}</div>`;
+  $$('[data-tc]').forEach(b => b.onclick = () => { talkCat = b.dataset.tc; route(); });
+};
+VIEWS.more = col => {
+  col.innerHTML = `<div class="topbar"><h1>More</h1></div><div class="tiles">${NAV.filter(n => !TABS.includes(n[0])).map(([k, h, l]) => `<a class="tile" href="#${k}" style="text-decoration:none"><span class="han">${h}</span><b>${l}</b></a>`).join('')}</div>`;
+};
+
+/* ===== Progress ===== */
+VIEWS.progress = col => {
+  const c = counts(); const now = Date.now();
+  const fc = Array.from({ length: 7 }, (_, i) => { const s = new Date(); s.setHours(0, 0, 0, 0); s.setDate(s.getDate() + i); const e = +s + DAY; return { d: s, n: W.filter(w => { const k = S.srs[w.id]; return k && (i === 0 ? k.due < e : k.due >= +s && k.due < e); }).length }; });
+  const hist = Array.from({ length: 30 }, (_, i) => { const d = new Date(); d.setDate(d.getDate() - 29 + i); const h = S.hist[todayKey(+d)] || {}; return { d, n: (h.rev || 0) + (h.new || 0), w: h.w || 0 }; });
+  const maxF = Math.max(1, ...fc.map(x => x.n)), maxH = Math.max(1, ...hist.map(x => x.n));
+  const topics = Object.entries(D.TOPICS).map(([k, l]) => { const ws = W.filter(w => w.t === k); const m = ws.filter(w => statusOf(w.id) === 'mastered').length, s = ws.filter(w => S.srs[w.id]).length; return { k, l, n: ws.length, m, s }; }).sort((a, b) => b.n - a.n);
+  const wl = S.wlog; const firstTries = wl.filter(x => x.tryN === 1); const goodFirst = firstTries.filter(x => /correct|exact|self_good/.test(x.v)).length;
+  const byType = Object.keys(WTYPES).filter(k => k !== 'mixed').map(k => ({ k, n: wl.filter(x => x.t === k).length, lv: S.wlevel[k] }));
+  col.innerHTML = `<div class="topbar"><h1>Progress</h1><span class="small muted" id="syncstate2">${syncState === 'synced' ? 'Saved to your account' : 'Saved in this browser'}</span></div>
+  <section class="tiles">
+    ${[['New', c.nw, 'not started yet', ''], ['Learning', c.learning, 'in short steps', '--hard'], ['Due today', c.due, 'reviews waiting', '--easy'], ['Mastered', c.mastered, 'interval 3 weeks or more', '--good']].map(([l, n, s, col]) => `<div class="panel tight"><div class="label">${l}</div><div style="font-size:1.9rem;font-weight:600;${col ? `color:var(${col})` : ''}" class="tabnum">${n}</div><div class="small muted">${s}</div></div>`).join('')}
+  </section>
+  <section class="panel stack"><h2>Reviews over the next 7 days</h2>
+    <div class="bars">${fc.map(x => `<div class="${x.n ? '' : 'zero'}" style="height:${x.n / maxF * 100}%" title="${x.n} cards"></div>`).join('')}</div>
+    <div class="barlabels">${fc.map((x, i) => `<span>${i === 0 ? 'Today' : x.d.toLocaleDateString(undefined, { weekday: 'short' })}<br><b class="tabnum">${x.n}</b></span>`).join('')}</div></section>
+  <section class="panel stack"><h2>Cards studied, last 30 days</h2>
+    <div class="bars" style="height:80px">${hist.map(x => `<div class="${x.n ? '' : 'zero'}" style="height:${x.n / maxH * 100}%" title="${x.d.toLocaleDateString()}: ${x.n} cards, ${x.w} writing"></div>`).join('')}</div>
+    <div class="barlabels"><span style="text-align:left">${hist[0].d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}</span><span style="text-align:right">Today</span></div>
+    <div class="small muted">${hist.reduce((a, x) => a + x.n, 0)} cards and ${hist.reduce((a, x) => a + x.w, 0)} writing answers in 30 days · ${streak()}-day streak</div></section>
+  <section class="panel stack"><h2>By topic</h2><div style="overflow-x:auto"><table class="t"><thead><tr><th>Topic</th><th>Words</th><th>Started</th><th>Mastered</th><th style="width:34%"></th></tr></thead><tbody>
+    ${topics.map(t => `<tr><td>${esc(t.l)}</td><td class="tabnum">${t.n}</td><td class="tabnum">${t.s}</td><td class="tabnum">${t.m}</td><td><div class="meter"><i style="width:${t.m / t.n * 100}%;background:var(--good)"></i><i style="width:${(t.s - t.m) / t.n * 100}%;background:var(--easy);opacity:.55"></i></div></td></tr>`).join('')}</tbody></table></div></section>
+  <section class="panel stack"><h2>Writing</h2>
+    <div class="small">${wl.length} answers saved · ${firstTries.length ? Math.round(goodFirst / firstTries.length * 100) + '% right first time' : 'no answers yet'} · ${wsDue().length} writing reviews due</div>
+    <div style="overflow-x:auto"><table class="t"><thead><tr><th>Exercise</th><th>Answers</th><th>Hint level</th></tr></thead><tbody>${byType.map(x => `<tr><td>${WTYPES[x.k]}</td><td class="tabnum">${x.n}</td><td>${LEVELNAME[x.lv]}</td></tr>`).join('')}</tbody></table></div>
+    <div class="small muted">${Object.keys(S.hand).length} words practised in handwriting.</div></section>
+  <section class="panel stack"><h2>Bookmarks (${Object.keys(S.bm).length})</h2>
+    <div class="row">${Object.keys(S.bm).map(Number).map(i => `<button class="chip" data-w="${i}" style="cursor:pointer"><span class="han">${esc(W[i].w)}</span></button>`).join('') || '<span class="small muted">Press B on any card to bookmark it.</span>'}</div></section>
+  <section class="panel stack"><h2>Backup</h2>
+    <div class="small muted">Your progress is saved automatically. You can also copy a backup to move it somewhere else.</div>
+    <div class="row"><button class="btn sm" id="bcopy">Copy backup</button><button class="btn sm" id="bimp">Restore from backup…</button><button class="btn sm ghost" id="breset">Reset all progress…</button></div><div id="bbox"></div></section>`;
+  $$('[data-w]', col).forEach(b => b.onclick = () => openWord(+b.dataset.w));
+  $('#bcopy').onclick = async () => { const t = JSON.stringify(S); try { await navigator.clipboard.writeText(t); toast('Backup copied'); } catch (e) { $('#bbox').innerHTML = `<textarea readonly id="bt">${esc(t)}</textarea>`; $('#bt').select(); toast('Select and copy the text'); } };
+  $('#bimp').onclick = () => { $('#bbox').innerHTML = `<textarea id="bt" placeholder="Paste a backup here"></textarea><div class="row"><button class="btn sm primary" id="bdo">Restore</button></div>`; $('#bdo').onclick = () => { try { const s = JSON.parse($('#bt').value); if (s.v !== 1 || !s.srs) throw 0; S = Object.assign(fresh(), s, { set: Object.assign(fresh().set, s.set) }); save(); toast('Progress restored'); route(); } catch (e) { toast('That doesn’t look like a backup from this app'); } }; };
+  $('#breset').onclick = () => { $('#bbox').innerHTML = `<div class="banner">This deletes all reviews, writing answers and bookmarks. <button class="btn sm" id="bconf">Yes, reset everything</button></div>`; $('#bconf').onclick = () => { const set = S.set; S = fresh(); S.set = set; save(); toast('Progress reset'); route(); }; };
+};
+
+/* ===== Settings & sources ===== */
+VIEWS.settings = col => {
+  const vs = TTS.zh;
+  col.innerHTML = `<div class="topbar"><h1>Settings &amp; sources</h1></div>
+  <section class="panel stack"><h2>Study</h2>
+    <label class="row"><span style="min-width:170px">New words per day</span><input type="number" id="snew" min="0" max="100" value="${S.set.newPerDay}" style="width:100px"></label>
+    <label class="row"><span style="min-width:170px">Order of new words</span><select id="sord"><option value="core" ${S.set.order === 'core' ? 'selected' : ''}>Most frequent first (recommended)</option><option value="list" ${S.set.order === 'list' ? 'selected' : ''}>Syllabus (alphabetical) order</option><option value="random" ${S.set.order === 'random' ? 'selected' : ''}>Random</option></select></label>
+    <label class="row"><span style="min-width:170px">Focus new words on</span><select id="stop"><option value="">All topics</option>${Object.entries(D.TOPICS).map(([k, v]) => `<option value="${k}" ${S.set.topic === k ? 'selected' : ''}>${esc(v)}</option>`).join('')}</select></label>
+    <label class="row"><span style="min-width:170px">Pinyin</span><select id="spy"><option value="hidden" ${S.set.pinyin === 'hidden' ? 'selected' : ''}>Hidden until tapped (or press P)</option><option value="shown" ${S.set.pinyin === 'shown' ? 'selected' : ''}>Always visible</option></select></label>
+    <label class="row"><input type="checkbox" id="sai" ${S.set.ai ? 'checked' : ''}> Use AI feedback for open-ended writing</label></section>
+  <section class="panel stack"><h2>Audio</h2>
+    <div class="small muted">Pronunciation uses your browser’s text-to-speech with a Mandarin (zh-CN) voice, so quality depends on your device. Sentence pinyin is generated automatically and may occasionally misread a multi-reading character. Word pinyin follows the dictionary.</div>
+    ${vs.length ? `<label class="row"><span style="min-width:170px">Voice</span><select id="svoice">${vs.map(v => `<option value="${esc(v.voiceURI)}" ${chosenVoice() === v ? 'selected' : ''}>${esc(v.name)} (${esc(v.lang)})</option>`).join('')}</select><button class="btn sm" data-say="我们周末去看展览吧。">Test</button></label>` : voiceBanner()}
+    <label class="row"><span style="min-width:170px">Normal speed</span><input type="range" id="srn" min="0.6" max="1.2" step="0.05" value="${S.set.rateN}" style="width:180px"><span class="tabnum small">${S.set.rateN}×</span></label>
+    <label class="row"><span style="min-width:170px">Slow speed</span><input type="range" id="srs" min="0.3" max="0.8" step="0.05" value="${S.set.rateS}" style="width:180px"><span class="tabnum small">${S.set.rateS}×</span></label></section>
+  <section class="panel stack small"><h2>About the vocabulary</h2>
+    <p><b>Syllabus.</b> HSK 3.0, using the exam syllabus that CTI/CLEC released in November 2025. The first official HSK 3.0 exams (Levels 1–6) are scheduled for 13 December 2026. This app covers all <b>${W.length}</b> words that are new at Level 5. The cumulative total for Levels 1–5 is about 3,500. Levels 1–4 (${D.earlier.length} words) appear in the Word list as a reference that isn’t scheduled for review.</p>
+    <p><b>Source.</b> The word list and part-of-speech data come from the open <a href="https://github.com/drkameleon/complete-hsk-vocabulary" target="_blank" rel="noopener">complete-hsk-vocabulary</a> dataset (its “newest” HSK 3.0 lists, which follow the 2025 syllabus). Its definitions come from CC-CEDICT. The English meanings, example sentences and dialogues, register labels, topics, combinations, usage notes and Taiwan notes in this app were written for it. Learning difficulty comes from the dataset’s word-frequency ranking (Core = most frequent third).</p>
+    <p><b>Beyond the list.</b> The Conversation section, its idioms and set phrases, and the combine-sentence and short-writing exercises are additions to the list and are labelled as such. Example sentences sometimes use words from other levels so they read naturally.</p>
+    <p><b>Stroke order</b> comes from <a href="https://github.com/chanind/hanzi-writer-data" target="_blank" rel="noopener">hanzi-writer-data</a> (Arphic Public License, based on Make Me a Hanzi). The animations use Hanzi Writer.</p>
+    <p><b>AI feedback.</b> Writing feedback and deeper quiz explanations come from Claude, through this page’s built-in access when you open it in Claude. You don’t need an API key. The first time, Claude asks for permission. Without it, open-ended answers use self-check against a suggested answer, and exact-match checks are labelled as exact-match.</p></section>
+  <section class="panel small"><h2 style="margin-bottom:8px">Keyboard shortcuts</h2>${helpTable()}</section>`;
+  const bind = (id, fn) => { const el = $('#' + id); if (el) el.onchange = e => { fn(e.target); save(); route(); }; };
+  bind('snew', t => S.set.newPerDay = Math.max(0, Math.min(100, +t.value || 0)));
+  bind('sord', t => S.set.order = t.value); bind('stop', t => S.set.topic = t.value); bind('spy', t => S.set.pinyin = t.value);
+  bind('sai', t => S.set.ai = t.checked); bind('svoice', t => S.set.voice = t.value);
+  bind('srn', t => S.set.rateN = +t.value); bind('srs', t => S.set.rateS = +t.value);
+};
+function helpTable() {
+  return `<table class="t help"><tbody>
+  <tr><td><kbd>g</kbd> then <kbd>t</kbd> <kbd>c</kbd> <kbd>l</kbd> <kbd>q</kbd> <kbd>w</kbd> <kbd>h</kbd> <kbd>e</kbd> <kbd>p</kbd> <kbd>s</kbd></td><td>Go to Today, Word list, Listening, Quizzes, Writing, Handwriting, Conversation, Progress, Settings</td></tr>
+  <tr><td><kbd>Enter</kbd></td><td>Start review on Today · next question</td></tr>
+  <tr><td><kbd>Space</kbd></td><td>Show answer on a flashcard</td></tr>
+  <tr><td><kbd>1</kbd>–<kbd>4</kbd></td><td>Again / Difficult / Good / Easy · choose a quiz option</td></tr>
+  <tr><td><kbd>P</kbd></td><td>Show pinyin on the current screen</td></tr>
+  <tr><td><kbd>A</kbd> · <kbd>S</kbd> · <kbd>Shift</kbd>+<kbd>S</kbd></td><td>Play word · play sentence · play sentence slowly</td></tr>
+  <tr><td><kbd>R</kbd> · <kbd>Shift</kbd>+<kbd>R</kbd></td><td>Replay listening audio · slowly</td></tr>
+  <tr><td><kbd>B</kbd></td><td>Bookmark the current card</td></tr>
+  <tr><td><kbd>Ctrl</kbd>+<kbd>Enter</kbd></td><td>Submit a writing answer</td></tr>
+  <tr><td><kbd>Esc</kbd></td><td>Close a word card</td></tr></tbody></table>`;
+}
+
+/* ===== global events ===== */
+document.addEventListener('click', e => {
+  const say = e.target.closest('[data-say]'); if (say) { speak(say.dataset.say, !!say.dataset.slow); return; }
+  const py = e.target.closest('.py.hid'); if (py) { py.classList.remove('hid'); return; }
+  const wbtn = e.target.closest('.li[data-w]'); if (wbtn) { openWord(+wbtn.dataset.w); return; }
+});
+document.addEventListener('keydown', e => {
+  if (e.target.matches('.py.hid') && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); e.target.classList.remove('hid'); }
+});
+let gPending = 0;
+document.addEventListener('keydown', e => {
+  const typing = e.target.matches('input,textarea,select') || e.target.isContentEditable;
+  if (e.key === 'Escape') { if ($('#ov')) { closeSheet(); e.preventDefault(); } return; }
+  if (typing || e.metaKey || e.ctrlKey || e.altKey) return;
+  const k = e.key;
+  if (gPending && Date.now() - gPending < 1200) { gPending = 0; const n = NAV.find(x => x[3] === k.toLowerCase()); if (n) { e.preventDefault(); go(n[0]); } return; }
+  if (k === 'g') { gPending = Date.now(); return; }
+  if (k === '?') { $('#layer').innerHTML = `<div class="overlay" id="ov"><div class="sheet"><div class="row" style="justify-content:space-between"><h2>Keyboard shortcuts</h2><button class="btn ghost sm" id="closeov">Close</button></div>${helpTable()}</div></div>`; $('#closeov').onclick = closeSheet; $('#ov').onclick = ev => { if (ev.target.id === 'ov') closeSheet(); }; return; }
+  if (k === 'p' || k === 'P') { const scope = $('#ov') || $('#main'); $$('.py.hid', scope).forEach(p => p.classList.remove('hid')); return; }
+  if ($('#ov')) { const w = $('#ov .bigword'); if (k === 'a' && w) speak(w.textContent); return; }
+  if (view === 'today' && k === 'Enter') { const s = $('#start'); if (s && !s.disabled) { e.preventDefault(); s.click(); } return; }
+  if (view === 'study' && session && session.ids.length) {
+    const w = W[session.ids[0]];
+    if (k === ' ' || k === 'Enter') { e.preventDefault(); if (!session.shown) { session.shown = true; renderStudy(); } return; }
+    if (/^[1-4]$/.test(k) && session.shown) { e.preventDefault(); rate(+k); return; }
+    if (k === 'a') { speak(w.w); return; }
+    if (k === 's') { speak(w.ex.join('//')); return; }
+    if (k === 'S') { speak(w.ex.join('//'), true); return; }
+    if (k === 'b' || k === 'B') { bmToggle(w.id); renderStudy(); return; }
+  }
+  if (view === 'listen' && LQ) {
+    if (k === 'r') { speak(LQ.audio); return; } if (k === 'R') { speak(LQ.audio, true); return; }
+    if (/^[1-4]$/.test(k)) { const b = $$('[data-o]')[+k - 1]; if (b && !b.disabled) b.click(); return; }
+    if (k === 'Enter') { const n = $('#lnext'); if (n) { e.preventDefault(); n.click(); } return; }
+  }
+  if (view === 'quiz' && QZ) {
+    if (/^[1-4]$/.test(k)) { const b = $$('[data-q]')[+k - 1]; if (b && !b.disabled) b.click(); return; }
+    if (k === 'Enter') { const n = $('#qnext'); if (n) { e.preventDefault(); n.click(); } return; }
+  }
+});
+window.addEventListener('hashchange', route);
+(function boot() {
+  shell();
+  if (!W.length) { $('#main').innerHTML = '<div class="col"><div class="banner">The vocabulary file didn’t load. Reload the page to try again.</div></div>'; return; }
+  route();
+})();
+</script>
+</body></html>

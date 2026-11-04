@@ -1,0 +1,68 @@
+#COMBINE parts(¦ separated)|connector|model|english
+今天下大雨。¦航班取消了。|导致|今天的大雨导致航班取消了。|Today's heavy rain caused the flight to be cancelled.
+他很努力。¦他的中文进步很快。|因而|他很努力，因而中文进步很快。|He works hard, so his Chinese is improving fast.
+吃了药。¦他的病更严重了。|不但没有…反而…|吃了药，他的病不但没有好，反而更严重了。|After taking the medicine, his illness didn't improve – it got worse.
+你再忙。¦你要按时吃饭。|哪怕…也…|哪怕再忙，你也要按时吃饭。|However busy you are, you should eat on time.
+他是新来的。¦我们多帮帮他。|毕竟|他毕竟是新来的，我们多帮帮他吧。|He's new, after all – let's help him out.
+带把伞。¦可能下雨。|万一|带把伞吧，万一下雨呢。|Take an umbrella, just in case it rains.
+你帮了我。¦我完不成。|要不是…就…|要不是你帮我，我就完不成了。|If you hadn't helped me, I wouldn't have finished.
+你决定了。¦不要后悔。|一旦…就…|一旦决定了，就不要后悔。|Once you've decided, don't look back.
+我搬家了。¦我们很少见面。|自从…以后|自从我搬家以后，我们就很少见面了。|Since I moved, we rarely see each other.
+这家店的菜好吃。¦这家店的菜便宜。|既…又…|这家店的菜既好吃又便宜。|This place's food is both tasty and cheap.
+我们改进了流程。¦效率提高了。|从而|我们改进了流程，从而提高了效率。|We improved the process and thereby raised efficiency.
+他忘了吃饭。¦他很忙。|可见|他连饭都忘了吃，可见有多忙。|He even forgot to eat, which shows how busy he is.
+天气很冷。¦他只穿了一件衬衫。|尽管…还是…|尽管天气很冷，他还是只穿了一件衬衫。|Even though it was cold, he still only wore a shirt.
+你不去。¦我也不去。|既然…就…|既然你不去，那我也不去了。|Since you're not going, I won't either.
+我们早点出发。¦避免堵车。|为了|为了避免堵车，我们早点出发吧。|Let's leave early to avoid the traffic.
+他不是不想帮你。¦他实在太忙了。|不是…而是…|他不是不想帮你，而是实在太忙了。|It's not that he doesn't want to help – he's just too busy.
+多运动。¦心情会变好。|只要…就…|只要多运动，心情就会变好。|As long as you exercise more, your mood will improve.
+你提前告诉我。¦我可以准备。|如果…的话|如果你提前告诉我的话，我就可以准备了。|If you'd told me in advance, I could have prepared.
+房价越来越高。¦年轻人压力很大。|随着|随着房价越来越高，年轻人的压力也越来越大。|As housing prices rise, young people's pressure grows too.
+我很想去。¦我没有时间。|虽然…但是…|虽然我很想去，但是实在没有时间。|Although I really want to go, I just don't have time.
+这个方案成本低。¦这个方案风险小。|不仅…而且…|这个方案不仅成本低，而且风险小。|This plan is not only low-cost but also low-risk.
+他是我的同事。¦他是我的好朋友。|既是…也是…|他既是我的同事，也是我的好朋友。|He's both my colleague and my good friend.
+先完成这个项目。¦再考虑别的。|先…再…|我们先完成这个项目，再考虑别的事吧。|Let's finish this project first, then think about the rest.
+你说得有道理。¦成本太高了。|不过|你说得有道理，不过成本太高了。|You've got a point, but the cost is too high.
+他平时很少说话。¦今天他发言了很久。|居然|他平时很少说话，今天居然发言了很久。|He rarely speaks, but today he actually talked for ages.
+我没有通过面试。¦我学到了很多。|虽然…却…|我虽然没有通过面试，却学到了很多。|Although I didn't pass the interview, I learned a lot.
+我打电话。¦他不接。¦我发消息。|无论…都…|无论我打电话还是发消息，他都不回。|Whether I call or message, he doesn't respond.
+天气预报说下雨。¦真的下雨了。|果然|天气预报说下雨，果然下雨了。|The forecast said rain, and sure enough, it rained.
+我们赶快走。¦要迟到了。|不然|我们赶快走吧，不然要迟到了。|Let's hurry, or we'll be late.
+大家在讨论。¦他悄悄离开了。|趁着|趁着大家在讨论，他悄悄离开了。|While everyone was discussing, he quietly slipped away.
+他学了三年中文。¦他能看懂新闻。|经过…终于…|经过三年的学习，他终于能看懂中文新闻了。|After three years of study, he can finally understand the news in Chinese.
+做好准备。¦面试会顺利。|只有…才…|只有做好充分的准备，面试才会顺利。|Only with thorough preparation will the interview go smoothly.
+他不爱吃辣。¦他点了麻辣火锅。|明明…却…|他明明不爱吃辣，却点了麻辣火锅。|He clearly doesn't like spicy food, yet he ordered spicy hot pot.
+网购很方便。¦很多实体店关门了。|由于|由于网购很方便，很多实体店关门了。|Because online shopping is so convenient, many physical shops have closed.
+我们签了合同。¦双方达成了协议。|在…之后|在双方达成协议之后，我们签了合同。|After both sides reached an agreement, we signed the contract.
+他工作经验不足。¦他学得很快。|尽管|尽管他工作经验不足，但他学得很快。|Although he lacks experience, he learns fast.
+#PROMPTS id|type|prompt_en|prompt_zh|target words(；)|model
+p1|reply|A colleague asks you to cover their shift this Saturday, but you already have plans. Decline politely and offer an alternative.|同事请你周六帮他代班，但你已经有安排了。礼貌地拒绝，并提出一个别的办法。|安排；不太方便；要不|真不好意思，我周六已经有安排了，不太方便。要不这样，我下周哪天可以帮你代班，你看行吗？
+p2|opinion|Do you think working from home is more efficient than working in the office? Give your opinion with a reason.|你觉得在家办公比在办公室更高效吗？说说你的观点和理由。|效率；观点；相对；毕竟|我觉得在家办公相对更高效，因为不用花时间通勤，也比较安静。不过毕竟沟通没有面对面方便，所以最好两种方式结合。
+p3|message|Message a friend to say you'll be 20 minutes late for dinner because of traffic.|给朋友发消息，说因为堵车，你吃饭会晚到二十分钟。|堵；不好意思；尽快|不好意思，路上太堵了，我可能要晚到二十分钟。你们先点菜吧，我尽快赶过去！
+p4|describe|Describe a memorable trip: where, who with, and what made it special.|描述一次难忘的旅行：去了哪儿、跟谁去的、为什么难忘。|难忘；体验；当地；风景|去年我跟朋友一起去了云南。我们体验了当地人的生活，吃了很多特色小吃，那里的风景也特别优美，所以这次旅行让我很难忘。
+p5|reply|Your manager asks if you can finish a report by tomorrow, but it's not realistic. Reply honestly but tactfully.|领导问你明天能不能交报告，但时间不够。诚实而委婉地回复。|尽量；争取；具体；可能|王经理，我会尽量加快进度，不过报告里有些数据还需要确认，明天可能比较难完成。我争取后天上午交，您看可以吗？
+p6|opinion|Should children have smartphones? Explain your view.|孩子应该有智能手机吗？说说你的看法。|影响；控制；适当；避免|我觉得孩子可以有手机，但父母要适当控制使用时间，避免影响学习和视力。
+p7|message|Write a short WeChat message congratulating a friend on a new job.|写一条微信消息，祝贺朋友找到新工作。|恭喜；顺利；发挥|恭喜你找到新工作！相信你一定能发挥自己的优势，祝你工作顺利！改天请你吃饭庆祝一下。
+p8|describe|Describe your neighborhood and what you like or dislike about it.|描述一下你住的社区，你喜欢和不喜欢的地方。|便利；设施；环境；唯一|我住的社区交通很便利，附近有超市和地铁站，设施也很齐全。唯一的缺点是晚上有点吵。
+p9|reply|A friend complains they're stressed about exams. Comfort and encourage them.|朋友说考试压力很大，安慰并鼓励他。|安慰；压力；放松；相信|别太紧张了，适当放松一下，压力太大反而发挥不好。我相信你准备得很充分，一定没问题的！
+p10|opinion|What's more important when choosing a job: salary or interest? Why?|选工作的时候，工资和兴趣哪个更重要？为什么？|待遇；兴趣；长远；平衡|我觉得兴趣更重要，因为从长远来看，只有喜欢的工作才能坚持下去。不过待遇也不能太低，最好能找到平衡。
+p11|message|Ask a landlord politely when the broken water heater can be repaired.|礼貌地问房东热水器什么时候能修好。|维修；麻烦；方便|王先生您好，不好意思打扰了。家里热水器坏了两天了，想问一下什么时候方便派人来维修？麻烦您了！
+p12|describe|Describe a time you made a mistake at work or school and what you learned.|描述一次你在工作或学习中犯的错误，以及你学到了什么。|失误；承担；教训；从此|有一次我把会议时间记错了，导致客户等了很久。我主动承担了责任，向客户道歉。从此以后，我都会提前确认时间。
+p13|reply|A colleague invites you to a weekend barbecue. Accept warmly and ask what to bring.|同事邀请你周末参加烧烤。热情地接受，并问需要带什么。|烧烤；准备；需要|好啊，太好了！我一定去。需要我带点什么吗？饮料或者水果都可以。
+p14|opinion|Is it better to live in a big city or a small town? Discuss.|住在大城市好还是小城市好？说说你的看法。|机会；压力；节奏；各自|大城市机会多，但是生活节奏快、压力大；小城市比较舒适，可是发展空间有限。我觉得两者各有优势，要看个人需求。
+p15|message|Message your team to say tomorrow's meeting is moved from 10 to 2.|发消息通知团队明天的会议从十点改到下午两点。|通知；调整；准时|各位好，通知一下：明天的会议时间调整到下午两点，地点不变。请大家准时参加，谢谢！
+p16|describe|Describe how you usually spend Spring Festival or another holiday.|描述你一般怎么过春节或者其他节日。|传统；团聚；亲人；热闹|每年春节我都会回老家和亲人团聚。除夕晚上全家一起吃年夜饭，看春节晚会，特别热闹。
+p17|reply|A shop sent you the wrong item. Write to customer service to ask for an exchange.|商店发错了货。给客服写消息要求换货。|收到；更换；麻烦；尽快|你好，我收到的商品和订单上的不一样，我买的是蓝色的，收到的是黑色的。麻烦帮我更换一下，希望尽快处理，谢谢。
+p18|opinion|Has technology made people closer or more distant? Explain.|科技让人们更亲近还是更疏远了？说说你的理由。|沟通；方便；反而；面对面|科技让沟通变得更方便了，我们随时可以和远方的朋友联系。可是有时候，大家聚在一起反而都在看手机，面对面的交流少了。
+p19|message|Thank a friend who helped you move house.|感谢帮你搬家的朋友。|辛苦；多亏；请客|今天真是辛苦你了！多亏有你帮忙，不然我一个人肯定搬不完。下次我请你吃饭！
+p20|describe|Describe a person who influenced you and how.|描述一个影响过你的人，以及他是怎么影响你的。|影响；鼓励；坚持；从而|对我影响最大的人是我的中学老师。她一直鼓励我坚持自己的兴趣，从而让我找到了现在喜欢的工作。
+p21|reply|Your friend asks to borrow a large sum of money. Decline without damaging the friendship.|朋友想跟你借一大笔钱。委婉拒绝，但不伤感情。|手头紧；实在；理解|真不好意思，我最近手头也有点紧，实在拿不出这么多钱。希望你能理解，如果有其他能帮忙的，你尽管说。
+p22|opinion|Should people work overtime to get ahead? Give your view.|为了发展，应该经常加班吗？|加班；效率；健康；长期|偶尔加班可以理解，但长期加班会影响健康，效率也不一定高。我觉得提高工作效率比加班更重要。
+p23|message|Apologize to a friend for forgetting their birthday.|向朋友道歉，因为你忘了他的生日。|彻底；补；原谅|对不起！我最近太忙了，彻底忘了你的生日。周末我请你吃饭给你补过生日，你就原谅我吧！
+p24|describe|Describe your ideal weekend.|描述你理想中的周末。|休闲；放松；享受；户外|我理想的周末是睡到自然醒，下午去户外散散步，晚上和朋友一起吃火锅，好好享受休闲的时光。
+p25|reply|A client complains your delivery was late. Apologize and explain what you'll do.|客户抱怨你们送货晚了。道歉并说明你们会怎么做。|抱歉；造成；确保；补偿|非常抱歉给您造成了不便。这次延误是因为物流出了问题，我们已经加强了管理，确保以后按时送达。我们会给您一张优惠券作为补偿。
+p26|opinion|Is learning a foreign language still necessary in the age of AI translation?|在人工智能翻译的时代，学外语还有必要吗？|人工智能；必要；文化；真正|虽然人工智能翻译越来越方便，但我觉得学外语还是很有必要。因为只有真正学会一门语言，才能了解背后的文化。
+p27|message|Invite colleagues to a farewell dinner for a teammate who's leaving.|邀请同事参加一位同事的告别晚饭。|告别；参加；地点|大家好！小张下周就要离职了，我们周五晚上七点在公司附近的川菜馆为他办个告别饭局，欢迎大家参加！
+p28|describe|Describe a change in your city over the past few years.|描述你所在城市这几年的变化。|变化；发展；明显；如今|这几年我的城市变化很明显。以前交通很不方便，如今开通了好几条地铁线，生活方便多了。
+p29|reply|Your friend asks whether you like the gift they gave you, but you don't. Respond kindly.|朋友问你喜不喜欢他送的礼物，但你其实不太喜欢。友好地回应。|心意；用心；谢谢|谢谢你，你真用心！这份心意我特别感动。
+p30|opinion|What makes a good team leader?|你觉得一个好的团队领导应该是什么样的？|沟通；信任；责任；鼓励|好的领导应该善于沟通，信任团队成员，出了问题主动承担责任，还要经常鼓励大家。

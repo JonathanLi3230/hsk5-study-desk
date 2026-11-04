@@ -1,0 +1,19 @@
+{
+  "name": "hsk5-study-desk",
+  "version": "1.0.0",
+  "description": "Study app for the 1,547 new HSK 3.0 Level 5 words (2025 exam syllabus)",
+  "scripts": {
+    "build:data": "node build.js",
+    "build:strokes": "node strokes.js",
+    "build": "node build.js && node strokes.js && node assemble.js"
+  },
+  "dependencies": {
+    "hanzi-writer": "^3.7.3",
+    "hanzi-writer-data": "^2.0.1",
+    "pinyin-pro": "^3.29.5"
+  },
+  "private": true,
+  "devDependencies": {
+    "jsdom": "^24.1.3"
+  }
+}
