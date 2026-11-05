@@ -232,3 +232,12 @@ table.t th{font-weight:600;color:var(--muted);font-size:.75rem;text-transform:up
 .toast.on{opacity:1}
 .help td:first-child{white-space:nowrap}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+/* pinyin placement */
+.py.inl{font-size:.82em;margin-left:2px}
+.py.hid.inl{min-width:3ch}
+.exitem{display:flex;flex-direction:column;gap:4px}
+.exitem+.exitem{border-top:1px dashed var(--line);padding-top:12px;margin-top:6px}
+.tok{display:inline-flex;flex-direction:column;align-items:center;gap:1px;line-height:1.25}
+.py.tp{font-size:.7rem;font-family:var(--f-ui)}
+.py.big{font-size:1.05rem}

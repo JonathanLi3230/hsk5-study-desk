@@ -25,11 +25,11 @@ VIEWS.progress = col => {
     <div style="overflow-x:auto"><table class="t"><thead><tr><th>Exercise</th><th>Answers</th><th>Hint level</th></tr></thead><tbody>${byType.map(x => `<tr><td>${WTYPES[x.k]}</td><td class="tabnum">${x.n}</td><td>${LEVELNAME[x.lv]}</td></tr>`).join('')}</tbody></table></div>
     <div class="small muted">${Object.keys(S.hand).length} words practised in handwriting.</div></section>
   <section class="panel stack"><h2>Bookmarks (${Object.keys(S.bm).length})</h2>
-    <div class="row">${Object.keys(S.bm).map(Number).map(i => `<button class="chip" data-w="${i}" style="cursor:pointer"><span class="han">${esc(W[i].w)}</span></button>`).join('') || '<span class="small muted">Press B on any card to bookmark it.</span>'}</div></section>
+    <div class="row">${Object.keys(S.bm).map(Number).map(i => `<button class="chip" data-w="${i}" style="cursor:pointer"><span class="han">${esc(W[i].w)}</span> ${pyHTML(W[i].py, 'inl')}</button>`).join('') || '<span class="small muted">Press B on any card to bookmark it.</span>'}</div></section>
   <section class="panel stack"><h2>Backup</h2>
     <div class="small muted">Your progress is saved automatically. You can also copy a backup to move it somewhere else.</div>
     <div class="row"><button class="btn sm" id="bcopy">Copy backup</button><button class="btn sm" id="bimp">Restore from backup…</button><button class="btn sm ghost" id="breset">Reset all progress…</button></div><div id="bbox"></div></section>`;
-  $$('[data-w]', col).forEach(b => b.onclick = () => openWord(+b.dataset.w));
+  $$('[data-w]', col).forEach(b => b.onclick = e => { if (revealPy(e)) return; openWord(+b.dataset.w); });
   $('#bcopy').onclick = async () => { const t = JSON.stringify(S); try { await navigator.clipboard.writeText(t); toast('Backup copied'); } catch (e) { $('#bbox').innerHTML = `<textarea readonly id="bt">${esc(t)}</textarea>`; $('#bt').select(); toast('Select and copy the text'); } };
   $('#bimp').onclick = () => { $('#bbox').innerHTML = `<textarea id="bt" placeholder="Paste a backup here"></textarea><div class="row"><button class="btn sm primary" id="bdo">Restore</button></div>`; $('#bdo').onclick = () => { try { const s = JSON.parse($('#bt').value); if (s.v !== 1 || !s.srs) throw 0; S = Object.assign(fresh(), s, { set: Object.assign(fresh().set, s.set) }); save(); toast('Progress restored'); route(); } catch (e) { toast('That doesn’t look like a backup from this app'); } }; };
   $('#breset').onclick = () => { $('#bbox').innerHTML = `<div class="banner">This deletes all reviews, writing answers and bookmarks. <button class="btn sm" id="bconf">Yes, reset everything</button></div>`; $('#bconf').onclick = () => { const set = S.set; S = fresh(); S.set = set; save(); toast('Progress reset'); route(); }; };
@@ -52,7 +52,7 @@ VIEWS.settings = col => {
     <label class="row"><span style="min-width:170px">Slow speed</span><input type="range" id="srs" min="0.3" max="0.8" step="0.05" value="${S.set.rateS}" style="width:180px"><span class="tabnum small">${S.set.rateS}×</span></label></section>
   <section class="panel stack small"><h2>About the vocabulary</h2>
     <p><b>Syllabus.</b> HSK 3.0, using the exam syllabus that CTI/CLEC released in November 2025. The first official HSK 3.0 exams (Levels 1–6) are scheduled for 13 December 2026. This app covers all <b>${W.length}</b> words that are new at Level 5. The cumulative total for Levels 1–5 is about 3,500. Levels 1–4 (${D.earlier.length} words) appear in the Word list as a reference that isn’t scheduled for review.</p>
-    <p><b>Source.</b> The word list and part-of-speech data come from the open <a href="https://github.com/drkameleon/complete-hsk-vocabulary" target="_blank" rel="noopener">complete-hsk-vocabulary</a> dataset (its “newest” HSK 3.0 lists, which follow the 2025 syllabus). Its definitions come from CC-CEDICT. The English meanings, example sentences and dialogues, register labels, topics, combinations, usage notes and Taiwan notes in this app were written for it. Learning difficulty comes from the dataset’s word-frequency ranking (Core = most frequent third).</p>
+    <p><b>Source.</b> The word list and part-of-speech data come from the open <a href="https://github.com/drkameleon/complete-hsk-vocabulary" target="_blank" rel="noopener">complete-hsk-vocabulary</a> dataset (its “newest” HSK 3.0 lists, which follow the 2025 syllabus). Its definitions come from CC-CEDICT. The English meanings, the three example sentences or dialogues for each word, register labels, topics, combinations, usage notes and Taiwan notes in this app were written for it. Learning difficulty comes from the dataset’s word-frequency ranking (Core = most frequent third).</p>
     <p><b>Beyond the list.</b> The Conversation section, its idioms and set phrases, and the combine-sentence and short-writing exercises are additions to the list and are labelled as such. Example sentences sometimes use words from other levels so they read naturally.</p>
     <p><b>Stroke order</b> comes from <a href="https://github.com/chanind/hanzi-writer-data" target="_blank" rel="noopener">hanzi-writer-data</a> (Arphic Public License, based on Make Me a Hanzi). The animations use Hanzi Writer.</p>
     <p><b>AI feedback.</b> Writing feedback and deeper quiz explanations come from Claude, through this page’s built-in access when you open it in Claude. You don’t need an API key. The first time, Claude asks for permission. Without it, open-ended answers use self-check against a suggested answer, and exact-match checks are labelled as exact-match.</p></section>
@@ -70,7 +70,7 @@ function helpTable() {
   <tr><td><kbd>Space</kbd></td><td>Show answer on a flashcard</td></tr>
   <tr><td><kbd>1</kbd>–<kbd>4</kbd></td><td>Again / Difficult / Good / Easy · choose a quiz option</td></tr>
   <tr><td><kbd>P</kbd></td><td>Show pinyin on the current screen</td></tr>
-  <tr><td><kbd>A</kbd> · <kbd>S</kbd> · <kbd>Shift</kbd>+<kbd>S</kbd></td><td>Play word · play sentence · play sentence slowly</td></tr>
+  <tr><td><kbd>A</kbd> · <kbd>S</kbd> · <kbd>Shift</kbd>+<kbd>S</kbd></td><td>Play word · play the first example · play it slowly</td></tr>
   <tr><td><kbd>R</kbd> · <kbd>Shift</kbd>+<kbd>R</kbd></td><td>Replay listening audio · slowly</td></tr>
   <tr><td><kbd>B</kbd></td><td>Bookmark the current card</td></tr>
   <tr><td><kbd>Ctrl</kbd>+<kbd>Enter</kbd></td><td>Submit a writing answer</td></tr>
@@ -103,8 +103,8 @@ document.addEventListener('keydown', e => {
     if (k === ' ' || k === 'Enter') { e.preventDefault(); if (!session.shown) { session.shown = true; renderStudy(); } return; }
     if (/^[1-4]$/.test(k) && session.shown) { e.preventDefault(); rate(+k); return; }
     if (k === 'a') { speak(w.w); return; }
-    if (k === 's') { speak(w.ex.join('//')); return; }
-    if (k === 'S') { speak(w.ex.join('//'), true); return; }
+    if (k === 's') { speak(w.ex[0].z.join('//')); return; }
+    if (k === 'S') { speak(w.ex[0].z.join('//'), true); return; }
     if (k === 'b' || k === 'B') { bmToggle(w.id); renderStudy(); return; }
   }
   if (view === 'listen' && LQ) {
@@ -118,8 +118,9 @@ document.addEventListener('keydown', e => {
   }
 });
 window.addEventListener('hashchange', route);
+function onPyLib() { if (view === 'write') { if (wTab === 'log') route(); else if (EX) renderEx(); } }
 (function boot() {
-  shell();
+  shell(); loadPyLib();
   if (!W.length) { $('#main').innerHTML = '<div class="col"><div class="banner">The vocabulary file didn’t load. Reload the page to try again.</div></div>'; return; }
   route();
 })();

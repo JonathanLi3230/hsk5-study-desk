@@ -236,6 +236,15 @@ table.t th{font-weight:600;color:var(--muted);font-size:.75rem;text-transform:up
 .toast.on{opacity:1}
 .help td:first-child{white-space:nowrap}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+/* pinyin placement */
+.py.inl{font-size:.82em;margin-left:2px}
+.py.hid.inl{min-width:3ch}
+.exitem{display:flex;flex-direction:column;gap:4px}
+.exitem+.exitem{border-top:1px dashed var(--line);padding-top:12px;margin-top:6px}
+.tok{display:inline-flex;flex-direction:column;align-items:center;gap:1px;line-height:1.25}
+.py.tp{font-size:.7rem;font-family:var(--f-ui)}
+.py.big{font-size:1.05rem}
 </style>
 <div style="padding:40px 16px;text-align:center;font-family:system-ui;color:#5a6762">Loading HSK 5 Study Desk…</div>
 <script src="data.js"></script>
@@ -265,9 +274,13 @@ function numToMarks(s) { // "an1wei4" -> "ānwèi" for tone-sensitive compare
   });
 }
 const tonedPy = s => numToMarks(String(s).toLowerCase()).normalize('NFC').replace(/[^a-zāáǎàēéěèīíǐìōóǒòūúǔùǖǘǚǜü]/g, '');
-const zhOnly = s => String(s).replace(/[\s，。！？、；：,.!?;:“”"'（）()…—~～·]/g, '');
-const lastLine = w => w.ex[w.ex.length - 1].replace(/^[AB]：/, '');
-const lastEn = w => w.exE[w.exE.length - 1].replace(/^[AB]: /, '');
+const zhOnly = s => String(s).replace(/[\s，。！？、；：,.!?;:“”"'（）()…—~～·《》]/g, '');
+// each word has three examples: { z: Chinese lines, e: English lines, p: pinyin lines, tok: [[word, pinyin]], bp: pinyin with the word blanked }
+const lastLine = x => x.z[x.z.length - 1].replace(/^[AB]：/, '');
+const lastEn = x => x.e[x.e.length - 1].replace(/^[AB]: /, '');
+const lastPy = x => x.p[x.p.length - 1];
+const xIndex = (w, x) => Math.max(0, w.ex.indexOf(x));
+function pickX(w, { cloze = false } = {}) { const pool = cloze ? w.ex.filter(x => x.bp) : w.ex; return pick(pool.length ? pool : w.ex); }
 const isTW = n => /台湾/.test(n);
 
 /* ---------- state ---------- */
@@ -440,14 +453,28 @@ function audioBtns(text, label = '') {
 }
 
 /* ---------- rendering helpers ---------- */
-function pyHTML(py, cls = '') { const hid = S.set.pinyin === 'hidden'; return `<span class="py ${hid ? 'hid' : ''} ${cls}" ${hid ? 'role="button" tabindex="0" title="Show pinyin (P)"' : ''}>${esc(py)}</span>`; }
+function pyHTML(py, cls = '') { if (!py) return ''; const hid = S.set.pinyin === 'hidden'; return `<span class="py ${hid ? 'hid' : ''} ${cls}" ${hid ? 'role="button" tabindex="0" title="Show pinyin (P)"' : ''}>${esc(py)}</span>`; }
 function hlSentence(s, w) { const e = esc(s); const k = esc(w); return e.split(k).join(`<mark>${k}</mark>`); }
 function badgeRow(w) {
   return `<span class="chip acc" title="HSK 3.0 (2025 exam syllabus), new at Level 5">HSK 5 · new</span><span class="chip" title="${esc(REGLONG[w.reg])}">${esc(D.REG[w.reg])}</span><span class="chip">${esc(D.TOPICS[w.t])}</span><span class="chip" title="Learning difficulty from word frequency">${TIER[w.d]}</span>`;
 }
-function wordDetail(w, { forCard = false } = {}) {
-  const notes = w.note ? w.note.split(/(?=台湾：)/).map(n => `<div class="note ${isTW(n) ? 'tw' : ''}">${isTW(n) ? '<b>Taiwan usage · </b>' + esc(n.replace('台湾：', '')) : esc(n)}</div>`).join('') : '';
-  const exs = w.ex.map((s, i) => `<div class="zhl">${hlSentence(s, w.w)}</div><div>${pyHTML(w.exP[i])}</div><div class="en">${esc(w.exE[i] || '')}</div>`).join('');
+function noteHTML(w, { twOnly = false, noTW = false } = {}) {
+  if (!w.noteP || !w.noteP.length) return '';
+  const groups = [[]]; // split the note where a Taiwan usage remark starts
+  w.noteP.forEach((sg, i) => { if (sg[0] === '台湾' && /^：/.test((w.noteP[i + 1] || [''])[0])) groups.push([]); groups[groups.length - 1].push(sg); });
+  return groups.filter(g => g.length).map(g => {
+    const tw = g[0][0] === '台湾'; if ((tw && noTW) || (!tw && twOnly)) return '';
+    const body = (tw ? g.slice(1) : g).map(([t, p], k) => p ? `<span class="zh">${esc(t)}</span>${pyHTML(p, 'inl')}` : esc(k === 0 && tw ? t.replace(/^：/, '') : t)).join('');
+    return `<div class="note ${tw ? 'tw' : ''}">${tw ? '<b>Taiwan usage · </b>' : ''}${body}</div>`;
+  }).join('');
+}
+function zhPy(z, p, cls = 'zh') { return `<span class="${cls}">${esc(z)}</span> ${pyHTML(p)}`; }
+function exampleHTML(x, w, i) {
+  const dlg = x.z.length > 1;
+  return `<div class="exitem"><div class="row" style="justify-content:space-between"><span class="label">${dlg ? 'Dialogue' : 'Example'} ${i + 1}</span>${audioBtns(x.z.join('//'), 'Listen')}</div>
+    ${x.z.map((s, k) => `<div class="zhl">${hlSentence(s, w.w)}</div><div>${pyHTML(x.p[k])}</div><div class="en">${esc(x.e[k] || '')}</div>`).join('')}</div>`;
+}
+function wordDetail(w) {
   return `
   <div class="cent stack" style="gap:6px">
     <div class="bigword">${esc(w.w)}</div>
@@ -455,10 +482,22 @@ function wordDetail(w, { forCard = false } = {}) {
     <div class="mean">${esc(w.m)}</div>
     <div class="row" style="justify-content:center;gap:6px">${badgeRow(w)}</div>
   </div>
-  <div class="ex"><div class="row" style="justify-content:space-between"><span class="label">${w.ex.length > 1 ? 'Dialogue' : 'Example'}</span>${audioBtns(w.ex.join('//'), 'Sentence')}</div>${exs}</div>
+  <div class="ex">${w.ex.map((x, i) => exampleHTML(x, w, i)).join('')}</div>
   <div class="stack" style="gap:6px"><span class="label">Common combinations</span><div class="colls">${w.col.map(c => `<div class="coll"><span class="zh">${esc(c.z)}</span>${pyHTML(c.p)}</div>`).join('')}</div></div>
-  <div class="stack" style="gap:6px"><span class="label">When to use it</span><div class="small">${esc(REGLONG[w.reg])}.</div>${notes}</div>`;
+  <div class="stack" style="gap:6px"><span class="label">When to use it</span><div class="small">${esc(REGLONG[w.reg])}.</div>${noteHTML(w)}</div>`;
 }
+/* runtime pinyin for text that isn't in the data (AI feedback, your answers) */
+let pyLibP = null;
+function loadPyLib() {
+  if (window.pinyinPro) return Promise.resolve();
+  return pyLibP || (pyLibP = new Promise(res => { const sc = document.createElement('script'); sc.src = 'https://cdn.jsdelivr.net/npm/pinyin-pro@3.29.5/dist/index.js'; sc.onload = () => { res(); if (typeof onPyLib === 'function') onPyLib(); }; sc.onerror = () => res(); document.head.appendChild(sc); }));
+}
+function pyOf(t) { try { return window.pinyinPro && /[\u4e00-\u9fff]/.test(t) ? pinyinPro.pinyin(String(t), { nonZh: 'consecutive' }).replace(/\s+([，。！？、；：,.!?])/g, '$1') : ''; } catch (e) { return ''; } }
+function zhLine(t, cls = 'zhbig') { return `<div class="${cls}">${esc(t)}</div>${pyOf(t) ? `<div>${pyHTML(pyOf(t))}</div>` : ''}`; }
+function annZh(t) { // pinyin after each Chinese run inside English text
+  return String(t || '').split(/([\u4e00-\u9fff][\u4e00-\u9fff…]*)/).map((part, i) => i % 2 ? `<span class="zh">${esc(part)}</span>${pyHTML(pyOf(part.replace(/…/g, '')), 'inl')}` : esc(part)).join('');
+}
+function revealPy(e) { const p = e.target.closest('.py.hid'); if (p) { p.classList.remove('hid'); e.stopPropagation(); e.preventDefault(); return true; } return false; }
 let toastT; function toast(msg) { const t = $('#toast'); t.textContent = msg; t.classList.add('on'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('on'), 2200); }
 function bmToggle(id) { if (S.bm[id]) delete S.bm[id]; else S.bm[id] = Date.now(); save(); toast(S.bm[id] ? 'Bookmarked' : 'Bookmark removed'); }
 function statusLabel(st) { return { new: 'New', learning: 'Learning', due: 'Due', review: 'Learned', mastered: 'Mastered' }[st]; }
@@ -576,7 +615,7 @@ function renderStudy() {
   <article class="card" id="card">
     <div class="head"><span class="chip ${c ? '' : 'acc'}">${c ? statusLabel(cardStatus(c)) : 'New word'}</span>${sched ? '' : '<span class="chip warn" title="This card isn’t due, so your rating won’t change its schedule">Practice only</span>'}
       <span class="sp"></span><button class="btn ghost sm" id="bm" aria-pressed="${!!S.bm[id]}">${S.bm[id] ? '★ Bookmarked' : '☆ Bookmark'} <span class="k kbd-hint">B</span></button></div>
-    ${session.shown ? wordDetail(w) : `<div class="bigword" style="padding:30px 0 10px">${esc(w.w)}</div><div class="row" style="justify-content:center">${audioBtns(w.w, 'Word')}</div><div class="cent muted small">Recall the meaning and pronunciation, then check.</div>`}
+    ${session.shown ? wordDetail(w) : `<div class="bigword" style="padding:30px 0 10px">${esc(w.w)}</div><div class="row" style="justify-content:center">${pyHTML(w.py, 'big')} ${audioBtns(w.w, 'Word')}</div><div class="cent muted small">Recall the meaning and pronunciation, then check.</div>`}
   </article>
   ${session.shown ? `<div class="rate" role="group" aria-label="How well did you know it?">
       <button class="a" data-r="1">Again<small>${pv[0]} · 1</small></button><button class="h" data-r="2">Difficult<small>${pv[1]} · 2</small></button>
@@ -683,6 +722,8 @@ function studiedPool(min = 40) {
   return [...seen, ...W.filter(w => !S.srs[w.id] && w.d === 1).slice(0, min - seen.length + 40)];
 }
 function poolNote() { const n = W.filter(w => S.srs[w.id]).length; return n >= 40 ? `Drawn from the ${n} words you’ve studied, most recent first.` : `You’ve studied ${n} words so far, so this also includes core (high-frequency) words you haven’t met yet.`; }
+const wordOpt = o => `<span class="han">${esc(o.w)}</span> ${pyHTML(o.py)}`;
+function transcriptHTML(x, w) { return x.z.map((s, i) => `<div class="zhl q-zh">${hlSentence(s, w.w)}</div><div>${pyHTML(x.p[i])}</div><div class="muted">${esc(x.e[i] || '')}</div>`).join(''); }
 
 /* ---------- Listening ---------- */
 let LQ = null; let listenMode = 'word';
@@ -701,13 +742,15 @@ VIEWS.listen = col => {
 function newListen() {
   const pool = shuffle(studiedPool().slice(0, 120)).slice(0, 10);
   LQ = { mode: listenMode, i: 0, score: 0, items: pool.map(w => {
-    if (listenMode === 'word') { const ds = distractors(w, 3, { field: 'm' }); return { w, kind: 'word', opts: shuffle([w, ...ds]), ans: null }; }
+    const x = pickX(w);
+    if (listenMode === 'word') { const ds = distractors(w, 3, { field: 'm' }); return { w, x, kind: 'word', opts: shuffle([w, ...ds]), ans: null }; }
     if (listenMode === 'sent') {
-      const ask = w.ex.length > 1 || Math.random() < 0.5 ? 'trans' : 'which';
-      if (ask === 'which') { const ds = distractors(w, 3, { sameChar: true }); return { w, kind: 'which', opts: shuffle([w, ...ds]), ans: null }; }
-      const ds = distractors(w, 3).filter(x => x.exE.join(' ') !== w.exE.join(' ')); return { w, kind: 'trans', opts: shuffle([w, ...ds]), ans: null };
+      const ask = x.z.length > 1 || Math.random() < 0.5 ? 'trans' : 'which';
+      if (ask === 'which') { const ds = distractors(w, 3, { sameChar: true }); return { w, x, kind: 'which', opts: shuffle([w, ...ds]), ans: null }; }
+      const ds = distractors(w, 3); const labels = { [w.id]: x.e.join(' / ') }; ds.forEach(o => labels[o.id] = pick(o.ex).e.join(' / '));
+      return { w, x, kind: 'trans', opts: shuffle([w, ...ds]), labels, ans: null };
     }
-    const sentence = Math.random() < 0.5; return { w, kind: 'dict', target: sentence ? lastLine(w) : w.w, sentence, typeBy: 'han', ans: null };
+    const sentence = Math.random() < 0.5; return { w, x, kind: 'dict', target: sentence ? lastLine(x) : w.w, sentence, typeBy: 'han', ans: null };
   }) };
 }
 function renderListen() {
@@ -717,16 +760,16 @@ function renderListen() {
     box.innerHTML = `<section class="panel stack"><h2>Round complete · ${LQ.score}/${LQ.items.length}</h2><p class="muted small">Words you missed are added to your “struggled with” list and come up more in writing practice.</p><div class="row"><button class="btn primary" id="again">New round</button></div></section>`;
     $('#again').onclick = () => { newListen(); renderListen(); }; return;
   }
-  const it = LQ.items[LQ.i]; const w = it.w; const answered = it.ans !== null;
-  const audioText = it.kind === 'word' ? w.w : it.kind === 'dict' ? it.target : w.ex.join('//');
-  const prompt = { word: 'What does this word mean?', which: 'Which HSK 5 word did you hear in the sentence?', trans: w.ex.length > 1 ? 'Which translation matches the dialogue?' : 'Which translation matches what you heard?', dict: it.sentence ? 'Type the sentence you hear.' : 'Type the word you hear.' }[it.kind];
+  const it = LQ.items[LQ.i]; const w = it.w; const x = it.x; const answered = it.ans !== null;
+  const audioText = it.kind === 'word' ? w.w : it.kind === 'dict' ? it.target : x.z.join('//');
+  const prompt = { word: 'What does this word mean?', which: 'Which HSK 5 word did you hear in the sentence?', trans: x.z.length > 1 ? 'Which translation matches the dialogue?' : 'Which translation matches what you heard?', dict: it.sentence ? 'Type the sentence you hear.' : 'Type the word you hear.' }[it.kind];
   let body = '';
   if (it.kind === 'dict') {
     body = `<div class="row"><div class="seg" role="group" aria-label="Answer with"><button type="button" data-tb="han" aria-pressed="${it.typeBy === 'han'}">Characters</button><button type="button" data-tb="py" aria-pressed="${it.typeBy === 'py'}">Pinyin</button></div><span class="small muted">${it.typeBy === 'py' ? 'Tone marks or numbers (an1wei4) are optional, but are checked if you include them.' : 'Punctuation and spaces are ignored.'}</span></div>
       <input type="text" id="dictin" class="${it.typeBy === 'han' ? 'zhin' : ''}" autocomplete="off" ${answered ? 'disabled' : ''} value="${esc(it.ans?.text || '')}" placeholder="${it.typeBy === 'han' ? '输入汉字' : 'type pinyin'}" aria-label="Your answer">
       ${answered ? '' : '<div class="row"><button class="btn primary" id="dictgo">Check</button><button class="btn ghost" id="giveup">Show transcript</button></div>'}`;
   } else {
-    const label = o => it.kind === 'word' ? esc(o.m) : it.kind === 'which' ? `<span class="han">${esc(o.w)}</span>` : esc(o.exE.join(' / '));
+    const label = o => it.kind === 'word' ? esc(o.m) : it.kind === 'which' ? wordOpt(o) : esc(it.labels[o.id]);
     body = `<div class="opts">${it.opts.map((o, i) => `<button class="opt ${answered ? (o.id === w.id ? 'right' : it.ans === o.id ? 'wrong' : '') : ''}" data-o="${o.id}" ${answered ? 'disabled' : ''}><span class="n">${i + 1}</span><span>${label(o)}</span></button>`).join('')}</div>`;
   }
   let reveal = '';
@@ -734,11 +777,11 @@ function renderListen() {
     const ok = it.kind === 'dict' ? it.ans.ok : it.ok;
     const trans = (it.kind === 'word' || (it.kind === 'dict' && !it.sentence))
       ? `<div class="row"><span class="han" style="font-size:1.8rem">${esc(w.w)}</span>${pyHTML(w.py)}<span>${esc(w.m)}</span></div>`
-      : w.ex.map((s, i) => `<div class="zhl q-zh">${hlSentence(s, w.w)}</div><div>${pyHTML(w.exP[i])}</div><div class="muted">${esc(w.exE[i] || '')}</div>`).join('');
+      : transcriptHTML(x, w);
     let extra = '';
-    if (it.kind === 'dict') extra = ok ? '' : `<div class="small">You typed: <span class="zh">${esc(it.ans.text || '—')}</span>${it.ans.near ? ' — the syllables are right; check the tones.' : ''}</div>`;
-    if (it.kind === 'which' && !ok) { const o = W[it.ans]; extra = `<div class="small"><span class="han">${esc(o.w)}</span> (${esc(o.py)}) means “${esc(o.m)}” and wasn’t in the sentence. The sentence uses <b>${esc(w.w)}</b>, ${esc(w.py)}.</div>`; }
-    if (it.kind === 'word' && !ok) { const o = W[it.ans]; extra = `<div class="small">“${esc(o.m)}” is <span class="han">${esc(o.w)}</span> (${esc(o.py)}).</div>`; }
+    if (it.kind === 'dict') extra = ok ? '' : `<div class="small">You typed: <span class="zh">${esc(it.ans.text || '—')}</span> ${it.typeBy === 'han' ? pyHTML(pyOf(it.ans.text || ''), 'inl') : ''}${it.ans.near ? ' — the syllables are right; check the tones.' : ''}</div>`;
+    if (it.kind === 'which' && !ok) { const o = W[it.ans]; extra = `<div class="small">${wordOpt(o)} means “${esc(o.m)}” and wasn’t in the sentence. The sentence uses ${wordOpt(w)}.</div>`; }
+    if (it.kind === 'word' && !ok) { const o = W[it.ans]; extra = `<div class="small">“${esc(o.m)}” is ${wordOpt(o)}.</div>`; }
     reveal = `<div class="ex stack"><div class="verdict ${ok ? 'ok' : 'no'}">${ok ? 'Correct' : 'Not quite'}${it.kind === 'dict' ? ' <span class="chip">exact-match check</span>' : ''}</div>${extra}<span class="label">Transcript</span>${trans}</div>
       <div class="row"><button class="btn primary" id="lnext">Next <span class="k kbd-hint">Enter</span></button><button class="btn ghost sm" id="lopen">Open word card</button></div>`;
   }
@@ -751,7 +794,7 @@ function renderListen() {
     ${body}${reveal}</section>`;
   LQ.audio = audioText;
   if (!answered && canSpeak() && !it.played) { it.played = true; setTimeout(() => speak(audioText, false), 250); }
-  $$('[data-o]', box).forEach(b => b.onclick = () => answerListen(+b.dataset.o));
+  $$('[data-o]', box).forEach(b => b.onclick = e => { if (revealPy(e)) return; answerListen(+b.dataset.o); });
   $$('[data-tb]', box).forEach(b => b.onclick = () => { it.typeBy = b.dataset.tb; renderListen(); });
   const dg = $('#dictgo'); if (dg) { dg.onclick = checkDict; $('#dictin').onkeydown = e => { if (e.key === 'Enter') { e.preventDefault(); checkDict(); } }; $('#dictin').focus(); }
   const gu = $('#giveup'); if (gu) gu.onclick = () => { it.ans = { ok: false, text: '' }; S.weak[w.id] = (S.weak[w.id] || 0) + 1; save(); renderListen(); };
@@ -769,7 +812,7 @@ function checkDict() {
   let ok = false, near = false;
   if (it.typeBy === 'han') ok = zhOnly(v) === zhOnly(it.target);
   else {
-    const tgt = it.sentence ? it.w.exP[it.w.exP.length - 1] : it.w.py;
+    const tgt = it.sentence ? lastPy(it.x) : it.w.py;
     const hasTones = /[1-5āáǎàēéěèīíǐìōóǒòūúǔùǖǘǚǜ]/.test(v);
     const plainOk = plainPy(numToMarks(v)) === plainPy(tgt);
     ok = hasTones ? tonedPy(v) === tonedPy(tgt) : plainOk; near = hasTones && !ok && plainOk;
@@ -794,44 +837,46 @@ VIEWS.quiz = col => {
 function newQuiz() {
   const pool = shuffle(studiedPool().slice(0, 150)).slice(0, 10);
   QZ = { i: 0, score: 0, done: false, items: pool.map((w, k) => {
-    const t = quizType === 'mixed' ? ['meaning', 'reverse', 'cloze', 'context'][k % 4] : quizType;
+    let t = quizType === 'mixed' ? ['meaning', 'reverse', 'cloze', 'context'][k % 4] : quizType;
+    if ((t === 'cloze' || t === 'context') && !w.ex.some(x => x.bp)) t = 'reverse';
     const typed = quizTyping && (t === 'cloze' || t === 'context');
     const opts = t === 'meaning' ? shuffle([w, ...distractors(w, 3, { field: 'm' })]) : shuffle([w, ...distractors(w, 3, { sameChar: t === 'context' })]);
-    return { w, t, typed, opts, ans: null };
+    return { w, x: pickX(w, { cloze: t === 'cloze' || t === 'context' }), t, typed, opts, ans: null };
   }) };
 }
-function clozeText(w) { const s = lastLine(w); return s.includes(w.w) ? esc(s).split(esc(w.w)).join('<span class="blank">？</span>') : esc(s) + ' <span class="blank">？</span>'; }
+function clozeText(x, w) { const s = lastLine(x); return s.includes(w.w) ? esc(s).split(esc(w.w)).join('<span class="blank">？</span>') : esc(s) + ' <span class="blank">？</span>'; }
 function renderQuiz() {
   const box = $('#qz'); if (!box) return;
   if (QZ.i >= QZ.items.length) {
     QZ.done = true; const miss = QZ.items.filter(x => !x.ok);
-    box.innerHTML = `<section class="panel stack"><h2>Score · ${QZ.score}/${QZ.items.length}</h2>${miss.length ? `<div class="small">Review these:</div><div class="row">${miss.map(x => `<button class="chip" data-w="${x.w.id}" style="cursor:pointer"><span class="han">${esc(x.w.w)}</span> ${esc(x.w.m.split(';')[0])}</button>`).join('')}</div>` : '<p>Full marks.</p>'}
+    box.innerHTML = `<section class="panel stack"><h2>Score · ${QZ.score}/${QZ.items.length}</h2>${miss.length ? `<div class="small">Review these:</div><div class="row">${miss.map(x => `<button class="chip" data-w="${x.w.id}" style="cursor:pointer"><span class="han">${esc(x.w.w)}</span> ${pyHTML(x.w.py, 'inl')} ${esc(x.w.m.split(';')[0])}</button>`).join('')}</div>` : '<p>Full marks.</p>'}
       <div class="row"><button class="btn primary" id="qagain">New quiz</button>${miss.length ? '<button class="btn" id="qstudy">Study missed words</button>' : ''}</div></section>`;
     $('#qagain').onclick = () => { newQuiz(); renderQuiz(); };
     const qs = $('#qstudy'); if (qs) qs.onclick = () => startSession(miss.map(x => x.w.id), 'Missed in quiz');
+    $$('[data-w]', box).forEach(b => b.onclick = e => { if (revealPy(e)) return; openWord(+b.dataset.w); });
     return;
   }
-  const it = QZ.items[QZ.i]; const w = it.w; const answered = it.ans !== null;
+  const it = QZ.items[QZ.i]; const w = it.w; const x = it.x; const answered = it.ans !== null;
   let q = '';
-  if (it.t === 'meaning') q = `<div class="label">What does this mean?</div><div class="bigword" style="font-size:3rem">${esc(w.w)}</div>`;
+  if (it.t === 'meaning') q = `<div class="label">What does this mean?</div><div class="bigword" style="font-size:3rem">${esc(w.w)}</div><div class="cent">${pyHTML(w.py)}</div>`;
   if (it.t === 'reverse') q = `<div class="label">Which word means…</div><h2 style="font-size:1.3rem">“${esc(w.m)}”</h2>`;
-  if (it.t === 'cloze') q = `<div class="label">Complete the sentence</div><div class="q-zh">${clozeText(w)}</div><div class="muted small">${esc(lastEn(w))}</div>`;
-  if (it.t === 'context') q = `<div class="label">Choose the word that fits — the options look or mean alike</div><div class="q-zh">${clozeText(w)}</div>`;
+  if (it.t === 'cloze') q = `<div class="label">Complete the sentence</div><div class="q-zh">${clozeText(x, w)}</div><div>${pyHTML(x.bp)}</div><div class="muted small">${esc(lastEn(x))}</div>`;
+  if (it.t === 'context') q = `<div class="label">Choose the word that fits — the options look or mean alike</div><div class="q-zh">${clozeText(x, w)}</div><div>${pyHTML(x.bp)}</div>`;
   let body;
   if (it.typed) {
     body = `<input type="text" id="qin" class="zhin" placeholder="Type the missing word in characters or pinyin" ${answered ? 'disabled' : ''} value="${esc(it.ans?.text || '')}" aria-label="Your answer" autocomplete="off">${answered ? '' : '<div class="row"><button class="btn primary" id="qgo">Check</button><button class="btn ghost" id="qskip">Show answer</button></div>'}`;
   } else {
-    const lab = o => it.t === 'meaning' ? esc(o.m) : `<span class="han">${esc(o.w)}</span>${S.set.pinyin === 'shown' || answered ? ` <span class="py">${esc(o.py)}</span>` : ''}`;
+    const lab = o => it.t === 'meaning' ? esc(o.m) : wordOpt(o);
     body = `<div class="opts">${it.opts.map((o, i) => `<button class="opt ${answered ? (o.id === w.id ? 'right' : it.ans === o.id ? 'wrong' : '') : ''}" data-q="${o.id}" ${answered ? 'disabled' : ''}><span class="n">${i + 1}</span><span>${lab(o)}</span></button>`).join('')}</div>`;
   }
   box.innerHTML = `<section class="card"><div class="head"><span class="chip tabnum">${QZ.i + 1} / ${QZ.items.length}</span><span class="chip">${QTYPES[it.t]}</span><span class="sp"></span><span class="chip">${QZ.score} correct</span></div>
     <div class="stack" style="gap:10px">${q}</div>${body}${answered ? explainQuiz(it) : ''}</section>`;
-  $$('[data-q]', box).forEach(b => b.onclick = () => answerQuiz(+b.dataset.q));
+  $$('[data-q]', box).forEach(b => b.onclick = e => { if (revealPy(e)) return; answerQuiz(+b.dataset.q); });
   const qg = $('#qgo'); if (qg) { qg.onclick = checkTypedQuiz; $('#qin').onkeydown = e => { if (e.key === 'Enter') { e.preventDefault(); checkTypedQuiz(); } }; $('#qin').focus(); }
   const qsk = $('#qskip'); if (qsk) qsk.onclick = () => { it.ans = { text: '' }; it.ok = false; S.weak[w.id] = (S.weak[w.id] || 0) + 1; save(); renderQuiz(); };
   const qn = $('#qnext'); if (qn) qn.onclick = () => { QZ.i++; renderQuiz(); };
   const ai = $('#qai'); if (ai) ai.onclick = () => aiExplainQuiz(it);
-  $$('[data-w]', box).forEach(b => b.onclick = () => openWord(+b.dataset.w));
+  $$('[data-w]', box).forEach(b => b.onclick = e => { if (revealPy(e)) return; openWord(+b.dataset.w); });
 }
 function answerQuiz(oid) { const it = QZ.items[QZ.i]; if (it.ans !== null) return; it.ans = oid; it.ok = oid === it.w.id; if (it.ok) QZ.score++; else S.weak[it.w.id] = (S.weak[it.w.id] || 0) + 1; logHist('q'); save(); renderQuiz(); }
 function checkTypedQuiz() {
@@ -840,17 +885,17 @@ function checkTypedQuiz() {
   it.ans = { text: v }; it.ok = ok; if (ok) QZ.score++; else S.weak[it.w.id] = (S.weak[it.w.id] || 0) + 1; logHist('q'); save(); renderQuiz();
 }
 function explainQuiz(it) {
-  const w = it.w; const ok = it.ok;
+  const w = it.w; const x = it.x; const ok = it.ok;
   const why = (it.typed ? [] : it.opts.filter(o => o.id !== w.id)).map(o => {
-    const reason = it.t === 'meaning' ? `belongs to <span class="han">${esc(o.w)}</span> (${esc(o.py)}), not ${esc(w.w)}.` :
-      `means “${esc(o.m)}”. ${o.note && [...o.w].some(c => w.w.includes(c)) ? esc(o.note.split(/(?=台湾：)/)[0]) : 'That meaning doesn’t match what this sentence needs.'}`;
-    return `<span>${it.t === 'meaning' ? '“' + esc(o.m.split(';')[0]) + '”' : `<span class="han">${esc(o.w)}</span>`}</span><span>${reason}</span>`;
+    const reason = it.t === 'meaning' ? `belongs to ${wordOpt(o)}, not ${esc(w.w)}.` :
+      `means “${esc(o.m)}”. ${o.note && [...o.w].some(c => w.w.includes(c)) ? noteHTML(o, { noTW: true }) : 'That meaning doesn’t match what this sentence needs.'}`;
+    return `<span>${it.t === 'meaning' ? '“' + esc(o.m.split(';')[0]) + '”' : wordOpt(o)}</span><span>${reason}</span>`;
   }).join('');
-  const typedNote = it.typed && !ok && it.ans.text ? `<div class="small">You typed <span class="zh">${esc(it.ans.text)}</span>. This is an exact-match check: a synonym can be valid, but the sentence was written around <b>${esc(w.w)}</b>.</div>` : '';
+  const typedNote = it.typed && !ok && it.ans.text ? `<div class="small">You typed <span class="zh">${esc(it.ans.text)}</span> ${pyHTML(pyOf(it.ans.text), 'inl')}. This is an exact-match check: a synonym can be valid, but the sentence was written around <b>${esc(w.w)}</b>.</div>` : '';
   return `<div class="ex expl">
-    <div class="verdict ${ok ? 'ok' : 'no'}">${ok ? 'Correct' : 'Not quite'} — <span class="han">${esc(w.w)}</span> <span class="py">${esc(w.py)}</span> · ${esc(w.m)}</div>
-    ${it.t === 'cloze' || it.t === 'context' ? `<div class="zhl q-zh" style="font-size:1.1rem">${hlSentence(lastLine(w), w.w)}</div>` : ''}
-    ${w.note ? `<div class="note">${esc(w.note.split(/(?=台湾：)/)[0])}</div>` : ''}
+    <div class="verdict ${ok ? 'ok' : 'no'}">${ok ? 'Correct' : 'Not quite'} — <span class="han">${esc(w.w)}</span> ${pyHTML(w.py, 'inl')} · ${esc(w.m)}</div>
+    ${it.t === 'cloze' || it.t === 'context' ? `<div class="zhl q-zh" style="font-size:1.1rem">${hlSentence(lastLine(x), w.w)}</div><div>${pyHTML(lastPy(x))}</div><div class="muted small">${esc(lastEn(x))}</div>` : ''}
+    ${noteHTML(w, { noTW: true })}
     ${typedNote}
     ${why ? `<div class="label">Why the others don’t fit</div><div class="why">${why}</div>` : ''}
     <div id="qaiout"></div>
@@ -861,8 +906,9 @@ async function aiExplainQuiz(it) {
   out.innerHTML = '<div class="small muted">Asking Claude…</div>';
   const w = it.w; const opts = it.opts.map(o => `${o.w} (${o.py}): ${o.m}`).join('\n');
   try {
-    const r = await sample(`You are a concise Mandarin tutor for an intermediate (HSK 5) learner. Explain in English, in at most 120 words, why "${w.w}" is the best answer and why each other option doesn't fit. Mention register or collocation differences where relevant. Use Chinese characters for any words you cite.\n\nQuestion type: ${QTYPES[it.t]}\nSentence: ${lastLine(w)}\nCorrect: ${w.w} — ${w.m}\nOptions:\n${opts}`, { modelTier: 'quick', onText: ({ text }) => { out.innerHTML = `<div class="note small">${esc(text)}</div>`; } });
-    out.innerHTML = `<div class="note small">${esc(r.text)}<div class="muted" style="margin-top:4px">AI explanation · check anything surprising with the word card</div></div>`;
+    const r = await sample(`You are a concise Mandarin tutor for an intermediate (HSK 5) learner. Explain in English, in at most 120 words, why "${w.w}" is the best answer and why each other option doesn't fit. Mention register or collocation differences where relevant. Use Chinese characters for any words you cite.\n\nQuestion type: ${QTYPES[it.t]}\nSentence: ${lastLine(it.x)}\nCorrect: ${w.w} — ${w.m}\nOptions:\n${opts}`, { modelTier: 'quick', onText: ({ text }) => { out.innerHTML = `<div class="note small">${esc(text)}</div>`; } });
+    await loadPyLib();
+    out.innerHTML = `<div class="note small">${annZh(r.text)}<div class="muted" style="margin-top:4px">AI explanation · check anything surprising with the word card</div></div>`;
   } catch (e) { out.innerHTML = `<div class="small muted">${aiErr(e)}</div>`; }
 }
 
@@ -903,6 +949,7 @@ function nextWordId(type) {
   let ids = writeCtx?.ids?.length ? writeCtx.ids : writingPool().ids;
   if (writeCtx?.fromSession) { const today = W.filter(w => S.srs[w.id] && todayKey(S.srs[w.id].last) === todayKey()).map(w => w.id); if (today.length) ids = today; }
   if (type === 'colloc') ids = ids.filter(id => W[id].col.length);
+  if (type === 'complete') { const f = ids.filter(id => W[id].ex.some(x => x.bp)); if (f.length) ids = f; }
   const recent = S.wlog.slice(-8).map(x => x.w);
   const cand = ids.filter(id => !recent.includes(id));
   const list = cand.length ? cand : ids;
@@ -914,62 +961,67 @@ function makeExercise() {
   if (type === 'combine') { const recent = S.wlog.filter(x => x.t === 'combine').slice(-10).map(x => x.k); const pool = D.combine.map((c, i) => i).filter(i => !recent.includes('c' + i)); const i = pick(pool.length ? pool : D.combine.map((c, i) => i)); return { type, lv, key: 'c' + i, item: D.combine[i], tries: [] }; }
   if (type === 'prompt') { const recent = S.wlog.filter(x => x.t === 'prompt').slice(-12).map(x => x.k); const pool = D.prompts.filter(p => !recent.includes(p.id)); const p = pick(pool.length ? pool : D.prompts); return { type, lv, key: p.id, item: p, tries: [] }; }
   const id = nextWordId(type); const w = W[id];
-  const ex = { type, lv, key: type + ':' + id, w, tries: [] };
-  if (type === 'scramble') { let toks = w.tok.filter(t => !/^[，。！？、；：,.!?]$/.test(t)); ex.punct = (lastLine(w).match(/[。！？]$/) || ['。'])[0]; ex.answerToks = toks; let sh = shuffle(toks.map((t, i) => ({ t, i }))); for (let k = 0; k < 4 && sh.every((x, j) => x.i === j); k++) sh = shuffle(sh); ex.shuffled = sh; ex.built = []; }
+  const x = makeExercise.xi != null ? w.ex[makeExercise.xi] || w.ex[0] : pickX(w, { cloze: type === 'complete' });
+  const ex = { type, lv, key: type + ':' + id + ':' + xIndex(w, x), w, x, tries: [] };
+  if (type === 'scramble') { const toks = x.tok; ex.punct = (lastLine(x).match(/[。！？]$/) || ['。'])[0]; ex.answerToks = toks.map(t => t[0]); let sh = shuffle(toks.map(([t, py], i) => ({ t, py, i }))); for (let k = 0; k < 4 && sh.every((q, j) => q.i === j); k++) sh = shuffle(sh); ex.shuffled = sh; ex.built = []; }
   if (type === 'colloc') ex.coll = pick(w.col);
   return ex;
 }
 function hintsFor(ex) {
   const w = ex.w, lv = ex.lv; const h = [];
-  const wordHint = full => full ? `<span class="han" style="font-size:1.2rem">${esc(w.w)}</span> ${pyHTML(w.py)} <span class="muted">· ${esc(w.m)}</span>` : `<span class="han" style="font-size:1.2rem">${esc(w.w)}</span>`;
-  if (ex.type === 'translate') { if (lv === 1) { h.push('Use: ' + wordHint(true)); h.push('Useful combinations: ' + w.col.map(c => `<span class="zh">${esc(c.z)}</span>`).join(' · ')); } else if (lv === 2) h.push('Use: ' + wordHint(false)); else h.push('Use a Level 5 word that fits.'); }
-  if (ex.type === 'scramble') { if (lv <= 2) h.push('Meaning: ' + esc(lastEn(w))); if (lv === 1) h.push(`Starts with: <span class="zh">${esc(ex.answerToks[0])}</span>`); }
-  if (ex.type === 'complete') { if (lv <= 2) h.push('Meaning: ' + esc(lastEn(w))); if (lv === 1) h.push(`The missing word starts with <span class="han">${esc([...w.w][0])}</span> and is pronounced ${esc(w.py)}.`); }
-  if (ex.type === 'colloc') { if (lv === 1) { h.push(`Meaning: ${esc(w.w)} = ${esc(w.m)}`); h.push(`Model: <span class="zh">${esc(lastLine(w))}</span>`); } else if (lv === 2) h.push(`Meaning: ${esc(w.w)} = ${esc(w.m)}`); }
-  if (ex.type === 'combine') { if (lv <= 2) h.push(`Connector: <span class="zh">${esc(ex.item.conn)}</span>`); if (lv === 1) h.push('Meaning: ' + esc(ex.item.en)); }
-  if (ex.type === 'prompt') { if (lv <= 2) h.push('Try to use: ' + ex.item.targets.map(t => `<span class="zh">${esc(t)}</span>`).join(' · ')); if (lv === 1) h.push(`Opening idea: <span class="zh">${esc(ex.item.model.split(/[，。]/)[0])}…</span>`); }
+  const x = ex.x;
+  const wordHint = full => `<span class="han" style="font-size:1.2rem">${esc(w.w)}</span> ${pyHTML(w.py, 'inl')}${full ? ` <span class="muted">· ${esc(w.m)}</span>` : ''}`;
+  if (ex.type === 'translate') { if (lv === 1) { h.push('Use: ' + wordHint(true)); h.push('Useful combinations: ' + w.col.map(c => `<span class="zh">${esc(c.z)}</span> ${pyHTML(c.p, 'inl')}`).join(' · ')); } else if (lv === 2) h.push('Use: ' + wordHint(false)); else h.push('Use a Level 5 word that fits.'); }
+  if (ex.type === 'scramble') { if (lv <= 2) h.push('Meaning: ' + esc(lastEn(x))); if (lv === 1) h.push(`Starts with: <span class="zh">${esc(ex.answerToks[0])}</span> ${pyHTML(x.tok[0][1], 'inl')}`); }
+  if (ex.type === 'complete') { if (lv <= 2) h.push('Meaning: ' + esc(lastEn(x))); if (lv === 1) h.push(`The missing word starts with <span class="han">${esc([...w.w][0])}</span> ${pyHTML((w.syl || [])[0] || '', 'inl')} and the whole word is pronounced ${esc(w.py)}.`); }
+  if (ex.type === 'colloc') { if (lv === 1) { h.push(`Meaning: <span class="zh">${esc(w.w)}</span> ${pyHTML(w.py, 'inl')} = ${esc(w.m)}`); h.push(`Model: <span class="zh">${esc(lastLine(x))}</span> ${pyHTML(lastPy(x), 'inl')}`); } else if (lv === 2) h.push(`Meaning: <span class="zh">${esc(w.w)}</span> ${pyHTML(w.py, 'inl')} = ${esc(w.m)}`); }
+  if (ex.type === 'combine') { if (lv <= 2) h.push(`Connector: <span class="zh">${esc(ex.item.conn)}</span> ${pyHTML(ex.item.cp, 'inl')}`); if (lv === 1) h.push('Meaning: ' + esc(ex.item.en)); }
+  if (ex.type === 'prompt') { if (lv <= 2) h.push('Try to use: ' + ex.item.targets.map((t, i) => `<span class="zh">${esc(t)}</span> ${pyHTML(ex.item.tp[i], 'inl')}`).join(' · ')); if (lv === 1) { const open = ex.item.model.split(/[，。]/)[0]; h.push(`Opening idea: <span class="zh">${esc(open)}…</span> ${pyHTML(pyOf(open), 'inl')}`); } }
   return h;
 }
 function taskText(ex) {
   const w = ex.w;
-  if (ex.type === 'translate') return { label: 'Translate into natural Chinese', body: `<div style="font-size:1.15rem">“${esc(lastEn(w))}”</div>` };
+  const x = ex.x;
+  if (ex.type === 'translate') return { label: 'Translate into natural Chinese', body: `<div style="font-size:1.15rem">“${esc(lastEn(x))}”</div>` };
   if (ex.type === 'scramble') return { label: 'Put the words in order', body: '' };
-  if (ex.type === 'complete') { const s = lastLine(w); return { label: 'Fill in the blank', body: `<div class="q-zh">${s.includes(w.w) ? esc(s).split(esc(w.w)).join('<span class="blank">？</span>') : esc(s)}</div>` }; }
+  if (ex.type === 'complete') { const s = lastLine(x); return { label: 'Fill in the blank', body: `<div class="q-zh">${s.includes(w.w) ? esc(s).split(esc(w.w)).join('<span class="blank">？</span>') : esc(s)}</div><div>${pyHTML(x.bp)}</div>` }; }
   if (ex.type === 'colloc') return { label: 'Write your own sentence using this combination', body: `<div class="row"><span class="zhbig" style="font-size:1.5rem">${esc(ex.coll.z)}</span>${pyHTML(ex.coll.p)}</div>` };
-  if (ex.type === 'combine') return { label: 'Combine into one natural sentence', body: `<ol class="zhbig" style="margin:0;padding-left:1.3em">${ex.item.parts.map(p => `<li>${esc(p)}</li>`).join('')}</ol>` };
-  return { label: { reply: 'Reply', opinion: 'Give your opinion', message: 'Write a short message', describe: 'Describe' }[ex.item.type] || 'Write', body: `<div style="font-size:1.05rem">${esc(ex.item.en)}</div><div class="zh muted">${esc(ex.item.zh)}</div>` };
+  if (ex.type === 'combine') return { label: 'Combine into one natural sentence', body: `<ol class="zhbig" style="margin:0;padding-left:1.3em">${ex.item.parts.map((p, i) => `<li>${esc(p)}<div>${pyHTML(ex.item.pp[i])}</div></li>`).join('')}</ol>` };
+  return { label: { reply: 'Reply', opinion: 'Give your opinion', message: 'Write a short message', describe: 'Describe' }[ex.item.type] || 'Write', body: `<div style="font-size:1.05rem">${esc(ex.item.en)}</div><div class="zh muted">${esc(ex.item.zh)}</div><div>${pyHTML(ex.item.zp)}</div>` };
 }
 function renderEx() {
   const box = $('#ex'); if (!box) return; const ex = EX; const t = taskText(ex); const hints = hintsFor(ex); const last = ex.tries[ex.tries.length - 1];
   const showModel = !!last;
   let input;
   if (ex.type === 'scramble') {
-    input = `<div class="build" id="build" aria-label="Your sentence">${ex.built.length ? ex.built.map((k, j) => `<button class="tok" data-un="${j}">${esc(ex.shuffled[k].t)}</button>`).join('') : '<span class="small muted">Tap the words below in order. Tap a word here to remove it.</span>'}<span class="zh">${ex.built.length === ex.shuffled.length ? esc(ex.punct) : ''}</span></div>
-    <div class="tokens">${ex.shuffled.map((x, k) => `<button class="tok ${ex.built.includes(k) ? 'used' : ''}" data-tk="${k}">${esc(x.t)}</button>`).join('')}</div>`;
+    input = `<div class="build" id="build" aria-label="Your sentence">${ex.built.length ? ex.built.map((k, j) => `<button class="tok" data-un="${j}">${esc(ex.shuffled[k].t)}${pyHTML(ex.shuffled[k].py, 'tp')}</button>`).join('') : '<span class="small muted">Tap the words below in order. Tap a word here to remove it.</span>'}<span class="zh">${ex.built.length === ex.shuffled.length ? esc(ex.punct) : ''}</span></div>
+    <div class="tokens">${ex.shuffled.map((q, k) => `<button class="tok ${ex.built.includes(k) ? 'used' : ''}" data-tk="${k}">${esc(q.t)}${pyHTML(q.py, 'tp')}</button>`).join('')}</div>`;
   } else if (ex.type === 'complete') input = `<input type="text" id="win" class="zhin" placeholder="Type the missing word" autocomplete="off" aria-label="Your answer">`;
   else input = `<textarea id="win" placeholder="用中文写…" aria-label="Your answer"></textarea>`;
   box.innerHTML = `<section class="card">
     <div class="head"><span class="chip acc">${WTYPES[ex.type]}</span><span class="levels" title="Hint level">${[1, 2, 3].map(l => `<button type="button" class="lvl ${l <= ex.lv ? 'on' : ''}" data-lv="${l}" aria-label="${LEVELNAME[l]}" style="border:0;cursor:pointer"></button>`).join('')}</span><span class="small muted">${LEVELNAME[ex.lv]}</span>
-      <span class="sp"></span>${ex.w ? `<button class="btn ghost sm" data-w="${ex.w.id}">Word card</button>` : '<span class="chip" title="Exercise written for this app, beyond the word list">Extra exercise</span>'}</div>
+      <span class="sp"></span>${S.set.pinyin === 'hidden' ? '<button class="btn ghost sm" id="wshowpy">Show pinyin</button>' : ''}${ex.w ? `<button class="btn ghost sm" data-w="${ex.w.id}">Word card</button>` : '<span class="chip" title="Exercise written for this app, beyond the word list">Extra exercise</span>'}</div>
     <div class="stack" style="gap:8px"><span class="label">${t.label}</span>${t.body}</div>
     ${hints.length ? `<div class="stack small" style="gap:4px">${hints.map(h => `<div>${h}</div>`).join('')}</div>` : ''}
     ${input}
     <div class="row"><button class="btn primary" id="wsubmit">${ex.tries.length ? 'Submit again' : 'Submit'} <span class="k kbd-hint">Ctrl+Enter</span></button><button class="btn ghost" id="wskip">${ex.tries.length ? 'Next exercise' : 'Skip'}</button></div>
+    ${last && ex.type !== 'scramble' ? `<div class="small"><span class="muted">Your answer:</span> <span class="zh">${esc(last.a)}</span> ${pyHTML(pyOf(last.a), 'inl')}</div>` : ''}
     <div id="wfb">${last ? feedbackHTML(ex, last) : ''}</div>
     ${showModel ? `<div class="ex"><span class="label">Suggested answer</span><div class="zhbig">${esc(modelOf(ex))}</div><div>${pyHTML(modelPy(ex))}</div>${ex.w ? audioBtns(modelOf(ex), 'Listen') : ''}</div>` : ''}
-    ${ex.tries.length > 1 ? `<details class="small"><summary>Earlier tries on this exercise (${ex.tries.length - 1})</summary>${ex.tries.slice(0, -1).map(tr => `<div class="zh" style="margin-top:6px">${esc(tr.a)} <span class="chip ${verdictChip(tr.v)}">${verdictLabel(tr.v)}</span></div>`).join('')}</details>` : ''}
+    ${ex.tries.length > 1 ? `<details class="small"><summary>Earlier tries on this exercise (${ex.tries.length - 1})</summary>${ex.tries.slice(0, -1).map(tr => `<div style="margin-top:6px"><span class="zh">${esc(tr.a)}</span> <span class="chip ${verdictChip(tr.v)}">${verdictLabel(tr.v)}</span><div>${pyHTML(pyOf(tr.a))}</div></div>`).join('')}</details>` : ''}
   </section>`;
-  $$('[data-tk]', box).forEach(b => b.onclick = () => { ex.built.push(+b.dataset.tk); renderEx(); });
-  $$('[data-un]', box).forEach(b => b.onclick = () => { ex.built.splice(+b.dataset.un, 1); renderEx(); });
+  $$('[data-tk]', box).forEach(b => b.onclick = e => { if (revealPy(e)) return; ex.built.push(+b.dataset.tk); renderEx(); });
+  $$('[data-un]', box).forEach(b => b.onclick = e => { if (revealPy(e)) return; ex.built.splice(+b.dataset.un, 1); renderEx(); });
   $$('[data-lv]', box).forEach(b => b.onclick = () => { ex.lv = +b.dataset.lv; S.wlevel[ex.type] = ex.lv; save(); renderEx(); });
   $$('[data-w]', box).forEach(b => b.onclick = () => openWord(+b.dataset.w));
   $('#wsubmit').onclick = submitWriting;
+  const sp = $('#wshowpy'); if (sp) sp.onclick = () => $$('.py.hid', box).forEach(p => p.classList.remove('hid'));
   $('#wskip').onclick = () => { EX = makeExercise(); renderEx(); };
   const inp = $('#win'); if (inp) { inp.onkeydown = e => { if (e.key === 'Enter' && (e.ctrlKey || e.metaKey || ex.type === 'complete')) { e.preventDefault(); submitWriting(); } }; if (!last) inp.focus(); }
   const aic = $('#aicheck'); if (aic) aic.onclick = () => runAI(ex, last, true);
 }
-const modelOf = ex => ex.type === 'combine' || ex.type === 'prompt' ? ex.item.model : ex.type === 'colloc' ? lastLine(ex.w) : lastLine(ex.w);
-const modelPy = ex => ex.type === 'combine' || ex.type === 'prompt' ? ex.item.mp : ex.w.exP[ex.w.exP.length - 1];
+const modelOf = ex => ex.type === 'combine' || ex.type === 'prompt' ? ex.item.model : lastLine(ex.x);
+const modelPy = ex => ex.type === 'combine' || ex.type === 'prompt' ? ex.item.mp : lastPy(ex.x);
 const verdictLabel = v => ({ correct: 'Correct', minor: 'Small issues', major: 'Needs work', self_good: 'Self-check: got it', self_part: 'Self-check: partly', self_miss: 'Self-check: missed', exact: 'Exact match', diff: 'Different from original' }[v] || v);
 const verdictChip = v => /correct|exact|self_good/.test(v) ? 'acc' : /minor|part|diff/.test(v) ? 'warn' : 'bad';
 function answerText(ex) { if (ex.type === 'scramble') return ex.built.map(k => ex.shuffled[k].t).join('') + (ex.built.length === ex.shuffled.length ? ex.punct : ''); return ($('#win')?.value || '').trim(); }
@@ -978,7 +1030,7 @@ async function submitWriting() {
   if (ex.type === 'scramble' && ex.built.length < ex.shuffled.length) { toast('Use all the words'); return; }
   const tr = { a, ts: Date.now() }; ex.tries.push(tr);
   if (ex.type === 'scramble' || ex.type === 'complete') {
-    const ok = ex.type === 'scramble' ? zhOnly(a) === zhOnly(lastLine(ex.w)) : zhOnly(a) === ex.w.w;
+    const ok = ex.type === 'scramble' ? zhOnly(a) === zhOnly(lastLine(ex.x)) : zhOnly(a) === ex.w.w;
     tr.v = ok ? 'exact' : 'diff'; tr.method = 'exact';
     finishTry(ex, tr); return;
   }
@@ -988,7 +1040,7 @@ async function runAI(ex, tr, isRecheck) {
   const fbBox = $('#wfb'); const sample = await getSample();
   if (!sample) { tr.method = 'self'; tr.v = isRecheck ? tr.v : 'self_pending'; tr.aiMsg = aiUnavailableMsg(); renderEx(); return; }
   fbBox.innerHTML = '<div class="small muted">Claude is reading your answer…</div>';
-  const task = { translate: `Translate into natural Chinese: "${lastEn(ex.w)}". The learner should try to use ${ex.w?.w} (${ex.w?.m}).`, scramble: `Reorder these words into a sentence: ${ex.answerToks?.join(' / ')}`, complete: `Fill the blank in: ${lastLine(ex.w).replace(ex.w.w, '＿＿')}`, colloc: `Write an original sentence using the combination "${ex.coll?.z}" (${ex.w?.w}: ${ex.w?.m}).`, combine: `Combine into one natural sentence, using a suitable connector: ${ex.item?.parts?.join(' ')}`, prompt: `Writing prompt: ${ex.item?.en}` }[ex.type];
+  const task = { translate: `Translate into natural Chinese: "${ex.x ? lastEn(ex.x) : ''}". The learner should try to use ${ex.w?.w} (${ex.w?.m}).`, scramble: `Reorder these words into a sentence: ${ex.answerToks?.join(' / ')}`, complete: `Fill the blank in: ${ex.x ? lastLine(ex.x).split(ex.w.w).join('＿＿') : ''}`, colloc: `Write an original sentence using the combination "${ex.coll?.z}" (${ex.w?.w}: ${ex.w?.m}).`, combine: `Combine into one natural sentence, using a suitable connector: ${ex.item?.parts?.join(' ')}`, prompt: `Writing prompt: ${ex.item?.en}` }[ex.type];
   const target = ex.type === 'combine' ? `connector such as ${ex.item.conn}` : ex.type === 'prompt' ? ex.item.targets.join('、') : ex.w.w;
   const prompt = `You are a Mandarin writing tutor giving feedback to an intermediate learner (HSK 5, standard mainland Mandarin, simplified characters).
 Task: ${task}
@@ -1001,7 +1053,7 @@ Reply with JSON only, in this shape:
 {"verdict":"correct"|"minor"|"major","used_target":true|false,"vocabulary":"","grammar":"","word_order":"","naturalness":"","corrected":"","natural":"","summary":""}
 Rules: each feedback field is one short English sentence (max 25 words), quoting Chinese where useful; write "Fine." if there is nothing to fix. "corrected" is the learner's sentence with minimal edits (identical if already correct). "natural" is a more natural native-sounding alternative, or "" if the answer is already natural. "summary" is one encouraging sentence in English. "minor" = understandable with small slips; "major" = meaning unclear, wrong grammar, or task not done.`;
   try {
-    const r = await sample.json(prompt, { modelTier: 'default' });
+    const r = await sample.json(prompt, { modelTier: 'default' }); await loadPyLib();
     tr.fb = r; tr.v = ['correct', 'minor', 'major'].includes(r.verdict) ? r.verdict : 'minor'; tr.method = 'ai';
     finishTry(ex, tr);
   } catch (e) { tr.method = 'self'; tr.aiMsg = aiErr(e); if (!isRecheck) tr.v = 'self_pending'; renderEx(); }
@@ -1018,21 +1070,21 @@ function finishTry(ex, tr) {
   if (S.wlog.length > 600) S.wlog = S.wlog.slice(-600);
   logHist('w'); save(); renderEx();
 }
-function taskSummary(ex) { if (ex.type === 'combine') return ex.item.parts.join(' '); if (ex.type === 'prompt') return ex.item.en; if (ex.type === 'colloc') return 'Use ' + ex.coll.z; if (ex.type === 'translate') return lastEn(ex.w); if (ex.type === 'complete') return lastLine(ex.w).replace(ex.w.w, '＿'); return ex.answerToks.join(' / '); }
+function taskSummary(ex) { if (ex.type === 'combine') return ex.item.parts.join(' '); if (ex.type === 'prompt') return ex.item.en; if (ex.type === 'colloc') return 'Use ' + ex.coll.z; if (ex.type === 'translate') return lastEn(ex.x); if (ex.type === 'complete') return lastLine(ex.x).split(ex.w.w).join('＿'); return ex.answerToks.join(' / '); }
 function feedbackHTML(ex, tr) {
   if (tr.v === 'pending') return '<div class="small muted">Checking…</div>';
   if (tr.method === 'exact') {
     const ok = tr.v === 'exact';
     return `<div class="ex stack"><div class="verdict ${ok ? 'ok' : 'mid'}">${ok ? 'Matches the original sentence' : ex.type === 'complete' ? 'Not the word this sentence was written with' : 'Your order is different from the original'} <span class="chip">exact-match check</span></div>
-      ${ok ? '' : `<div class="small">${ex.type === 'complete' ? `The missing word is <span class="han">${esc(ex.w.w)}</span>.` : 'Chinese sometimes allows other orders, such as moving a time phrase.'} An exact-match check can’t tell whether your version is also correct.</div>${S.set.ai ? '<button class="btn sm" id="aicheck">Ask AI whether mine also works</button>' : ''}`}</div>`;
+      ${ok ? '' : `<div class="small">${ex.type === 'complete' ? `The missing word is <span class="han">${esc(ex.w.w)}</span> ${pyHTML(ex.w.py, 'inl')}.` : 'Chinese sometimes allows other orders, such as moving a time phrase.'} An exact-match check can’t tell whether your version is also correct.</div>${S.set.ai ? '<button class="btn sm" id="aicheck">Ask AI whether mine also works</button>' : ''}`}</div>`;
   }
   if (tr.method === 'ai' && tr.fb) {
     const f = tr.fb; const v = tr.v;
     return `<div class="ex stack"><div class="verdict ${v === 'correct' ? 'ok' : v === 'minor' ? 'mid' : 'no'}">${verdictLabel(v)} <span class="chip">AI feedback</span>${ex.type !== 'combine' && f.used_target === false ? ' <span class="chip warn">target not used</span>' : ''}</div>
-      ${f.summary ? `<div>${esc(f.summary)}</div>` : ''}
-      <dl class="fb"><dt>Vocabulary</dt><dd>${esc(f.vocabulary)}</dd><dt>Grammar</dt><dd>${esc(f.grammar)}</dd><dt>Word order</dt><dd>${esc(f.word_order)}</dd><dt>Naturalness</dt><dd>${esc(f.naturalness)}</dd></dl>
-      ${f.corrected && zhOnly(f.corrected) !== zhOnly(tr.a) ? `<div><span class="label">Corrected (your meaning)</span><div class="zhbig">${esc(f.corrected)}</div></div>` : ''}
-      ${f.natural ? `<div><span class="label">More natural</span><div class="zhbig">${esc(f.natural)}</div></div>` : ''}
+      ${f.summary ? `<div>${annZh(f.summary)}</div>` : ''}
+      <dl class="fb"><dt>Vocabulary</dt><dd>${annZh(f.vocabulary)}</dd><dt>Grammar</dt><dd>${annZh(f.grammar)}</dd><dt>Word order</dt><dd>${annZh(f.word_order)}</dd><dt>Naturalness</dt><dd>${annZh(f.naturalness)}</dd></dl>
+      ${f.corrected && zhOnly(f.corrected) !== zhOnly(tr.a) ? `<div><span class="label">Corrected (your meaning)</span>${zhLine(f.corrected)}</div>` : ''}
+      ${f.natural ? `<div><span class="label">More natural</span>${zhLine(f.natural)}</div>` : ''}
       <div class="small muted">Edit your answer above and submit again, or move on.</div></div>`;
   }
   // self-check (no AI)
@@ -1051,8 +1103,8 @@ function renderWLog(box) {
   box.innerHTML = `<div class="row"><div class="seg" role="group" aria-label="Filter">${[['all', 'All'], ['work', 'Needs work'], ['improved', 'Improved on retry']].map(([k, l]) => `<button type="button" data-lf="${k}" aria-pressed="${f === k}">${l}</button>`).join('')}</div></div>
   ${list.length ? `<div class="stack">${list.slice(0, 150).map(x => `<div class="panel tight stack" style="gap:6px">
     <div class="row small"><span class="chip">${WTYPES[x.t]}</span><span class="chip ${verdictChip(x.v)}">${verdictLabel(x.v)}</span>${x.tryN > 1 ? `<span class="chip">try ${x.tryN}</span>` : ''}<span class="muted" style="margin-left:auto">${new Date(x.ts).toLocaleDateString()}</span></div>
-    <div class="small muted">${esc(x.q)}</div><div class="zhbig">${esc(x.a)}</div>
-    ${x.fb ? `${x.fb.c && zhOnly(x.fb.c) !== zhOnly(x.a) ? `<div class="small"><b>Corrected:</b> <span class="zh">${esc(x.fb.c)}</span></div>` : ''}${x.fb.n ? `<div class="small"><b>More natural:</b> <span class="zh">${esc(x.fb.n)}</span></div>` : ''}${[x.fb.g, x.fb.vo, x.fb.o, x.fb.na].filter(t => t && !/^fine\.?$/i.test(t)).map(t => `<div class="small muted">· ${esc(t)}</div>`).join('')}` : ''}
+    <div class="small muted">${annZh(x.q)}</div>${zhLine(x.a)}
+    ${x.fb ? `${x.fb.c && zhOnly(x.fb.c) !== zhOnly(x.a) ? `<div class="small"><b>Corrected:</b> <span class="zh">${esc(x.fb.c)}</span> ${pyHTML(pyOf(x.fb.c), 'inl')}</div>` : ''}${x.fb.n ? `<div class="small"><b>More natural:</b> <span class="zh">${esc(x.fb.n)}</span> ${pyHTML(pyOf(x.fb.n), 'inl')}</div>` : ''}${[x.fb.g, x.fb.vo, x.fb.o, x.fb.na].filter(t => t && !/^fine\.?$/i.test(t)).map(t => `<div class="small muted">· ${annZh(t)}</div>`).join('')}` : ''}
     <div><button class="btn sm" data-retry="${esc(x.k)}">Retry this</button></div></div>`).join('')}</div>` : '<div class="panel muted">Your answers and feedback are saved here, so you can look back at mistakes and see what improved.</div>'}`;
   $$('[data-lf]', box).forEach(b => b.onclick = () => { renderWLog.f = b.dataset.lf; renderWLog(box); });
   $$('[data-retry]', box).forEach(b => b.onclick = () => { EX = exFromKey(b.dataset.retry); wTab = 'practice'; if (EX) { writeType = EX.type; route(); } });
@@ -1060,7 +1112,7 @@ function renderWLog(box) {
 function exFromKey(k) {
   if (/^c\d+$/.test(k)) { const i = +k.slice(1); return { type: 'combine', lv: S.wlevel.combine, key: k, item: D.combine[i], tries: [] }; }
   if (/^p\d+$/.test(k)) { const p = D.prompts.find(x => x.id === k); return p ? { type: 'prompt', lv: S.wlevel.prompt, key: k, item: p, tries: [] } : null; }
-  const [type, id] = k.split(':'); const sv = writeCtx; writeCtx = { ids: [+id] }; const save1 = writeType; writeType = type; const ex = makeExercise(); writeType = save1; writeCtx = sv; return ex;
+  const [type, id, xi] = k.split(':'); const sv = writeCtx; writeCtx = { ids: [+id] }; const save1 = writeType; writeType = type; makeExercise.xi = xi != null ? +xi : 0; const ex = makeExercise(); makeExercise.xi = null; writeType = save1; writeCtx = sv; return ex;
 }
 
 /* ===== Handwriting ===== */
@@ -1080,14 +1132,14 @@ VIEWS.hand = col => {
   col.innerHTML = `<div class="topbar"><h1>Handwriting</h1></div>
   <div class="panel tight small stack" style="gap:6px"><div><b>Character formation.</b> Watch the stroke order, then write each character in the grid: trace the first two, then write the rest from memory. The app shows you what to write and how many times. It does not grade your handwriting.</div><div class="muted">Writing whole sentences is practised separately under <a href="#write">Writing</a>, by typing.</div></div>
   <div class="row"><label class="small muted" for="hsrc">Words from</label><select id="hsrc">${[['today', 'Studied today'], ['due', 'Due today'], ['bm', 'Bookmarked'], ['weak', 'Struggled with'], ['core', 'Core Level 5 words']].map(([k, l]) => `<option value="${k}" ${src === k ? 'selected' : ''}>${l} (${lists[k].length})</option>`).join('')}</select>
-    <select id="hword" aria-label="Word">${ids.slice(0, 300).map(i => `<option value="${i}" ${i === id ? 'selected' : ''}>${esc(W[i].w)} · ${esc(W[i].m.split(';')[0].slice(0, 30))}</option>`).join('')}</select>
+    <select id="hword" aria-label="Word">${ids.slice(0, 300).map(i => `<option value="${i}" ${i === id ? 'selected' : ''}>${esc(W[i].w)} ${esc(W[i].py)} · ${esc(W[i].m.split(';')[0].slice(0, 30))}</option>`).join('')}</select>
     <label class="small muted">Times <select id="hreps">${[3, 5, 8, 10].map(n => `<option ${n === reps ? 'selected' : ''}>${n}</option>`).join('')}</select></label></div>
   <section class="card">
     <div class="head"><span class="han" style="font-size:2rem">${esc(w.w)}</span>${pyHTML(w.py)}<span class="muted">${esc(w.m)}</span><span class="sp"></span>${audioBtns(w.w)}</div>
-    <div class="small"><b>Write ${chars.map(c => `<span class="han">${esc(c)}</span>`).join(' ')} ${reps} times each.</b> ${S.hand[id] ? `<span class="muted">You’ve practised this word ${S.hand[id].n} time${S.hand[id].n > 1 ? 's' : ''}.</span>` : ''}</div>
+    <div class="small"><b>Write ${chars.map((c, ci) => `<span class="han">${esc(c)}</span>${w.syl ? ` (${esc(w.syl[ci])})` : ''}`).join(' ')} ${reps} times each.</b> ${S.hand[id] ? `<span class="muted">You’ve practised this word ${S.hand[id].n} time${S.hand[id].n > 1 ? 's' : ''}.</span>` : ''}</div>
     ${chars.map((c, ci) => `<div class="stack" style="gap:8px">
       <div class="row"><div class="tzg" id="anim${ci}"><div class="w"></div></div>
-        <div class="stack" style="gap:6px"><div class="han" style="font-size:1.3rem">${esc(c)}</div><div class="small muted" id="sc${ci}">Loading strokes…</div>
+        <div class="stack" style="gap:6px"><div><span class="han" style="font-size:1.3rem">${esc(c)}</span> ${pyHTML((w.syl || [])[ci] || '', 'inl')}</div><div class="small muted" id="sc${ci}">Loading strokes…</div>
         <div class="row"><button class="btn sm" data-anim="${ci}">Play stroke order</button><button class="btn sm ghost" data-step="${ci}">Next stroke</button></div></div></div>
       <div class="practice">${Array.from({ length: reps }, (_, k) => `<div class="cellwrap"><div class="tzg sm" id="cell${ci}_${k}"><div class="w"></div><canvas aria-label="Practice square ${k + 1}"></canvas></div>${k < 2 ? 'trace' : k + 1}</div>`).join('')}</div>
     </div>`).join('<hr class="sep">')}
@@ -1173,11 +1225,11 @@ VIEWS.progress = col => {
     <div style="overflow-x:auto"><table class="t"><thead><tr><th>Exercise</th><th>Answers</th><th>Hint level</th></tr></thead><tbody>${byType.map(x => `<tr><td>${WTYPES[x.k]}</td><td class="tabnum">${x.n}</td><td>${LEVELNAME[x.lv]}</td></tr>`).join('')}</tbody></table></div>
     <div class="small muted">${Object.keys(S.hand).length} words practised in handwriting.</div></section>
   <section class="panel stack"><h2>Bookmarks (${Object.keys(S.bm).length})</h2>
-    <div class="row">${Object.keys(S.bm).map(Number).map(i => `<button class="chip" data-w="${i}" style="cursor:pointer"><span class="han">${esc(W[i].w)}</span></button>`).join('') || '<span class="small muted">Press B on any card to bookmark it.</span>'}</div></section>
+    <div class="row">${Object.keys(S.bm).map(Number).map(i => `<button class="chip" data-w="${i}" style="cursor:pointer"><span class="han">${esc(W[i].w)}</span> ${pyHTML(W[i].py, 'inl')}</button>`).join('') || '<span class="small muted">Press B on any card to bookmark it.</span>'}</div></section>
   <section class="panel stack"><h2>Backup</h2>
     <div class="small muted">Your progress is saved automatically. You can also copy a backup to move it somewhere else.</div>
     <div class="row"><button class="btn sm" id="bcopy">Copy backup</button><button class="btn sm" id="bimp">Restore from backup…</button><button class="btn sm ghost" id="breset">Reset all progress…</button></div><div id="bbox"></div></section>`;
-  $$('[data-w]', col).forEach(b => b.onclick = () => openWord(+b.dataset.w));
+  $$('[data-w]', col).forEach(b => b.onclick = e => { if (revealPy(e)) return; openWord(+b.dataset.w); });
   $('#bcopy').onclick = async () => { const t = JSON.stringify(S); try { await navigator.clipboard.writeText(t); toast('Backup copied'); } catch (e) { $('#bbox').innerHTML = `<textarea readonly id="bt">${esc(t)}</textarea>`; $('#bt').select(); toast('Select and copy the text'); } };
   $('#bimp').onclick = () => { $('#bbox').innerHTML = `<textarea id="bt" placeholder="Paste a backup here"></textarea><div class="row"><button class="btn sm primary" id="bdo">Restore</button></div>`; $('#bdo').onclick = () => { try { const s = JSON.parse($('#bt').value); if (s.v !== 1 || !s.srs) throw 0; S = Object.assign(fresh(), s, { set: Object.assign(fresh().set, s.set) }); save(); toast('Progress restored'); route(); } catch (e) { toast('That doesn’t look like a backup from this app'); } }; };
   $('#breset').onclick = () => { $('#bbox').innerHTML = `<div class="banner">This deletes all reviews, writing answers and bookmarks. <button class="btn sm" id="bconf">Yes, reset everything</button></div>`; $('#bconf').onclick = () => { const set = S.set; S = fresh(); S.set = set; save(); toast('Progress reset'); route(); }; };
@@ -1200,7 +1252,7 @@ VIEWS.settings = col => {
     <label class="row"><span style="min-width:170px">Slow speed</span><input type="range" id="srs" min="0.3" max="0.8" step="0.05" value="${S.set.rateS}" style="width:180px"><span class="tabnum small">${S.set.rateS}×</span></label></section>
   <section class="panel stack small"><h2>About the vocabulary</h2>
     <p><b>Syllabus.</b> HSK 3.0, using the exam syllabus that CTI/CLEC released in November 2025. The first official HSK 3.0 exams (Levels 1–6) are scheduled for 13 December 2026. This app covers all <b>${W.length}</b> words that are new at Level 5. The cumulative total for Levels 1–5 is about 3,500. Levels 1–4 (${D.earlier.length} words) appear in the Word list as a reference that isn’t scheduled for review.</p>
-    <p><b>Source.</b> The word list and part-of-speech data come from the open <a href="https://github.com/drkameleon/complete-hsk-vocabulary" target="_blank" rel="noopener">complete-hsk-vocabulary</a> dataset (its “newest” HSK 3.0 lists, which follow the 2025 syllabus). Its definitions come from CC-CEDICT. The English meanings, example sentences and dialogues, register labels, topics, combinations, usage notes and Taiwan notes in this app were written for it. Learning difficulty comes from the dataset’s word-frequency ranking (Core = most frequent third).</p>
+    <p><b>Source.</b> The word list and part-of-speech data come from the open <a href="https://github.com/drkameleon/complete-hsk-vocabulary" target="_blank" rel="noopener">complete-hsk-vocabulary</a> dataset (its “newest” HSK 3.0 lists, which follow the 2025 syllabus). Its definitions come from CC-CEDICT. The English meanings, the three example sentences or dialogues for each word, register labels, topics, combinations, usage notes and Taiwan notes in this app were written for it. Learning difficulty comes from the dataset’s word-frequency ranking (Core = most frequent third).</p>
     <p><b>Beyond the list.</b> The Conversation section, its idioms and set phrases, and the combine-sentence and short-writing exercises are additions to the list and are labelled as such. Example sentences sometimes use words from other levels so they read naturally.</p>
     <p><b>Stroke order</b> comes from <a href="https://github.com/chanind/hanzi-writer-data" target="_blank" rel="noopener">hanzi-writer-data</a> (Arphic Public License, based on Make Me a Hanzi). The animations use Hanzi Writer.</p>
     <p><b>AI feedback.</b> Writing feedback and deeper quiz explanations come from Claude, through this page’s built-in access when you open it in Claude. You don’t need an API key. The first time, Claude asks for permission. Without it, open-ended answers use self-check against a suggested answer, and exact-match checks are labelled as exact-match.</p></section>
@@ -1218,7 +1270,7 @@ function helpTable() {
   <tr><td><kbd>Space</kbd></td><td>Show answer on a flashcard</td></tr>
   <tr><td><kbd>1</kbd>–<kbd>4</kbd></td><td>Again / Difficult / Good / Easy · choose a quiz option</td></tr>
   <tr><td><kbd>P</kbd></td><td>Show pinyin on the current screen</td></tr>
-  <tr><td><kbd>A</kbd> · <kbd>S</kbd> · <kbd>Shift</kbd>+<kbd>S</kbd></td><td>Play word · play sentence · play sentence slowly</td></tr>
+  <tr><td><kbd>A</kbd> · <kbd>S</kbd> · <kbd>Shift</kbd>+<kbd>S</kbd></td><td>Play word · play the first example · play it slowly</td></tr>
   <tr><td><kbd>R</kbd> · <kbd>Shift</kbd>+<kbd>R</kbd></td><td>Replay listening audio · slowly</td></tr>
   <tr><td><kbd>B</kbd></td><td>Bookmark the current card</td></tr>
   <tr><td><kbd>Ctrl</kbd>+<kbd>Enter</kbd></td><td>Submit a writing answer</td></tr>
@@ -1251,8 +1303,8 @@ document.addEventListener('keydown', e => {
     if (k === ' ' || k === 'Enter') { e.preventDefault(); if (!session.shown) { session.shown = true; renderStudy(); } return; }
     if (/^[1-4]$/.test(k) && session.shown) { e.preventDefault(); rate(+k); return; }
     if (k === 'a') { speak(w.w); return; }
-    if (k === 's') { speak(w.ex.join('//')); return; }
-    if (k === 'S') { speak(w.ex.join('//'), true); return; }
+    if (k === 's') { speak(w.ex[0].z.join('//')); return; }
+    if (k === 'S') { speak(w.ex[0].z.join('//'), true); return; }
     if (k === 'b' || k === 'B') { bmToggle(w.id); renderStudy(); return; }
   }
   if (view === 'listen' && LQ) {
@@ -1266,8 +1318,9 @@ document.addEventListener('keydown', e => {
   }
 });
 window.addEventListener('hashchange', route);
+function onPyLib() { if (view === 'write') { if (wTab === 'log') route(); else if (EX) renderEx(); } }
 (function boot() {
-  shell();
+  shell(); loadPyLib();
   if (!W.length) { $('#main').innerHTML = '<div class="col"><div class="banner">The vocabulary file didn’t load. Reload the page to try again.</div></div>'; return; }
   route();
 })();

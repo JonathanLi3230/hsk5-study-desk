@@ -103,7 +103,7 @@ function renderStudy() {
   <article class="card" id="card">
     <div class="head"><span class="chip ${c ? '' : 'acc'}">${c ? statusLabel(cardStatus(c)) : 'New word'}</span>${sched ? '' : '<span class="chip warn" title="This card isn’t due, so your rating won’t change its schedule">Practice only</span>'}
       <span class="sp"></span><button class="btn ghost sm" id="bm" aria-pressed="${!!S.bm[id]}">${S.bm[id] ? '★ Bookmarked' : '☆ Bookmark'} <span class="k kbd-hint">B</span></button></div>
-    ${session.shown ? wordDetail(w) : `<div class="bigword" style="padding:30px 0 10px">${esc(w.w)}</div><div class="row" style="justify-content:center">${audioBtns(w.w, 'Word')}</div><div class="cent muted small">Recall the meaning and pronunciation, then check.</div>`}
+    ${session.shown ? wordDetail(w) : `<div class="bigword" style="padding:30px 0 10px">${esc(w.w)}</div><div class="row" style="justify-content:center">${pyHTML(w.py, 'big')} ${audioBtns(w.w, 'Word')}</div><div class="cent muted small">Recall the meaning and pronunciation, then check.</div>`}
   </article>
   ${session.shown ? `<div class="rate" role="group" aria-label="How well did you know it?">
       <button class="a" data-r="1">Again<small>${pv[0]} · 1</small></button><button class="h" data-r="2">Difficult<small>${pv[1]} · 2</small></button>

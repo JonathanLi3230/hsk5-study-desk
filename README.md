@@ -8,7 +8,7 @@ A browser app for learning the **1,547 words that are new at HSK 3.0 Level 5** (
 - **Every word card has:**
   - pinyin with tone marks, hidden until you tap it or press P (a setting can always show it)
   - a natural English meaning
-  - an example sentence or short dialogue
+  - three example sentences or short dialogues, each with pinyin, a translation and normal or slow audio
   - a register label: formal, neutral, informal or mainly written
   - common word combinations
   - usage notes, including Taiwan usage where it differs
@@ -56,6 +56,7 @@ Audio uses the browser's built-in speech synthesis with a Mandarin (zh-CN) voice
 | Path | What it is |
 |---|---|
 | `content/b00.txt` – `b11.txt` | The authored word cards, one line per word: `word\|pinyin\|meaning\|register\|topic\|example\|translation\|combinations\|note` |
+| `content/s00.txt` – `s11.txt` | Two more example sentences for every word: `word\|sentence\|translation\|sentence\|translation` |
 | `content/extras_pragmatics.txt` | Conversational expressions (beyond the list) |
 | `content/extras_writing.txt` | Sentence-combining exercises and writing prompts |
 | `build.js` | Merges the content with the source word list and generates sentence pinyin, producing `data.js` |
@@ -76,5 +77,5 @@ npm run build    # HSK_SRC=/path/to/complete-hsk-vocabulary to override the sour
 - **Word list:** [complete-hsk-vocabulary](https://github.com/drkameleon/complete-hsk-vocabulary) (MIT), using its "newest" HSK 3.0 lists, which follow the 2025 syllabus. The part-of-speech and frequency data also come from there. Learning difficulty (Core, Common, Less common) is the dataset's frequency rank split into thirds.
 - **Dictionary glosses** for the Level 1–4 reference list come from [CC-CEDICT](https://cc-cedict.org/) (CC BY-SA 4.0), via the dataset above.
 - **Stroke order:** [hanzi-writer-data](https://github.com/chanind/hanzi-writer-data), under the Arphic Public License (see `strokes/ARPHICPL.TXT`). It is based on Make Me a Hanzi. Animations use [Hanzi Writer](https://hanziwriter.org/).
-- **Sentence pinyin:** generated with [pinyin-pro](https://github.com/zh-lx/pinyin-pro). Word pinyin is authored. Sentence pinyin is automatic and may occasionally misread a character with more than one pronunciation.
-- The English meanings, example sentences and dialogues, register labels, topics, combinations, usage notes, conversational expressions and writing exercises were written for this project.
+- **Sentence pinyin:** generated with [pinyin-pro](https://github.com/zh-lx/pinyin-pro) at build time, using the authored word pinyin wherever a Level 5 word appears. Text that only exists at runtime (your answers, AI feedback) gets pinyin in the browser from the same library. Word pinyin is authored. Sentence pinyin is automatic and may occasionally misread a character with more than one pronunciation.
+- The English meanings, the three example sentences or dialogues per word, register labels, topics, combinations, usage notes, conversational expressions and writing exercises were written for this project.

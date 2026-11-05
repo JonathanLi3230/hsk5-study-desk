@@ -24,9 +24,13 @@ function numToMarks(s) { // "an1wei4" -> "ānwèi" for tone-sensitive compare
   });
 }
 const tonedPy = s => numToMarks(String(s).toLowerCase()).normalize('NFC').replace(/[^a-zāáǎàēéěèīíǐìōóǒòūúǔùǖǘǚǜü]/g, '');
-const zhOnly = s => String(s).replace(/[\s，。！？、；：,.!?;:“”"'（）()…—~～·]/g, '');
-const lastLine = w => w.ex[w.ex.length - 1].replace(/^[AB]：/, '');
-const lastEn = w => w.exE[w.exE.length - 1].replace(/^[AB]: /, '');
+const zhOnly = s => String(s).replace(/[\s，。！？、；：,.!?;:“”"'（）()…—~～·《》]/g, '');
+// each word has three examples: { z: Chinese lines, e: English lines, p: pinyin lines, tok: [[word, pinyin]], bp: pinyin with the word blanked }
+const lastLine = x => x.z[x.z.length - 1].replace(/^[AB]：/, '');
+const lastEn = x => x.e[x.e.length - 1].replace(/^[AB]: /, '');
+const lastPy = x => x.p[x.p.length - 1];
+const xIndex = (w, x) => Math.max(0, w.ex.indexOf(x));
+function pickX(w, { cloze = false } = {}) { const pool = cloze ? w.ex.filter(x => x.bp) : w.ex; return pick(pool.length ? pool : w.ex); }
 const isTW = n => /台湾/.test(n);
 
 /* ---------- state ---------- */
@@ -199,14 +203,28 @@ function audioBtns(text, label = '') {
 }
 
 /* ---------- rendering helpers ---------- */
-function pyHTML(py, cls = '') { const hid = S.set.pinyin === 'hidden'; return `<span class="py ${hid ? 'hid' : ''} ${cls}" ${hid ? 'role="button" tabindex="0" title="Show pinyin (P)"' : ''}>${esc(py)}</span>`; }
+function pyHTML(py, cls = '') { if (!py) return ''; const hid = S.set.pinyin === 'hidden'; return `<span class="py ${hid ? 'hid' : ''} ${cls}" ${hid ? 'role="button" tabindex="0" title="Show pinyin (P)"' : ''}>${esc(py)}</span>`; }
 function hlSentence(s, w) { const e = esc(s); const k = esc(w); return e.split(k).join(`<mark>${k}</mark>`); }
 function badgeRow(w) {
   return `<span class="chip acc" title="HSK 3.0 (2025 exam syllabus), new at Level 5">HSK 5 · new</span><span class="chip" title="${esc(REGLONG[w.reg])}">${esc(D.REG[w.reg])}</span><span class="chip">${esc(D.TOPICS[w.t])}</span><span class="chip" title="Learning difficulty from word frequency">${TIER[w.d]}</span>`;
 }
-function wordDetail(w, { forCard = false } = {}) {
-  const notes = w.note ? w.note.split(/(?=台湾：)/).map(n => `<div class="note ${isTW(n) ? 'tw' : ''}">${isTW(n) ? '<b>Taiwan usage · </b>' + esc(n.replace('台湾：', '')) : esc(n)}</div>`).join('') : '';
-  const exs = w.ex.map((s, i) => `<div class="zhl">${hlSentence(s, w.w)}</div><div>${pyHTML(w.exP[i])}</div><div class="en">${esc(w.exE[i] || '')}</div>`).join('');
+function noteHTML(w, { twOnly = false, noTW = false } = {}) {
+  if (!w.noteP || !w.noteP.length) return '';
+  const groups = [[]]; // split the note where a Taiwan usage remark starts
+  w.noteP.forEach((sg, i) => { if (sg[0] === '台湾' && /^：/.test((w.noteP[i + 1] || [''])[0])) groups.push([]); groups[groups.length - 1].push(sg); });
+  return groups.filter(g => g.length).map(g => {
+    const tw = g[0][0] === '台湾'; if ((tw && noTW) || (!tw && twOnly)) return '';
+    const body = (tw ? g.slice(1) : g).map(([t, p], k) => p ? `<span class="zh">${esc(t)}</span>${pyHTML(p, 'inl')}` : esc(k === 0 && tw ? t.replace(/^：/, '') : t)).join('');
+    return `<div class="note ${tw ? 'tw' : ''}">${tw ? '<b>Taiwan usage · </b>' : ''}${body}</div>`;
+  }).join('');
+}
+function zhPy(z, p, cls = 'zh') { return `<span class="${cls}">${esc(z)}</span> ${pyHTML(p)}`; }
+function exampleHTML(x, w, i) {
+  const dlg = x.z.length > 1;
+  return `<div class="exitem"><div class="row" style="justify-content:space-between"><span class="label">${dlg ? 'Dialogue' : 'Example'} ${i + 1}</span>${audioBtns(x.z.join('//'), 'Listen')}</div>
+    ${x.z.map((s, k) => `<div class="zhl">${hlSentence(s, w.w)}</div><div>${pyHTML(x.p[k])}</div><div class="en">${esc(x.e[k] || '')}</div>`).join('')}</div>`;
+}
+function wordDetail(w) {
   return `
   <div class="cent stack" style="gap:6px">
     <div class="bigword">${esc(w.w)}</div>
@@ -214,10 +232,22 @@ function wordDetail(w, { forCard = false } = {}) {
     <div class="mean">${esc(w.m)}</div>
     <div class="row" style="justify-content:center;gap:6px">${badgeRow(w)}</div>
   </div>
-  <div class="ex"><div class="row" style="justify-content:space-between"><span class="label">${w.ex.length > 1 ? 'Dialogue' : 'Example'}</span>${audioBtns(w.ex.join('//'), 'Sentence')}</div>${exs}</div>
+  <div class="ex">${w.ex.map((x, i) => exampleHTML(x, w, i)).join('')}</div>
   <div class="stack" style="gap:6px"><span class="label">Common combinations</span><div class="colls">${w.col.map(c => `<div class="coll"><span class="zh">${esc(c.z)}</span>${pyHTML(c.p)}</div>`).join('')}</div></div>
-  <div class="stack" style="gap:6px"><span class="label">When to use it</span><div class="small">${esc(REGLONG[w.reg])}.</div>${notes}</div>`;
+  <div class="stack" style="gap:6px"><span class="label">When to use it</span><div class="small">${esc(REGLONG[w.reg])}.</div>${noteHTML(w)}</div>`;
 }
+/* runtime pinyin for text that isn't in the data (AI feedback, your answers) */
+let pyLibP = null;
+function loadPyLib() {
+  if (window.pinyinPro) return Promise.resolve();
+  return pyLibP || (pyLibP = new Promise(res => { const sc = document.createElement('script'); sc.src = 'https://cdn.jsdelivr.net/npm/pinyin-pro@3.29.5/dist/index.js'; sc.onload = () => { res(); if (typeof onPyLib === 'function') onPyLib(); }; sc.onerror = () => res(); document.head.appendChild(sc); }));
+}
+function pyOf(t) { try { return window.pinyinPro && /[\u4e00-\u9fff]/.test(t) ? pinyinPro.pinyin(String(t), { nonZh: 'consecutive' }).replace(/\s+([，。！？、；：,.!?])/g, '$1') : ''; } catch (e) { return ''; } }
+function zhLine(t, cls = 'zhbig') { return `<div class="${cls}">${esc(t)}</div>${pyOf(t) ? `<div>${pyHTML(pyOf(t))}</div>` : ''}`; }
+function annZh(t) { // pinyin after each Chinese run inside English text
+  return String(t || '').split(/([\u4e00-\u9fff][\u4e00-\u9fff…]*)/).map((part, i) => i % 2 ? `<span class="zh">${esc(part)}</span>${pyHTML(pyOf(part.replace(/…/g, '')), 'inl')}` : esc(part)).join('');
+}
+function revealPy(e) { const p = e.target.closest('.py.hid'); if (p) { p.classList.remove('hid'); e.stopPropagation(); e.preventDefault(); return true; } return false; }
 let toastT; function toast(msg) { const t = $('#toast'); t.textContent = msg; t.classList.add('on'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('on'), 2200); }
 function bmToggle(id) { if (S.bm[id]) delete S.bm[id]; else S.bm[id] = Date.now(); save(); toast(S.bm[id] ? 'Bookmarked' : 'Bookmark removed'); }
 function statusLabel(st) { return { new: 'New', learning: 'Learning', due: 'Due', review: 'Learned', mastered: 'Mastered' }[st]; }

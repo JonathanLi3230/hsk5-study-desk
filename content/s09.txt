@@ -1,0 +1,130 @@
+系|她是中文系的学生。|She's a student in the Chinese department.|我们俩关系很好。|The two of us are really close.
+系统|手机系统需要更新。|The phone's system needs updating.|这个城市的公交系统很方便。|This city's public transport system is very convenient.
+细节|你要注意工作中的细节。|You need to pay attention to details at work.|我还记得那天的每一个细节。|I still remember every detail of that day.
+西餐|他第一次吃西餐，不会用刀叉。|It was his first time eating Western food, and he couldn't use a knife and fork.|这家西餐厅的牛排很好吃。|The steak at this Western restaurant is great.
+西装|他穿西装看起来很精神。|He looks really sharp in a suit.|我要买一套西装参加婚礼。|I need to buy a suit for the wedding.
+下载|这首歌可以免费下载。|This song is free to download.|下载太慢了，网络有问题。|The download is too slow – there's something wrong with the internet.
+先后|他先后在三家公司工作过。|He's worked at three companies, one after another.|我们先后到达了机场。|We arrived at the airport one after the other.
+先进|这家医院有很先进的设备。|This hospital has very advanced equipment.|我们要学习先进的管理经验。|We should learn from advanced management practices.
+闲|他闲的时候喜欢钓鱼。|He likes fishing in his free time.|我最近很闲，有什么要帮忙的吗？|I'm pretty free lately – anything I can help with?
+显得|穿黑色衣服显得瘦。|Black clothes make you look slimmer.|他今天显得很累。|He looks really tired today.
+显然|他显然不太高兴。|He's clearly not very happy.|很显然，这个方法不行。|Obviously, this method won't work.
+显示|手机显示电量不足。|The phone says the battery is low.|调查显示，大部分人支持这个政策。|The survey shows most people support the policy.
+县|他在县里的中学当老师。|He teaches at a secondary school in the county.|这个县以产茶出名。|This county is known for its tea.
+现场|演唱会现场来了五万人。|Fifty thousand people came to the concert.|警察很快赶到了现场。|The police quickly arrived at the scene.
+现代|这座城市既古老又现代。|This city is both ancient and modern.|现代人越来越重视健康。|People today care more and more about health.
+现代化|这个小镇已经变得很现代化了。|This small town has become very modern.|农业也在走向现代化。|Agriculture is also modernizing.
+现实|你要面对现实，别做梦了。|Face reality – stop dreaming.|这个计划不太现实。|This plan isn't very realistic.
+现象|堵车在大城市是很普遍的现象。|Traffic jams are a common phenomenon in big cities.|这种现象值得我们思考。|This phenomenon is worth thinking about.
+现状|我们需要了解市场现状。|We need to understand the current state of the market.|他不想改变现状。|He doesn't want to change the status quo.
+线路|这条地铁线路通到机场。|This subway line goes to the airport.|旅行社推荐了几条旅游线路。|The travel agency recommended several tour routes.
+限制|这个停车场限制停车时间。|This parking lot has a time limit.|年龄不应该限制你的梦想。|Age shouldn't limit your dreams.
+乡|他每年春节都回乡过年。|He goes back to his hometown every Spring Festival.|在这里遇到老乡真开心。|It's great to meet someone from my hometown here.
+乡村|乡村的夜晚特别安静。|Nights in the countryside are very quiet.|现在很多城里人喜欢去乡村旅游。|Lots of city people like rural tourism now.
+相处|跟她相处很舒服。|She's easy to be around.|我们相处了很多年，像一家人。|We've been together so long we're like family.
+相当|这个问题相当复杂。|This problem is quite complicated.|他的中文水平相当于大学三年级。|His Chinese is about third-year university level.
+相对|这里的生活成本相对较低。|The cost of living here is relatively low.|今天相对昨天暖和一点。|Today is a bit warmer than yesterday.
+相关|相关部门正在调查这件事。|The relevant authorities are investigating.|我想找一份跟专业相关的工作。|I want a job related to my major.
+相似|他们兄弟俩长得很相似。|The two brothers look very alike.|我们的经历很相似。|Our experiences are very similar.
+享受|退休后他开始享受生活。|After retiring, he started enjoying life.|她很享受一个人旅行的感觉。|She really enjoys traveling on her own.
+响声|晚上外面传来奇怪的响声。|There were strange noises outside at night.|他们听到一声巨大的响声。|They heard a huge bang.
+想念|出国以后我才知道多想念妈妈做的菜。|After going abroad, I realized how much I missed Mom's cooking.|我很想念大学的同学。|I really miss my college classmates.
+想象|这里比我想象的漂亮多了。|This place is much prettier than I imagined.|孩子们的想象力很丰富。|Kids have rich imaginations.
+向上|这个年轻人积极向上，大家都喜欢他。|This young man is positive and driven – everyone likes him.|从这里向上走，就能看到山顶。|Walk up from here and you'll see the summit.
+项目|我们公司最近接了一个大项目。|Our company just landed a big project.|游泳是他最喜欢的运动项目。|Swimming is his favorite sport.
+象征|鸽子象征着和平。|Doves symbolize peace.|这座塔是城市的象征。|This tower is the city's symbol.
+橡皮|写错了可以用橡皮擦掉。|If you make a mistake, you can erase it.|小学生的文具盒里都有橡皮。|Every schoolkid's pencil case has an eraser.
+消费|年轻人更愿意花钱消费。|Young people are more willing to spend money.|这家酒吧最低消费两百元。|This bar has a 200-yuan minimum spend.
+消费者|消费者有权退货。|Consumers have the right to return goods.|这个产品深受消费者喜爱。|This product is very popular with consumers.
+消化|吃完饭散散步有助于消化。|A walk after eating helps digestion.|这么多信息我需要时间消化。|I need time to digest all this information.
+消极|他最近情绪很消极。|He's been very down lately.|别用消极的态度对待工作。|Don't take a negative attitude toward work.
+消失|他突然从我的生活中消失了。|He suddenly disappeared from my life.|这些老建筑正在慢慢消失。|These old buildings are slowly disappearing.
+销量|这本书的销量突破了一百万。|This book has sold over a million copies.|新产品的销量不太好。|The new product isn't selling well.
+销售|他是公司的销售经理。|He's the company's sales manager.|这款车在全国都有销售。|This car is sold nationwide.
+小姐|李小姐，您的咖啡好了。|Ms. Li, your coffee is ready.|这位小姐姐是新来的同事。|This young woman is our new colleague.
+小型|我们公司是一家小型企业。|Our company is a small business.|周末有一个小型的音乐会。|There's a small concert this weekend.
+小于|这个数小于零。|This number is less than zero.|今年的收入小于支出。|This year's income was lower than spending.
+效率|开会太多会影响效率。|Too many meetings hurt efficiency.|她做事效率很高。|She's very efficient.
+协议|双方签订了合作协议。|The two parties signed a cooperation agreement.|我们终于达成了协议。|We finally reached an agreement.
+斜|这张照片拍斜了。|This photo is crooked.|银行就在我们公司斜对面。|The bank is diagonally across from our office.
+写作|她每天花一个小时练习写作。|She spends an hour a day practicing writing.|写作需要大量的阅读。|Writing requires a lot of reading.
+心理|考试前他心理压力很大。|He's under a lot of mental pressure before exams.|我想了解一下孩子的心理。|I want to understand the child's psychology.
+心态|心态好的人更容易快乐。|People with a good mindset are happier.|输了比赛，他的心态有点崩了。|After losing the match, he kind of cracked.
+欣赏|我们一边喝茶一边欣赏风景。|We enjoyed the view while drinking tea.|老板很欣赏他的能力。|The boss really values his abilities.
+新郎|新郎在婚礼上哭了。|The groom cried at the wedding.|新郎和新娘一起敬酒。|The bride and groom toasted the guests together.
+新娘|新娘今天特别漂亮。|The bride looks especially beautiful today.|新娘的婚纱是她自己设计的。|The bride designed her own wedding dress.
+新人|祝福这对新人白头到老。|Wishing the newlyweds a long life together.|公司来了几个新人。|A few new people joined the company.
+新型|这是一种新型的手机支付方式。|This is a new type of mobile payment.|新型材料让房子更环保。|New materials make houses more eco-friendly.
+信封|她把钱放进了一个红信封里。|She put the money in a red envelope.|信封上要写清楚地址。|Write the address clearly on the envelope.
+信任|朋友之间最重要的是信任。|Trust is the most important thing between friends.|老板很信任他。|The boss trusts him a lot.
+信用|他很讲信用，说到做到。|He keeps his word – he does what he says.|我用信用卡付了钱。|I paid with a credit card.
+行程|我们的行程已经安排好了。|Our itinerary is all set.|这次出差行程很满。|This business trip is fully booked.
+行动|我们要马上采取行动。|We need to take action right away.|他行动很快，一下子就做完了。|He moves fast – he got it done in no time.
+行人|这条路上行人很少。|There are few pedestrians on this road.|开车经过学校要注意行人。|Watch out for pedestrians when driving past a school.
+行驶|汽车在高速公路上行驶。|The car is driving on the highway.|列车行驶的速度是每小时三百公里。|The train travels at 300 km per hour.
+行为|他的行为让大家很失望。|His behavior disappointed everyone.|保护环境要从个人行为开始。|Protecting the environment starts with individual behavior.
+行业|互联网行业发展很快。|The internet industry is growing fast.|每个行业都有自己的规则。|Every industry has its own rules.
+行走|山路很难行走。|The mountain path is hard to walk on.|这只狗受伤了，行走不太方便。|This dog is injured and has trouble walking.
+形成|他们之间形成了很好的默契。|They've developed a great understanding.|这个湖是怎么形成的？|How was this lake formed?
+形容|这种美丽无法用语言形容。|This beauty is beyond words.|大家都用“热情”来形容他。|Everyone describes him as "warm."
+形式|这次比赛的形式很新。|The format of this competition is new.|我们可以用各种形式学习中文。|We can learn Chinese in all kinds of ways.
+形势|现在的就业形势不太好。|The job market isn't great right now.|我们要认清形势。|We need to see the situation clearly.
+形象|他在大家心中的形象很好。|He has a good image in people's eyes.|这个广告提升了公司的形象。|This ad boosted the company's image.
+形状|这块蛋糕是心的形状。|This cake is heart-shaped.|云的形状一直在变化。|The shape of the clouds keeps changing.
+幸运|他很幸运，买彩票中了奖。|He was lucky and won the lottery.|能有这样的老师，我们很幸运。|We're lucky to have a teacher like this.
+性质|这两份工作的性质完全不同。|These two jobs are completely different in nature.|你知道这件事的性质有多严重吗？|Do you realize how serious this is?
+休闲|周末我喜欢去公园休闲一下。|On weekends I like to relax in the park.|她今天穿得很休闲。|She's dressed casually today.
+修改|这篇文章我修改了三遍。|I revised this article three times.|如果需要修改，请告诉我。|If it needs changes, let me know.
+修建|这条地铁正在修建中。|This subway line is under construction.|村里修建了一所新学校。|The village built a new school.
+虚心|他很虚心，总是向别人学习。|He's very modest and always learns from others.|虚心接受别人的建议。|Accept others' advice with an open mind.
+需|如需帮助，请按这个按钮。|If you need help, press this button.|这件事需要你的同意。|This needs your consent.
+需求|这个产品能满足很多人的需求。|This product meets many people's needs.|市场需求越来越大。|Market demand keeps growing.
+宣布|他宣布明年退休。|He announced he'll retire next year.|比赛结果明天宣布。|The results will be announced tomorrow.
+宣传|这部电影的宣传做得很好。|This film was well promoted.|我们需要宣传一下这个活动。|We need to publicize this event.
+选手|这位选手第一次参加比赛就拿了冠军。|This contestant won the championship in her first competition.|比赛一共有二十名选手。|There are twenty contestants in total.
+学分|这学期我修了二十个学分。|I took twenty credits this semester.|没拿到足够的学分不能毕业。|You can't graduate without enough credits.
+学科|数学是一门很重要的学科。|Math is a very important subject.|他在这个学科很有名。|He's well known in this discipline.
+学历|找工作时学历很重要吗？|Does education level matter when looking for a job?|他的学历是博士。|He has a doctorate.
+学年|这个学年我们换了新老师。|We got a new teacher this school year.|学年结束后有一个长假。|There's a long break after the school year ends.
+学术|这是一次国际学术会议。|This is an international academic conference.|他在学术上很有成就。|He's achieved a lot academically.
+学者|很多学者参加了这次讨论。|Many scholars took part in the discussion.|这位学者写了很多书。|This scholar has written many books.
+寻找|他们在寻找新的合作伙伴。|They're looking for new partners.|警察在寻找丢失的孩子。|Police are searching for the missing child.
+询问|他打电话询问了航班信息。|He called to ask about the flight.|医生询问了我的病情。|The doctor asked about my symptoms.
+迅速|这个城市发展得非常迅速。|This city is developing very rapidly.|他迅速做出了决定。|He made a decision quickly.
+训练|运动员每天训练八个小时。|The athletes train eight hours a day.|这只狗受过专门训练。|This dog is specially trained.
+压岁钱|她把压岁钱都存起来了。|She saved all her New Year money.|今年我第一次给侄子压岁钱。|This year I gave my nephew New Year money for the first time.
+押金|退房的时候会退押金。|The deposit is refunded when you check out.|租车要交多少押金？|How much deposit do you need to rent a car?
+鸭子|北京烤鸭是用鸭子做的。|Peking duck is made from duck.|几只鸭子在河里游。|A few ducks are swimming in the river.
+牙齿|每天刷两次牙，保护牙齿。|Brush twice a day to protect your teeth.|他牙齿疼，去看了牙医。|His tooth hurt, so he went to the dentist.
+呀|快来呀，电影要开始了！|Come on, the movie's starting!|你怎么不早说呀？|Why didn't you say so sooner?
+延长|商场营业时间延长到了晚上十点。|The mall's hours have been extended to 10 p.m.|我想延长签证。|I'd like to extend my visa.
+严肃|老师严肃地批评了他。|The teacher criticized him sternly.|这是一个很严肃的问题。|This is a very serious issue.
+沿|我们沿着河边散步。|We walked along the river.|沿这条街走就到了。|Go along this street and you'll get there.
+研发|公司投入了很多钱研发新技术。|The company invested heavily in developing new technology.|这款药研发了十年。|This drug took ten years to develop.
+研制|科学家们正在研制新疫苗。|Scientists are developing a new vaccine.|这台机器是我们自己研制的。|We developed this machine ourselves.
+眼|他眼都不眨一下就同意了。|He agreed without batting an eye.|这孩子很有眼光。|This kid has a good eye.
+眼泪|她忍住了眼泪。|She held back her tears.|听到这个消息，他流下了眼泪。|He shed tears when he heard the news.
+演讲|他的演讲打动了所有人。|His speech moved everyone.|我明天要做一个英语演讲。|I have to give a speech in English tomorrow.
+阳台|阳台上种了很多花。|There are lots of flowers growing on the balcony.|我在阳台上晒衣服。|I hang my laundry out on the balcony.
+样式|这件衣服的样式很新。|This outfit has a new style.|我们有很多样式可以选。|We have lots of styles to choose from.
+腰|他搬东西把腰扭了。|He hurt his back lifting things.|这条裤子腰太大了。|These pants are too big at the waist.
+摇|她摇着孩子让他睡觉。|She rocked the baby to sleep.|风吹得树一直在摇。|The wind keeps the trees swaying.
+咬|小狗咬了我一口。|The puppy bit me.|他咬着牙坚持跑完了马拉松。|He gritted his teeth and finished the marathon.
+药品|这些药品要放在孩子拿不到的地方。|Keep these medicines out of children's reach.|这家药店药品很全。|This pharmacy has a wide range of medicines.
+药物|他正在接受药物治疗。|He's being treated with medication.|有些药物不能一起吃。|Some medications shouldn't be taken together.
+要不|要不我们打车去吧？|How about we take a taxi?|快点吧，要不来不及了。|Hurry up, or we won't make it.
+要不是|要不是下雨，我们早就到了。|If it weren't for the rain, we'd have arrived long ago.|要不是他提醒，我就忘了。|If he hadn't reminded me, I'd have forgotten.
+业务|他刚开始学习这方面的业务。|He's just starting to learn this line of work.|公司的业务扩展到了海外。|The company's business has expanded overseas.
+业余|她是一个业余歌手。|She's an amateur singer.|我业余时间在学吉他。|I'm learning guitar in my spare time.
+夜间|夜间开车要特别小心。|Be extra careful driving at night.|手机开了夜间模式。|The phone is in dark mode.
+夜市|这个夜市晚上十二点才关门。|This night market doesn't close till midnight.|台湾的夜市小吃很有名。|Taiwan's night market snacks are famous.
+一次性|这家店不提供一次性餐具。|This shop doesn't provide disposable cutlery.|这笔钱要一次性付清。|This has to be paid in full at once.
+一代|我们这一代人很少写信了。|Our generation rarely writes letters anymore.|新一代的手机功能更多。|The new generation of phones has more features.
+一旦|一旦有消息，我马上通知你。|As soon as there's news, I'll let you know.|一旦错过这次机会，就很难再有了。|Once you miss this chance, it's hard to get another.
+一路|一路上风景特别美。|The scenery was beautiful all the way.|祝你一路平安！|Have a safe journey!
+一路顺风|朋友出国，我们去机场送他，祝他一路顺风。|Our friend was going abroad, so we saw him off at the airport and wished him a good trip.|一路顺风，到了给我打电话！|Safe travels – call me when you arrive!
+一致|我们的看法完全一致。|We see eye to eye completely.|大家一致同意这个计划。|Everyone unanimously agreed to the plan.
+医疗|这里的医疗条件越来越好。|Medical care here keeps getting better.|他在一家医疗公司工作。|He works at a medical company.
+医学|她毕业于一所医学院。|She graduated from a medical school.|现代医学发展很快。|Modern medicine is advancing quickly.
+依据|做决定要有依据。|Decisions should be based on evidence.|依据法律，他要赔偿损失。|According to the law, he has to pay for the damage.
+依靠|他从小就学会了依靠自己。|He learned to rely on himself as a child.|老人依靠退休金生活。|The old man lives on his pension.
